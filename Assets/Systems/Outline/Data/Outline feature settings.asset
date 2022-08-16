@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d5ec3cfd1ebbca49962505cc4da01c5, type: 3}
+  m_Name: Outline feature settings
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  renderShader: {fileID: 4800000, guid: 544842c5fadd0174bb4c77662c5270a5, type: 3}
+  blurShader: {fileID: 4800000, guid: 41cc1c51c0c066344b57763f680d3fdb, type: 3}
+  outlineShader: {fileID: 4800000, guid: 2b97e376f860f164da9f31dbf67a2498, type: 3}
+  outlineColor: {r: 0.083333254, g: 1, b: 0, a: 1}
+  blurDownScale: 0
+  blurPassCount: 1

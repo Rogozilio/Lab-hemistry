@@ -1,0 +1,30 @@
+
+Data 
+    pages 
+        texture  
+    pictures 
+        texture 
+        tab 
+        page number 
+        x 
+        y 
+
+
+
+Missing data 
+    pictures 
+        - missing picture info          +
+        - missing tab                   + 
+        - missing data attribute        + 
+        - missing picture               +
+
+
+
+Wrong data 
+    pictures 
+        picture info 
+            - page number out of range 
+
+    
+    
+
