@@ -21,7 +21,6 @@ public class BottleWater : MonoBehaviour
             && transform.rotation.eulerAngles.y < 182
             && !waterDrop.activeSelf && _state.State == StateItems.LinearRotate)
         {
-            Debug.Log("asd");
             waterDrop.SetActive(true);
             waterDrop.transform.position = transform.position;
             waterDrop.GetComponent<Rigidbody>().velocity = Vector3.down * (Time.fixedDeltaTime * SpeedWaterDrop);

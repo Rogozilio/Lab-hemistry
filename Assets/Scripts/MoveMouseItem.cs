@@ -1,32 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using VirtualLab.OutlineNS;
 
-[RequireComponent(typeof(StateItem))]
-public class MoveMouseItem : MonoBehaviour
+public class MoveMouseItem : MouseItem
 {
     [SerializeField] 
     private bool returnToStartingPosition = true;
-
-    private Outline _outline;
-
+    
     private Rigidbody _rigidbody;
 
     private bool _isActive;
-    private bool _isReadyToMove;
-    private bool _isMouseDownOverItem;
     private Vector3 _hitWall;
     private Vector3 _offsetCollision;
     private MoveToPoint _moveToPoint;
-    private StateItem _stateItem;
     private Coroutine _useCoroutine;
     private Collider _collider;
 
     public bool IsActive => _isActive;
-    public bool IsReadyToMove => _isReadyToMove;
 
     public Vector3 SetHitWall
     {
@@ -35,41 +29,29 @@ public class MoveMouseItem : MonoBehaviour
 
     private void Awake()
     {
-        _outline = GetComponent<Outline>();
-        _stateItem = GetComponent<StateItem>();
+        base.Awake();
+        
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         _moveToPoint = new MoveToPoint(transform, transform.position, transform.rotation, transform.localScale);
     }
 
-    private void OnMouseEnter()
-    {
-        _isReadyToMove = true;
-    }
-
     private void OnMouseDrag()
     {
-        if (_stateItem.State == StateItems.Drag
+        if (StateItem.State == StateItems.Drag
             && _hitWall != Vector3.zero)
         {
             MoveItem(_hitWall);
         }
     }
 
-    private void OnMouseExit()
-    {
-        _isReadyToMove = false;
-        HideOutline();
-    }
-
     private void OnMouseDown()
     {
-        HideOutline();
+        base.OnMouseDown();
         
-        if (_isReadyToMove)
+        if (IsReadyToAction)
         {
-            _isMouseDownOverItem = true;
-            _stateItem.ChangeState(StateItems.Drag);
+            StateItem.ChangeState(StateItems.Drag);
             if (_useCoroutine != null)
             {
                 StopCoroutine(_useCoroutine);
@@ -82,24 +64,14 @@ public class MoveMouseItem : MonoBehaviour
 
     private void OnMouseUp()
     {
-        _isMouseDownOverItem = false;
-        _stateItem.ChangeState(StateItems.Idle);
+        StateItem.ChangeState(StateItems.Idle);
+        
         if(_useCoroutine == null)
             _useCoroutine = StartCoroutine(_moveToPoint.Start(2f));
         _isActive = false;
     }
 
-    public void ShowOutline()
-    {
-        if(!_outline.enabled)
-            _outline.enabled = true;
-    }
-
-    public void HideOutline()
-    {
-        if(_outline.enabled)
-            _outline.enabled = false;
-    }
+    
 
     private void MoveItem(Vector3 position)
     {

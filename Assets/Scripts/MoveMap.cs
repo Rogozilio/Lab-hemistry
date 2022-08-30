@@ -39,13 +39,21 @@ public class MoveMap : MonoBehaviour
 
     private IEnumerator MoveToPoint(int index)
     {
-        var delta = Time.deltaTime;
         var data = datas[index].move;
 
-        while (Vector3.Distance(transform.position, data.target.position + data.offsetPos) > 0.01)
+        var distance = Vector3.Distance(transform.position, data.target.position + data.offsetPos);
+        var angle = Quaternion.Angle(transform.rotation, data.target.rotation * data.offsetRot);
+
+        while (distance > 0.01f || angle > 0.01f)
         {
-            transform.position = Vector3.Lerp(transform.position, data.target.position + data.offsetPos, delta);
-            transform.rotation = Quaternion.Lerp(transform.rotation, data.target.rotation * data.offsetRot, delta);
+            transform.position = Vector3.MoveTowards(transform.position, data.target.position + data.offsetPos,
+                distance * Time.fixedDeltaTime * 2f);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, data.target.rotation * data.offsetRot,
+                angle * Time.fixedDeltaTime * 2f);
+
+            distance = Vector3.Distance(transform.position, data.target.position + data.offsetPos);
+            angle = Quaternion.Angle(transform.rotation, data.target.rotation * data.offsetRot);
+
             yield return null;
         }
 
@@ -108,10 +116,11 @@ public class MoveMapEditor : Editor
             _map.datas[i].move.offsetScale =
                 EditorGUILayout.Vector3Field("Offset Scale", _map.datas[i].move.offsetScale);
             GUILayout.BeginHorizontal();
-            _map.datas[i].nextState = (StateItems)EditorGUILayout.EnumPopup("ChangeStateInEnd", _map.datas[i].nextState);
+            _map.datas[i].nextState =
+                (StateItems)EditorGUILayout.EnumPopup("ChangeStateInEnd", _map.datas[i].nextState);
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            GUILayout.Space(10f); 
+            GUILayout.Space(10f);
         }
     }
 }
