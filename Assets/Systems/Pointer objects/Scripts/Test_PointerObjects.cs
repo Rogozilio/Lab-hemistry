@@ -67,7 +67,7 @@ public class Test_PointerObjects : MonoBehaviour
 	{
 		foreach (Outline obj in selectedObjects) 
 		{
-			obj.ShowOutline(); 
+			//obj.ShowOutline(); 
 		}
 	}
 
@@ -75,7 +75,7 @@ public class Test_PointerObjects : MonoBehaviour
 	{
 		foreach (Outline obj in selectedObjects) 
 		{
-			obj.HideOutline(); 
+			//obj.HideOutline(); 
 		}
 	}
 

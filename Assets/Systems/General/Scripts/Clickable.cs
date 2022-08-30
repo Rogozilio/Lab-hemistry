@@ -41,12 +41,12 @@ public class Clickable : MonoBehaviour, IResettable
 
 	void OnMouseEnter () 
 	{
-		if (interactable) outline.ShowOutline(); 
+		//if (interactable) outline.ShowOutline(); 
 	}
 
 	void OnMouseExit () 
 	{
-		if (interactable) outline.HideOutline(); 
+		//if (interactable) outline.HideOutline(); 
 	}
 
 

@@ -10,7 +10,7 @@ public enum Axis
     Z
 }
 
-public class LinearMove : MonoBehaviour
+public class LinearMove : LinearInput
 {
     
 
@@ -19,8 +19,7 @@ public class LinearMove : MonoBehaviour
     [SerializeField] private float min = Mathf.NegativeInfinity;
     
     private Vector3 _startPoint;
-
-    private float _originY;
+    
     private int _index;
     private Vector3 _nextPosition;
 
@@ -40,7 +39,7 @@ public class LinearMove : MonoBehaviour
             return;
         }
 
-        _originY = Input.mousePosition.y;
+        UpdateOriginInput();
         _startPoint = transform.position;
         _index = (int)_axis;
     }
@@ -48,17 +47,17 @@ public class LinearMove : MonoBehaviour
     private void Update()
     {
         var range =  transform.position - _startPoint;
-        if (range[_index] > min && Input.mousePosition.y - _originY < 0)
+        if (range[_index] > min && GetInputValue() < 0)
         {
-            _nextPosition[_index] = (Input.mousePosition.y - _originY) / 200f;
+            _nextPosition[_index] = GetInputValue() / 200f;
             transform.position += _nextPosition;
-            _originY = Input.mousePosition.y;
+            UpdateOriginInput();
         }
-        if (range[_index] < max && Input.mousePosition.y - _originY > 0)
+        if (range[_index] < max && GetInputValue() > 0)
         {
-            _nextPosition[_index] = (Input.mousePosition.y - _originY) / 200f;
+            _nextPosition[_index] = GetInputValue() / 200f;
             transform.position += _nextPosition;
-            _originY = Input.mousePosition.y;
+            UpdateOriginInput();
         }
     }
 

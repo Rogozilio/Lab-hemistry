@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d5ec3cfd1ebbca49962505cc4da01c5, type: 3}
-  m_Name: Outline feature settings
+  m_Name: Outline Green
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2

@@ -27,10 +27,14 @@ public class ActionPlace : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == target && target.GetComponent<StateItem>().State == stateStart)
+        if (other.gameObject == target
+            && (stateStart == StateItems.Default
+                || target.TryGetComponent(out StateItem stateItem)
+                && stateItem.State == stateStart))
         {
             _events.onActionStart.Invoke();
-            target.GetComponent<StateItem>().ChangeState(stateAfterOnActionStart);
+            if (target.TryGetComponent(out StateItem state))
+                state.ChangeState(stateAfterOnActionStart);
         }
     }
 
@@ -39,7 +43,8 @@ public class ActionPlace : MonoBehaviour
         if (other.gameObject == target)
         {
             _events.onAction.Invoke();
-            target.GetComponent<StateItem>().ChangeState(stateAfterOnAction);
+            if (target.TryGetComponent(out StateItem state))
+                state.ChangeState(stateAfterOnAction);
         }
     }
 
@@ -48,7 +53,8 @@ public class ActionPlace : MonoBehaviour
         if (other.gameObject == target)
         {
             _events.onActionEnd.Invoke();
-            target.GetComponent<StateItem>().ChangeState(stateAfterOnActionEnd);
+            if (target.TryGetComponent(out StateItem state))
+                state.ChangeState(stateAfterOnActionEnd);
         }
     }
 }

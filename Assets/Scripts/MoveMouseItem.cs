@@ -26,6 +26,7 @@ public class MoveMouseItem : MonoBehaviour
     private Collider _collider;
 
     public bool IsActive => _isActive;
+    public bool IsReadyToMove => _isReadyToMove;
 
     public Vector3 SetHitWall
     {
@@ -58,12 +59,13 @@ public class MoveMouseItem : MonoBehaviour
     private void OnMouseExit()
     {
         _isReadyToMove = false;
-        _outline.HideOutline();
+        HideOutline();
     }
 
     private void OnMouseDown()
     {
-        _outline.HideOutline();
+        HideOutline();
+        
         if (_isReadyToMove)
         {
             _isMouseDownOverItem = true;
@@ -89,12 +91,14 @@ public class MoveMouseItem : MonoBehaviour
 
     public void ShowOutline()
     {
-        _outline.ShowOutline();
+        if(!_outline.enabled)
+            _outline.enabled = true;
     }
 
     public void HideOutline()
     {
-        _outline.HideOutline();
+        if(_outline.enabled)
+            _outline.enabled = false;
     }
 
     private void MoveItem(Vector3 position)

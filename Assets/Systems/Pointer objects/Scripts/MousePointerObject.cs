@@ -32,10 +32,9 @@ public class MousePointerObject : MonoBehaviour
     {
         foreach (var hit in hits)
         {
-            if (hit.collider.TryGetComponent(out MoveMouseItem item) && !_item ||
-                item && !_item.IsActive)
+            if (hit.collider.TryGetComponent(out MoveMouseItem item) && !_item||
+                (item && !_item.IsActive && item.IsReadyToMove))
             {
-                _item?.HideOutline();
                 _item = item;
                 _item.ShowOutline();
             }

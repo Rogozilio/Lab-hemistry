@@ -9,7 +9,7 @@ using UnityEngine.Rendering.Universal;
 namespace VirtualLab.OutlineNS 
 {
 
-public class Outline : MonoBehaviour
+public class OutlineOld : MonoBehaviour
 {
 	[SerializeField] bool autoOutlineLayer = true; 
 	[SerializeField] OutlineFeatureSettings outlineSettings; 

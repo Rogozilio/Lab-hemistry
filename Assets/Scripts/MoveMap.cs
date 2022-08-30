@@ -45,7 +45,7 @@ public class MoveMap : MonoBehaviour
         while (Vector3.Distance(transform.position, data.target.position + data.offsetPos) > 0.01)
         {
             transform.position = Vector3.Lerp(transform.position, data.target.position + data.offsetPos, delta);
-            transform.rotation = Quaternion.Lerp(transform.rotation, data.target.localRotation * data.offsetRot, delta);
+            transform.rotation = Quaternion.Lerp(transform.rotation, data.target.rotation * data.offsetRot, delta);
             yield return null;
         }
 

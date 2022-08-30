@@ -10,7 +10,7 @@ namespace VirtualLab.OutlineNS
 
 public class Test_Outline : MonoBehaviour
 {
-	[SerializeField] Outline selectedObject; 
+	[SerializeField] OutlineOld selectedObject; 
 	[Space] 
 	[SerializeField] TestAction showOutline; 
 	[SerializeField] TestAction hideOutline; 

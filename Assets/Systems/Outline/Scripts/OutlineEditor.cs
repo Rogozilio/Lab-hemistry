@@ -11,7 +11,7 @@ namespace VirtualLab.OutlineNS
 
 #if UNITY_EDITOR || false 
 
-[CustomEditor(typeof(Outline))] [CanEditMultipleObjects] 
+[CustomEditor(typeof(OutlineOld))] [CanEditMultipleObjects] 
 public class OutlineEditor : Editor 
 {
 	SerializedProperty autoLayer; 

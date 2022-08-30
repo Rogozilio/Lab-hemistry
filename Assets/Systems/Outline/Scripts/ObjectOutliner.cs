@@ -9,24 +9,24 @@ namespace VirtualLab.OutlineNS
 
 public class ObjectOutliner : MonoBehaviour 
 {
-    List<Outline> objectsWithOutline = new List<Outline>(); 
+    List<OutlineOld> objectsWithOutline = new List<OutlineOld>(); 
 
 
 
 	//  Creating outline  ------------------------------------------- 
 	public void AddOutline (GameObject obj) 
 	{
-		Outline outline = obj.GetComponent<Outline>(); 
-		AddOutline(outline); 
+		OutlineOld outlineOld = obj.GetComponent<OutlineOld>(); 
+		AddOutline(outlineOld); 
 	}
 
 	public void AddOutline (Component component) 
 	{
-		Outline outline = component.GetComponent<Outline>(); 
-		AddOutline(outline); 
+		OutlineOld outlineOld = component.GetComponent<OutlineOld>(); 
+		AddOutline(outlineOld); 
 	}
 
-	public void AddOutline (Outline obj) 
+	public void AddOutline (OutlineOld obj) 
 	{
 		if (objectsWithOutline.Contains(obj)) return; 
 
@@ -39,17 +39,17 @@ public class ObjectOutliner : MonoBehaviour
 	//  Clearing outline  ------------------------------------------- 
 	public void ClearOutline (GameObject obj) 
 	{
-		Outline outline = obj.GetComponent<Outline>(); 
-		ClearOutline(outline); 
+		OutlineOld outlineOld = obj.GetComponent<OutlineOld>(); 
+		ClearOutline(outlineOld); 
 	}
 
 	public void ClearOutline (Component component) 
 	{
-		Outline outline = component.GetComponent<Outline>(); 
-		ClearOutline(outline); 
+		OutlineOld outlineOld = component.GetComponent<OutlineOld>(); 
+		ClearOutline(outlineOld); 
 	}
 
-	public void ClearOutline (Outline obj) 
+	public void ClearOutline (OutlineOld obj) 
 	{
 		obj.HideOutline(); 
 		objectsWithOutline.Remove(obj); 
@@ -57,7 +57,7 @@ public class ObjectOutliner : MonoBehaviour
 
 	public void ClearOutlineAll () 
 	{
-		foreach (Outline obj in objectsWithOutline) 
+		foreach (OutlineOld obj in objectsWithOutline) 
 		{
 			obj.HideOutline(); 
 		}
