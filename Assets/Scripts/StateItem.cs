@@ -7,6 +7,7 @@ public enum StateItems
 {
     Default,
     Idle,
+    BackToMouse,
     Drag,
     LinearMove,
     LinearRotate,

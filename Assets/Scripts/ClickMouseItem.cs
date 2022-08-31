@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,14 @@ public class ClickMouseItem : MouseItem
 
     private int _numberClick;
 
+    private void OnMouseDrag()
+    {
+        // if (StateItem.State == StateItems.Idle) 
+        //     IsReadyToAction = true;
+        // else 
+        //     IsReadyToAction = false;
+    }
+
     private void OnMouseDown()
     {
         base.OnMouseDown();
@@ -16,7 +25,7 @@ public class ClickMouseItem : MouseItem
         if (IsReadyToAction && StateItem.State == StateItems.Idle)
         {
             StateItem.ChangeState(StateItems.Interacts);
-            
+
             OnClicks[_numberClick++].Invoke();
             _numberClick = (_numberClick < OnClicks.Length) ? _numberClick: 0;
         }

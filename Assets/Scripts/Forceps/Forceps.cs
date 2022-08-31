@@ -71,7 +71,7 @@ public class Forceps : MonoBehaviour
         {
             var delta = 0.01f;
             
-            light.intensity = Random.Range(0.01f, 0.15f);
+            light.intensity = Random.Range(0.01f, 0.1f);
 
             yield return new WaitForSeconds(delta);
             time -= delta;

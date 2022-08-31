@@ -38,7 +38,8 @@ public class MousePointerObject : MonoBehaviour
                 _item = moveItem;
                 _item.ShowOutline();
             }
-            else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) && clickItem.IsReadyToAction)
+            else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) 
+                     && !_item.IsActive && clickItem.IsReadyToAction)
             {
                 clickItem.ShowOutline();
             }

@@ -8,14 +8,19 @@ using VirtualLab.OutlineNS;
 
 public class MoveMouseItem : MouseItem
 {
-    [SerializeField] 
-    private bool returnToStartingPosition = true;
-    
+    [SerializeField] private Vector3 startPos;
+    [SerializeField] private Quaternion startRot;
+    [SerializeField] private Vector3 startScale;
+
+    [SerializeField] private bool returnToStartingPosition = true;
+
     private Rigidbody _rigidbody;
 
     private bool _isActive;
     private Vector3 _hitWall;
     private Vector3 _offsetCollision;
+    private Vector3 _targetStartPosition;
+    private Quaternion _targetStartRotate;
     private MoveToPoint _moveToPoint;
     private Coroutine _useCoroutine;
     private Collider _collider;
@@ -30,7 +35,7 @@ public class MoveMouseItem : MouseItem
     private void Awake()
     {
         base.Awake();
-        
+
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
         _moveToPoint = new MoveToPoint(transform, transform.position, transform.rotation, transform.localScale);
@@ -38,7 +43,7 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseDrag()
     {
-        if (StateItem.State == StateItems.Drag
+        if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
             && _hitWall != Vector3.zero)
         {
             MoveItem(_hitWall);
@@ -48,7 +53,10 @@ public class MoveMouseItem : MouseItem
     private void OnMouseDown()
     {
         base.OnMouseDown();
-        
+
+        _targetStartPosition = transform.position + startPos;
+        _targetStartRotate = transform.rotation * startRot;
+
         if (IsReadyToAction)
         {
             StateItem.ChangeState(StateItems.Drag);
@@ -65,17 +73,22 @@ public class MoveMouseItem : MouseItem
     private void OnMouseUp()
     {
         StateItem.ChangeState(StateItems.Idle);
-        
-        if(_useCoroutine == null)
+
+        if (_useCoroutine == null)
             _useCoroutine = StartCoroutine(_moveToPoint.Start(2f));
         _isActive = false;
     }
 
-    
 
     private void MoveItem(Vector3 position)
     {
         _offsetCollision = transform.position - _collider.bounds.min;
-        _rigidbody.position = position + new Vector3(0,_offsetCollision.y, 0);
+        _rigidbody.position = Vector3.MoveTowards(transform.position,
+            position + new Vector3(0, _offsetCollision.y, 0), Time.fixedDeltaTime * 5f);
+        _rigidbody.rotation =
+            Quaternion.RotateTowards(_rigidbody.rotation, _targetStartRotate, Time.fixedDeltaTime * 30f);
+        
+        if(Vector3.Distance(transform.position, position + new Vector3(0, _offsetCollision.y, 0)) < 0.1f)
+            StateItem.ChangeState(StateItems.Drag);
     }
 }

@@ -9,20 +9,37 @@ public class MouseItem : MonoBehaviour
     private bool _isReadyToAction;
     private StateItem _stateItem;
 
-    public bool IsReadyToAction => _isReadyToAction;
+    public bool IsReadyToAction
+    {
+        get => _isReadyToAction;
+        set => _isReadyToAction = value;
+    }
+
     public StateItem StateItem => _stateItem;
-    
+
     private Outline _outline;
-    
+
     protected void Awake()
     {
         _outline = GetComponent<Outline>();
         _stateItem = GetComponent<StateItem>();
     }
 
-    private void OnMouseEnter()
+    protected void OnMouseEnter()
     {
-        _isReadyToAction = true;
+        //_isReadyToAction = true;
+    }
+
+    protected void OnMouseOver()
+    {
+        if (_stateItem.State == StateItems.Idle)
+        {
+            _isReadyToAction = true;
+        }
+        else
+        {
+            _isReadyToAction = false;
+        }
     }
 
     protected void OnMouseDown()
@@ -33,19 +50,19 @@ public class MouseItem : MonoBehaviour
     protected void OnMouseExit()
     {
         _isReadyToAction = false;
-        
+
         HideOutline();
     }
 
     public void ShowOutline()
     {
-        if(!_outline.enabled)
+        if (!_outline.enabled)
             _outline.enabled = true;
     }
 
     public void HideOutline()
     {
-        if(_outline.enabled)
+        if (_outline.enabled)
             _outline.enabled = false;
     }
 }

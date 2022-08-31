@@ -25,36 +25,38 @@ public class ActionPlace : MonoBehaviour
 
     [SerializeField] Events _events;
 
+    private bool _isActionStart;
+    private StateItem _stateItem;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == target
-            && (stateStart == StateItems.Default
-                || target.TryGetComponent(out StateItem stateItem)
-                && stateItem.State == stateStart))
+        if (other.gameObject == target 
+            && (stateStart == StateItems.Default 
+                || target.TryGetComponent(out _stateItem)
+                && _stateItem.State == stateStart))
         {
+            _isActionStart = true;
             _events.onActionStart.Invoke();
-            if (target.TryGetComponent(out StateItem state))
-                state.ChangeState(stateAfterOnActionStart);
+            _stateItem?.ChangeState(stateAfterOnActionStart);
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject == target)
+        if (other.gameObject == target && _isActionStart)
         {
             _events.onAction.Invoke();
-            if (target.TryGetComponent(out StateItem state))
-                state.ChangeState(stateAfterOnAction);
+            _stateItem?.ChangeState(stateAfterOnAction);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == target)
+        if (other.gameObject == target && _isActionStart)
         {
+            _isActionStart = false;
             _events.onActionEnd.Invoke();
-            if (target.TryGetComponent(out StateItem state))
-                state.ChangeState(stateAfterOnActionEnd);
+            _stateItem?.ChangeState(stateAfterOnActionEnd);
         }
     }
 }
@@ -64,7 +66,6 @@ public class ActionPlace : MonoBehaviour
 public class ActionPlaceEditor : Editor
 {
     private ActionPlace _actionPlace;
-    private string[] _optionStateItems;
 
     private int _indexOnActionStart;
     private int _indexOnAction;
@@ -73,14 +74,6 @@ public class ActionPlaceEditor : Editor
     private void OnEnable()
     {
         _actionPlace = (ActionPlace)target;
-        _optionStateItems = new string[Enum.GetValues(typeof(StateItems)).Length + 1];
-
-        _optionStateItems[0] = "None";
-        for (var i = 1; i < _optionStateItems.Length; i++)
-        {
-            var state = (StateItems)(i - 1);
-            _optionStateItems[i] = state.ToString();
-        }
     }
 
     public override void OnInspectorGUI()
