@@ -4,9 +4,9 @@ using UnityEngine;
 
 public struct Target
 {
-    public Vector3 Position { get; }
-    public Quaternion Rotation { get; }
-    public Vector3 Scale { get; }
+    public Vector3 Position { get; set; }
+    public Quaternion Rotation { get; set; }
+    public Vector3 Scale { get; set; }
 
     public Target(Vector3 position, Quaternion rotation, Vector3 scale)
     {
@@ -18,31 +18,85 @@ public struct Target
 
 public class MoveToPoint
 {
-    private Target _itemMoveMap;
+    private Target _toPoint;
     private Transform _transform;
 
-    public MoveToPoint(Transform from, Vector3 position, Quaternion rotation, Vector3 scale)
+    private float _distance =>
+        (_collider)
+            ? Vector3.Distance(_rigidbody.position,
+                _toPoint.Position + new Vector3(0, _rigidbody.position.y - _collider.bounds.min.y, 0))
+            : Vector3.Distance(_transform.position, _toPoint.Position);
+
+    private float _angle => Quaternion.Angle(_transform.rotation, _toPoint.Rotation);
+    private bool _isMoveNext => _distance > 0.01f || _angle > 0.01f;
+
+    private Rigidbody _rigidbody;
+    private Collider _collider;
+
+    public float Distance => _distance;
+    public float Angle => _angle;
+
+    public void SetPosition(Vector3 newPosition)
     {
-        _transform = from;
-        _itemMoveMap = new Target(position, rotation, scale);
+        _toPoint.Position = newPosition;
     }
 
-    public IEnumerator Start(float speed = 1f)
+    public void SetRotation(Quaternion newRotation)
     {
-        var data = _itemMoveMap;
-        var distance = Vector3.Distance(_transform.position, data.Position);
-        var angle = Quaternion.Angle(_transform.rotation, data.Rotation);
+        _toPoint.Rotation = newRotation;
+    }
 
-        while (distance > 0.01f || angle > 0.01f)
+    public void SetScale(Vector3 newScale)
+    {
+        _toPoint.Scale = newScale;
+    }
+
+    public MoveToPoint(Transform from, Vector3 toPosition = default, Quaternion toRotation = default,
+        Vector3 toScale = default, Rigidbody rigidbody = null, Collider collider = null)
+    {
+        _transform = from;
+        _toPoint = new Target(toPosition, toRotation, toScale);
+        _rigidbody = rigidbody;
+        _collider = collider;
+    }
+
+
+    private void MoveTo(float speed = 1f)
+    {
+        var newPosition =
+            Vector3.MoveTowards(_transform.position, _toPoint.Position, _distance * speed * Time.fixedDeltaTime);
+        var newRotation =
+            Quaternion.RotateTowards(_transform.rotation, _toPoint.Rotation, _angle * speed * Time.fixedDeltaTime);
+
+        if (_rigidbody)
         {
-            _transform.position =
-                Vector3.MoveTowards(_transform.position, data.Position, distance * Time.fixedDeltaTime * 2f);
-            _transform.rotation =
-                Quaternion.RotateTowards(_transform.rotation, data.Rotation, angle * Time.fixedDeltaTime * 2f);
+            _rigidbody.position = newPosition;
+            _rigidbody.rotation = newRotation;
+            if (_collider)
+            {
+                var offsetCollision = _toPoint.Position - _collider.bounds.min;
+                _rigidbody.position += new Vector3(0, offsetCollision.y, 0);
+            }
+        }
+        else
+        {
+            _transform.position = newPosition;
+            _transform.rotation = newRotation;
+        }
+    }
 
-            distance = Vector3.Distance(_transform.position, data.Position);
-            angle = Quaternion.Angle(_transform.rotation, data.Rotation);
+    public IEnumerator StartAsync(float speed = 1f)
+    {
+        while (_isMoveNext)
+        {
+            MoveTo(speed);
+
             yield return null;
         }
+    }
+
+    public void Start(float speed = 1f)
+    {
+        MoveTo(speed);
     }
 }

@@ -32,32 +32,33 @@ public class MoveMap : MonoBehaviour
 {
     public List<ItemMap> datas;
 
+    private StateItem _stateItem;
+    private MoveToPoint _moveToMapPoint;
+
     public void StartToMove(int index)
     {
+        _stateItem = GetComponent<StateItem>();
+        var data = datas[index].move;
+
+        _moveToMapPoint = new MoveToPoint(transform, data.target.position + data.offsetPos,
+            data.target.rotation * data.offsetRot);
         StartCoroutine(MoveToPoint(index));
     }
 
     private IEnumerator MoveToPoint(int index)
     {
-        var data = datas[index].move;
-
-        var distance = Vector3.Distance(transform.position, data.target.position + data.offsetPos);
-        var angle = Quaternion.Angle(transform.rotation, data.target.rotation * data.offsetRot);
-
-        while (distance > 0.01f || angle > 0.01f)
+        
+        while (_moveToMapPoint.Distance > 0.01f || _moveToMapPoint.Angle > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, data.target.position + data.offsetPos,
-                distance * Time.fixedDeltaTime * 2f);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, data.target.rotation * data.offsetRot,
-                angle * Time.fixedDeltaTime * 2f);
+            if(_stateItem.State == StateItems.Idle)
+                yield break;
 
-            distance = Vector3.Distance(transform.position, data.target.position + data.offsetPos);
-            angle = Quaternion.Angle(transform.rotation, data.target.rotation * data.offsetRot);
+            _moveToMapPoint.Start(2.5f);
 
             yield return null;
         }
 
-        GetComponent<StateItem>().ChangeState(datas[index].nextState);
+        _stateItem.ChangeState(datas[index].nextState);
     }
 }
 

@@ -20,21 +20,26 @@ public class StateItem : MonoBehaviour
 
     public void ChangeState(StateItems state)
     {
-        State = (state != StateItems.Default)?state:State;
-
         switch (state)
         {
             case StateItems.Default: break;
-            case StateItems.Drag: break;
+            case StateItems.BackToMouse:
+                if(State != StateItems.Idle && State != StateItems.Default)
+                    State = state;
+                break;
             case StateItems.LinearMove:
+                State = state;
                 TryGetComponent(out LinearMove linearMove);
                 linearMove.enabled = true;
                 break;
             case StateItems.LinearRotate:
+                State = state;
                 TryGetComponent(out LinearRotate linearRotate);
                 linearRotate.enabled = true;
                 break;
-            case StateItems.Interacts: break;
+            default: 
+                State = state;
+                break;
         }
     }
 }

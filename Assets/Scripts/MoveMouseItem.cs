@@ -21,7 +21,8 @@ public class MoveMouseItem : MouseItem
     private Vector3 _offsetCollision;
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
-    private MoveToPoint _moveToPoint;
+    private MoveToPoint _moveToRespawn;
+    private MoveToPoint _moveToMouse;
     private Coroutine _useCoroutine;
     private Collider _collider;
 
@@ -38,7 +39,10 @@ public class MoveMouseItem : MouseItem
 
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
-        _moveToPoint = new MoveToPoint(transform, transform.position, transform.rotation, transform.localScale);
+        _moveToRespawn = new MoveToPoint(transform, transform.position,
+            transform.rotation, transform.localScale, _rigidbody);
+        _moveToMouse = new MoveToPoint(transform, default, 
+            default, default, _rigidbody, _collider);
     }
 
     private void OnMouseDrag()
@@ -75,7 +79,10 @@ public class MoveMouseItem : MouseItem
         StateItem.ChangeState(StateItems.Idle);
 
         if (_useCoroutine == null)
-            _useCoroutine = StartCoroutine(_moveToPoint.Start(2f));
+        {
+            _useCoroutine = StartCoroutine(_moveToRespawn.StartAsync(10f));
+        }
+
         _isActive = false;
     }
 
@@ -83,12 +90,14 @@ public class MoveMouseItem : MouseItem
     private void MoveItem(Vector3 position)
     {
         _offsetCollision = transform.position - _collider.bounds.min;
-        _rigidbody.position = Vector3.MoveTowards(transform.position,
-            position + new Vector3(0, _offsetCollision.y, 0), Time.fixedDeltaTime * 5f);
-        _rigidbody.rotation =
-            Quaternion.RotateTowards(_rigidbody.rotation, _targetStartRotate, Time.fixedDeltaTime * 30f);
-        
-        if(Vector3.Distance(transform.position, position + new Vector3(0, _offsetCollision.y, 0)) < 0.1f)
+
+        _moveToMouse.SetPosition(position);
+        _moveToMouse.SetRotation(_targetStartRotate);
+        _moveToMouse.Start(10f);
+
+        if (_moveToMouse.Distance < 0.1f)
+        {
             StateItem.ChangeState(StateItems.Drag);
+        }
     }
 }

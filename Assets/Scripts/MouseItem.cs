@@ -25,11 +25,6 @@ public class MouseItem : MonoBehaviour
         _stateItem = GetComponent<StateItem>();
     }
 
-    protected void OnMouseEnter()
-    {
-        //_isReadyToAction = true;
-    }
-
     protected void OnMouseOver()
     {
         if (_stateItem.State == StateItems.Idle)

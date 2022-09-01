@@ -10,14 +10,6 @@ public class ClickMouseItem : MouseItem
 
     private int _numberClick;
 
-    private void OnMouseDrag()
-    {
-        // if (StateItem.State == StateItems.Idle) 
-        //     IsReadyToAction = true;
-        // else 
-        //     IsReadyToAction = false;
-    }
-
     private void OnMouseDown()
     {
         base.OnMouseDown();

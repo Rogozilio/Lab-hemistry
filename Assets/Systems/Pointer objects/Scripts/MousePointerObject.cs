@@ -13,8 +13,7 @@ public class MousePointerObject : MonoBehaviour
     {
         _camera = Camera.main;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         RaycastHit[] hits = RaycastAll();
@@ -38,8 +37,8 @@ public class MousePointerObject : MonoBehaviour
                 _item = moveItem;
                 _item.ShowOutline();
             }
-            else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) 
-                     && !_item.IsActive && clickItem.IsReadyToAction)
+            else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) && !_item ||
+                     (clickItem && !_item.IsActive && clickItem.IsReadyToAction))
             {
                 clickItem.ShowOutline();
             }
