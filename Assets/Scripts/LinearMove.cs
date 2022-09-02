@@ -12,16 +12,9 @@ public enum Axis
     Z
 }
 
-public struct LinearValue
-{
-    public Axis axis;
-    
-    [MinMaxSlider(-100, 100)]public Vector2 EdgeMove;
-}
-
 public class LinearMove : LinearInput
 {
-    [SerializeField] private Axis _axis = Axis.Y;
+    public Axis axis = Axis.Y;
     
     [MinMaxSlider(-100, 100)]public Vector2 EdgeMove;
 
@@ -48,7 +41,7 @@ public class LinearMove : LinearInput
 
         UpdateOriginInput();
         _startPoint = transform.position;
-        _index = (int)_axis;
+        _index = (int)axis;
     }
 
     private void Update()

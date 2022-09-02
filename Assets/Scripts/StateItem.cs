@@ -18,7 +18,7 @@ public class StateItem : MonoBehaviour
 {
     public StateItems State = StateItems.Idle;
 
-    public void ChangeState(StateItems state)
+    public void ChangeState(StateItems state, LinearValue linearValue = default)
     {
         switch (state)
         {
@@ -31,11 +31,17 @@ public class StateItem : MonoBehaviour
                 State = state;
                 TryGetComponent(out LinearMove linearMove);
                 linearMove.enabled = true;
+                linearMove.axisInput = linearValue.axisInput;
+                linearMove.axis = linearValue.axis;
+                linearMove.EdgeMove = linearValue.edge;
                 break;
             case StateItems.LinearRotate:
                 State = state;
                 TryGetComponent(out LinearRotate linearRotate);
                 linearRotate.enabled = true;
+                linearRotate.axisInput = linearValue.axisInput;
+                linearRotate.axis = linearValue.axis;
+                linearRotate.edgeRotate = linearValue.edge;
                 break;
             default: 
                 State = state;

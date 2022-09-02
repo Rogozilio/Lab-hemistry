@@ -5,9 +5,9 @@ using GD.MinMaxSlider;
 
 public class LinearRotate : LinearInput
 {
-    [SerializeField] Axis _axis = Axis.Y;
+    public Axis axis = Axis.Y;
     [MinMaxSlider(0, 360)]
-    public Vector2 EdgeRotate;
+    public Vector2 edgeRotate;
     
     
     private int _index;
@@ -31,7 +31,7 @@ public class LinearRotate : LinearInput
             return;
         }
         
-        _index = (int)_axis;
+        _index = (int)axis;
     }
 
     private void Update()
@@ -39,11 +39,11 @@ public class LinearRotate : LinearInput
         var angle = AngleBetweenVector3(transform.forward, Vector3.up);
         
         _nextRotate[_index] = -GetInputValue();
-        if (angle >= EdgeRotate.x && _nextRotate[_index] < 0)
+        if (angle >= edgeRotate.x && _nextRotate[_index] < 0)
         {
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
         }
-        else if (angle <= EdgeRotate.y && _nextRotate[_index] > 0)
+        else if (angle <= edgeRotate.y && _nextRotate[_index] > 0)
         {
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
         }

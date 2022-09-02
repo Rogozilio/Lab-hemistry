@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GD.MinMaxSlider;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,10 +18,22 @@ public class ItemMoveMap
 
 
 [Serializable]
+public struct LinearValue
+{
+    public Axis axisInput;
+    public Axis axis;
+    public Vector2 edge;
+}
+
+[Serializable]
 public class ItemMap
 {
     public ItemMoveMap move;
     public StateItems nextState;
+
+    public LinearValue linearMoveValue;
+
+    public LinearValue linearRotateValue;
 
     public ItemMap()
     {
@@ -57,7 +70,18 @@ public class MoveMap : MonoBehaviour
             yield return null;
         }
 
-        _stateItem.ChangeState(datas[index].nextState);
+        switch (datas[index].nextState)
+        {
+            case StateItems.LinearMove:
+                _stateItem.ChangeState(datas[index].nextState, datas[index].linearMoveValue);
+                break;
+            case StateItems.LinearRotate:
+                _stateItem.ChangeState(datas[index].nextState, datas[index].linearRotateValue);
+                break;
+            default:
+                _stateItem.ChangeState(datas[index].nextState);
+                break;
+        }
     }
 }
 
@@ -119,6 +143,66 @@ public class MoveMapEditor : Editor
             _map.datas[i].nextState =
                 (StateItems)EditorGUILayout.EnumPopup("ChangeStateInEnd", _map.datas[i].nextState);
             GUILayout.EndHorizontal();
+
+            var space = 20f;
+
+            if (_map.datas[i].nextState == StateItems.LinearMove)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearMoveValue.axisInput =
+                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearMoveValue.axisInput);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("Axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearMoveValue.axis =
+                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearMoveValue.axis);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("EdgeMove", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearMoveValue.edge.x = EditorGUILayout.FloatField(_map.datas[i].linearMoveValue.edge.x,
+                    GUILayout.Width(45f));
+                EditorGUILayout.MinMaxSlider(ref _map.datas[i].linearMoveValue.edge.x,
+                    ref _map.datas[i].linearMoveValue.edge.y, -100, 100);
+                _map.datas[i].linearMoveValue.edge.y = EditorGUILayout.FloatField(_map.datas[i].linearMoveValue.edge.y,
+                    GUILayout.Width(45f));
+                GUILayout.EndHorizontal();
+            }
+
+            if (_map.datas[i].nextState == StateItems.LinearRotate)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearRotateValue.axisInput =
+                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearRotateValue.axisInput);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("Axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearRotateValue.axis =
+                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearRotateValue.axis);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(space);
+                EditorGUILayout.LabelField("EdgeMove", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+                _map.datas[i].linearRotateValue.edge.x =
+                    EditorGUILayout.FloatField(_map.datas[i].linearRotateValue.edge.x, GUILayout.Width(45f));
+                EditorGUILayout.MinMaxSlider(ref _map.datas[i].linearRotateValue.edge.x,
+                    ref _map.datas[i].linearRotateValue.edge.y, 0f, 360f);
+                _map.datas[i].linearRotateValue.edge.y =
+                    EditorGUILayout.FloatField(_map.datas[i].linearRotateValue.edge.y, GUILayout.Width(45f));
+                GUILayout.EndHorizontal();
+            }
+
+
             GUILayout.EndVertical();
             GUILayout.Space(10f);
         }

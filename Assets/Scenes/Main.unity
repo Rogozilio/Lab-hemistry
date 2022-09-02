@@ -5728,6 +5728,7 @@ Transform:
   - {fileID: 1989688614}
   - {fileID: 1967765172}
   - {fileID: 1449959209}
+  - {fileID: 1674012253}
   m_Father: {fileID: 505326037}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7085,6 +7086,14 @@ MonoBehaviour:
       offsetRot: {x: 0, y: 0.26723838, z: 0, w: 0.96363044}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 5
+    linearMoveValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
 --- !u!114 &721876412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7098,8 +7107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axisInput: 0
-  _axis: 0
-  EdgeRotate: {x: 30, y: 180}
+  axis: 1
+  edgeRotate: {x: 0, y: 0}
 --- !u!114 &721876413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10871,10 +10880,10 @@ ReflectionProbe:
   m_Mode: 0
   m_RefreshMode: 0
   m_TimeSlicingMode: 0
-  m_Resolution: 1024
+  m_Resolution: 128
   m_UpdateFrequency: 0
-  m_BoxSize: {x: 15.013938, y: 7.2087708, z: 28.53041}
-  m_BoxOffset: {x: 0, y: 0, z: 0}
+  m_BoxSize: {x: 13.7, y: 5.48, z: 21.235}
+  m_BoxOffset: {x: 0.9, y: 0, z: 0.55}
   m_NearClip: 0.3
   m_FarClip: 1000
   m_ShadowDistance: 1
@@ -10883,7 +10892,7 @@ ReflectionProbe:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IntensityMultiplier: 1
+  m_IntensityMultiplier: 0.9
   m_BlendDistance: 1
   m_HDR: 1
   m_BoxProjection: 0
@@ -13242,7 +13251,6 @@ GameObject:
   - component: {fileID: 1449959210}
   - component: {fileID: 1449959211}
   - component: {fileID: 1449959212}
-  - component: {fileID: 1449959213}
   m_Layer: 0
   m_Name: ColliderDripWater
   m_TagString: Untagged
@@ -13358,45 +13366,6 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onAction:
-      m_PersistentCalls:
-        m_Calls: []
-    onActionEnd:
-      m_PersistentCalls:
-        m_Calls: []
---- !u!114 &1449959213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449959208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eca450bb1f0e8df4aac2f2afb2e290e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stateAfterOnActionStart: 6
-  stateAfterOnAction: 0
-  stateAfterOnActionEnd: 2
-  target: {fileID: 1966231049}
-  stateStart: 3
-  _events:
-    onActionStart:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1966231060}
-          m_TargetAssemblyTypeName: MoveMap, Assembly-CSharp
-          m_MethodName: StartToMove
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -15467,12 +15436,28 @@ MonoBehaviour:
       offsetRot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 1
+    linearMoveValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
   - move:
       target: {fileID: 202915995}
       offsetPos: {x: 0, y: 0.17, z: 0}
       offsetRot: {x: 0, y: 0, z: 0, w: 1}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 1
+    linearMoveValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
 --- !u!114 &1646794339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15638,6 +15623,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df8d0f36bc1a91e44ab95441a56c79e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1674012252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1674012253}
+  - component: {fileID: 1674012255}
+  - component: {fileID: 1674012254}
+  m_Layer: 0
+  m_Name: ColliderForceps
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1674012253
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674012252}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 632680594}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1674012254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674012252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca450bb1f0e8df4aac2f2afb2e290e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateAfterOnActionStart: 6
+  stateAfterOnAction: 0
+  stateAfterOnActionEnd: 2
+  target: {fileID: 1966231049}
+  stateStart: 3
+  _events:
+    onActionStart:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1966231060}
+          m_TargetAssemblyTypeName: MoveMap, Assembly-CSharp
+          m_MethodName: StartToMove
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 2
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    onAction:
+      m_PersistentCalls:
+        m_Calls: []
+    onActionEnd:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!65 &1674012255
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674012252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.15}
+  m_Center: {x: 0, y: 0, z: 0.09}
 --- !u!1 &1678782354
 GameObject:
   m_ObjectHideFlags: 0
@@ -18789,18 +18859,42 @@ MonoBehaviour:
       offsetRot: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 4
+    linearMoveValue:
+      axisInput: 1
+      axis: 1
+      edge: {x: -0.1, y: 100}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
   - move:
       target: {fileID: 2013388819}
       offsetPos: {x: 0.15, y: 0.15, z: -0.13}
       offsetRot: {x: 0.14644663, y: 0.3535534, z: 0.3535534, w: 0.85355335}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 0
+    linearMoveValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
   - move:
       target: {fileID: 632680594}
-      offsetPos: {x: 0.025, y: 0.2, z: 0}
+      offsetPos: {x: 0.025, y: 0.3, z: 0}
       offsetRot: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
       offsetScale: {x: 0, y: 0, z: 0}
     nextState: 4
+    linearMoveValue:
+      axisInput: 1
+      axis: 1
+      edge: {x: -0.1, y: 100}
+    linearRotateValue:
+      axisInput: 0
+      axis: 0
+      edge: {x: 0, y: 0}
 --- !u!114 &1966231062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18827,7 +18921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axisInput: 1
-  _axis: 1
+  axis: 1
   EdgeMove: {x: -0.1, y: 100}
 --- !u!114 &1966231064
 MonoBehaviour:
