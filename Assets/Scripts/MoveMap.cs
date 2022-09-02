@@ -47,10 +47,9 @@ public class MoveMap : MonoBehaviour
 
     private IEnumerator MoveToPoint(int index)
     {
-        
         while (_moveToMapPoint.Distance > 0.01f || _moveToMapPoint.Angle > 0.01f)
         {
-            if(_stateItem.State == StateItems.Idle)
+            if (_stateItem.State == StateItems.Idle)
                 yield break;
 
             _moveToMapPoint.Start(2.5f);
@@ -102,7 +101,7 @@ public class MoveMapEditor : Editor
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
             _map.datas[i].move.target =
-                (Transform)EditorGUILayout.ObjectField("Target", _map.datas[i].move.target, typeof(Transform));
+                (Transform)EditorGUILayout.ObjectField("Target", _map.datas[i].move.target, typeof(Transform), true);
             if (GUILayout.Button("X", GUILayout.Width(25f)))
             {
                 _map.datas.RemoveAt(i);

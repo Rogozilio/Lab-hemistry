@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GD.MinMaxSlider;
+using UnityEditor;
 using UnityEngine;
 
 public enum Axis
@@ -10,14 +12,19 @@ public enum Axis
     Z
 }
 
+public struct LinearValue
+{
+    public Axis axis;
+    
+    [MinMaxSlider(-100, 100)]public Vector2 EdgeMove;
+}
+
 public class LinearMove : LinearInput
 {
+    [SerializeField] private Axis _axis = Axis.Y;
     
+    [MinMaxSlider(-100, 100)]public Vector2 EdgeMove;
 
-    [SerializeField] Axis _axis = Axis.Y;
-    [SerializeField] private float max = Mathf.Infinity;
-    [SerializeField] private float min = Mathf.NegativeInfinity;
-    
     private Vector3 _startPoint;
     
     private int _index;
@@ -47,13 +54,13 @@ public class LinearMove : LinearInput
     private void Update()
     {
         var range =  transform.position - _startPoint;
-        if (range[_index] > min && GetInputValue() < 0)
+        if (range[_index] > EdgeMove.x && GetInputValue() < 0)
         {
             _nextPosition[_index] = GetInputValue() / 200f;
             transform.position += _nextPosition;
             UpdateOriginInput();
         }
-        if (range[_index] < max && GetInputValue() > 0)
+        if (range[_index] < EdgeMove.y && GetInputValue() > 0)
         {
             _nextPosition[_index] = GetInputValue() / 200f;
             transform.position += _nextPosition;
