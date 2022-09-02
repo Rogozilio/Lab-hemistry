@@ -17,8 +17,9 @@ public class BottleWater : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (transform.rotation.eulerAngles.y > 178 
-            && transform.rotation.eulerAngles.y < 182
+        //Debug.Log(transform.rotation.eulerAngles.x);
+        if (transform.rotation.eulerAngles.x > 88 
+            && transform.rotation.eulerAngles.x < 92
             && !waterDrop.activeSelf && _state.State == StateItems.LinearRotate)
         {
             waterDrop.SetActive(true);

@@ -37,15 +37,22 @@ public class LinearRotate : LinearInput
     private void Update()
     {
         var angle = AngleBetweenVector3(transform.forward, Vector3.up);
+
+        _nextRotate[_index] = GetInputValue();
         
-        _nextRotate[_index] = -GetInputValue();
-        if (angle >= edgeRotate.x && _nextRotate[_index] < 0)
+        if (Mathf.Round(angle) >= edgeRotate.x && _nextRotate[_index] < 0)
         {
+            _nextRotate[_index] = GetNextAngleRotate(Quaternion.Inverse(_nextRotate));
+            if (_nextRotate[_index] + angle > edgeRotate.y) 
+                _nextRotate[_index] = edgeRotate.y - angle;
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
         }
         else if (angle <= edgeRotate.y && _nextRotate[_index] > 0)
         {
-            transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
+            _nextRotate[_index] = GetNextAngleRotate(_nextRotate);
+            if (angle - _nextRotate[_index] < edgeRotate.x)
+                _nextRotate[_index] = angle - edgeRotate.x;
+            transform.Rotate(-_nextRotate[0], -_nextRotate[1], -_nextRotate[2], Space.World);
         }
         
         UpdateOriginInput();
@@ -58,7 +65,15 @@ public class LinearRotate : LinearInput
             enabled = false;
         }
     }
-    
+
+    private float GetNextAngleRotate(Quaternion nextRotateFromInput)
+    {
+        var pos = transform.forward;
+        pos = Quaternion.Euler(nextRotateFromInput[0], nextRotateFromInput[1], nextRotateFromInput[2]) * pos;
+        var localAngle = AngleBetweenVector3(transform.forward, pos);
+        return (localAngle > 100f) ? 360f - localAngle : localAngle;
+    }
+
     private float AngleBetweenVector3(Vector3 vec1, Vector3 vec2)
     {
         var angle = Vector3.SignedAngle(vec1, vec2, Vector3.right);

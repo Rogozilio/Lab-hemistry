@@ -7093,7 +7093,7 @@ MonoBehaviour:
     linearRotateValue:
       axisInput: 0
       axis: 0
-      edge: {x: 0, y: 0}
+      edge: {x: 30, y: 180}
 --- !u!114 &721876412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7107,8 +7107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axisInput: 0
-  axis: 1
-  edgeRotate: {x: 0, y: 0}
+  axis: 0
+  edgeRotate: {x: 30, y: 180}
 --- !u!114 &721876413
 MonoBehaviour:
   m_ObjectHideFlags: 0

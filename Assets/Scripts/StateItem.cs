@@ -30,18 +30,18 @@ public class StateItem : MonoBehaviour
             case StateItems.LinearMove:
                 State = state;
                 TryGetComponent(out LinearMove linearMove);
-                linearMove.enabled = true;
                 linearMove.axisInput = linearValue.axisInput;
                 linearMove.axis = linearValue.axis;
                 linearMove.EdgeMove = linearValue.edge;
+                linearMove.enabled = true;
                 break;
             case StateItems.LinearRotate:
                 State = state;
                 TryGetComponent(out LinearRotate linearRotate);
-                linearRotate.enabled = true;
                 linearRotate.axisInput = linearValue.axisInput;
                 linearRotate.axis = linearValue.axis;
                 linearRotate.edgeRotate = linearValue.edge;
+                linearRotate.enabled = true;
                 break;
             default: 
                 State = state;

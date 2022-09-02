@@ -11,7 +11,6 @@ public class Cup : MonoBehaviour
     public void AddWaterDrop()
     {
         _countWaterDrop++;
-        Debug.Log(_countWaterDrop);
         if (_countWaterDrop >= 10)
         {
             Water.SetActive(true);
