@@ -40,14 +40,14 @@ public class LinearRotate : LinearInput
 
         _nextRotate[_index] = GetInputValue();
         
-        if (Mathf.Round(angle) >= edgeRotate.x && _nextRotate[_index] < 0)
+        if (_nextRotate[_index] < 0)
         {
             _nextRotate[_index] = GetNextAngleRotate(Quaternion.Inverse(_nextRotate));
             if (_nextRotate[_index] + angle > edgeRotate.y) 
                 _nextRotate[_index] = edgeRotate.y - angle;
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
         }
-        else if (angle <= edgeRotate.y && _nextRotate[_index] > 0)
+        else if (_nextRotate[_index] > 0)
         {
             _nextRotate[_index] = GetNextAngleRotate(_nextRotate);
             if (angle - _nextRotate[_index] < edgeRotate.x)

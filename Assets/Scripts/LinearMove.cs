@@ -47,18 +47,28 @@ public class LinearMove : LinearInput
     private void Update()
     {
         var range =  transform.position - _startPoint;
-        if (range[_index] > EdgeMove.x && GetInputValue() < 0)
+        
+        if (GetInputValue() > 0)
         {
             _nextPosition[_index] = GetInputValue() / 200f;
+            if (GetNextPosition(_nextPosition, range) > EdgeMove.y)
+                _nextPosition[_index] = EdgeMove.y - range[_index]; 
             transform.position += _nextPosition;
-            UpdateOriginInput();
         }
-        if (range[_index] < EdgeMove.y && GetInputValue() > 0)
+        else if (GetInputValue() < 0)
         {
             _nextPosition[_index] = GetInputValue() / 200f;
+            if (GetNextPosition(_nextPosition, range) < EdgeMove.x)
+                _nextPosition[_index] = EdgeMove.x - range[_index]; 
             transform.position += _nextPosition;
-            UpdateOriginInput();
         }
+      
+        UpdateOriginInput();
+    }
+    
+    private float GetNextPosition(Vector3 nextPositionFromInput, Vector3 range)
+    {
+        return (range + nextPositionFromInput)[_index];
     }
 
     private void LateUpdate()
