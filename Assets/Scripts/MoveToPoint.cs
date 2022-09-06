@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct Target
@@ -18,8 +19,10 @@ public struct Target
 
 public class MoveToPoint
 {
-    private Target _toPoint;
     private Transform _transform;
+    private Target _toPoint;
+
+    private Vector3 _offsetTransform;
 
     private float _distance =>
         (_collider)
@@ -36,17 +39,22 @@ public class MoveToPoint
     public float Distance => _distance;
     public float Angle => _angle;
 
-    public void SetPosition(Vector3 newPosition)
+    public void SetOffsetTransform(Vector3 offsetTransform)
+    {
+        _offsetTransform = (_rigidbody == default) ? Vector3.zero : offsetTransform;
+    }
+
+    public void SetTargetPosition(Vector3 newPosition)
     {
         _toPoint.Position = newPosition;
     }
 
-    public void SetRotation(Quaternion newRotation)
+    public void SetTargetRotation(Quaternion newRotation)
     {
         _toPoint.Rotation = newRotation;
     }
 
-    public void SetScale(Vector3 newScale)
+    public void SetTargetScale(Vector3 newScale)
     {
         _toPoint.Scale = newScale;
     }
@@ -63,24 +71,25 @@ public class MoveToPoint
 
     private void MoveTo(float speed = 1f)
     {
+        var transformPos = _offsetTransform == default ? _transform.position : _offsetTransform;
         var newPosition =
-            Vector3.MoveTowards(_transform.position, _toPoint.Position, _distance * speed * Time.fixedDeltaTime);
+            Vector3.MoveTowards(transformPos, _toPoint.Position,
+                _distance * speed * Time.fixedDeltaTime);
         var newRotation =
             Quaternion.RotateTowards(_transform.rotation, _toPoint.Rotation, _angle * speed * Time.fixedDeltaTime);
-
+        
         if (_rigidbody)
         {
-            _rigidbody.position = newPosition;
+            _rigidbody.position = _offsetTransform == default
+                ? newPosition
+                : newPosition + _rigidbody.position - _offsetTransform;
             _rigidbody.rotation = newRotation;
-            if (_collider)
-            {
-                var offsetCollision = _toPoint.Position - _collider.bounds.min;
-                _rigidbody.position += new Vector3(0, offsetCollision.y, 0);
-            }
         }
         else
         {
-            _transform.position = newPosition;
+            _transform.position = _offsetTransform == default
+                ? newPosition
+                : newPosition + _transform.position - _offsetTransform;;
             _transform.rotation = newRotation;
         }
     }

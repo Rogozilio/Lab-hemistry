@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cup : MonoBehaviour
 {
     public GameObject Water;
+    public GameObject Magnesium;
     
     private int _countWaterDrop;
 
@@ -15,5 +16,13 @@ public class Cup : MonoBehaviour
         {
             Water.SetActive(true);
         }
+    }
+
+    public void AddPieceMagnesium(Transform target)
+    {
+        Magnesium.SetActive(true);
+        Magnesium.transform.position = target.position;
+        Magnesium.transform.rotation = target.rotation;
+        Magnesium.transform.localScale = target.localScale;
     }
 }
