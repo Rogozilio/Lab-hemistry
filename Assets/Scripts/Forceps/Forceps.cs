@@ -6,37 +6,46 @@ using Random = UnityEngine.Random;
 
 public class Forceps : MonoBehaviour
 {
+    public enum StateForceps
+    {
+        NotInForceps,
+        InForceps,
+        BurnedInForceps
+    }
     [SerializeField] private GameObject takeObject;
     private Transform _leftHalfForceps;
     private Transform _rightHalfForceps;
-    private bool _isTakeInForceps;
-    private bool _isMagnesiumBurned;
+    private StateForceps _stateForceps;
+    private StateItem _stateItem;
 
     private MoveToPoint _rotateToLeftForceps;
     private MoveToPoint _rotateToRightForceps;
 
-    public bool IsTakeInForceps => _isTakeInForceps;
+    public StateForceps stateForceps => _stateForceps;
 
     private void OnEnable()
     {
         _leftHalfForceps = transform.GetChild(0);
         _rightHalfForceps = transform.GetChild(1);
+        _stateForceps = StateForceps.NotInForceps;
+        _stateItem = GetComponent<StateItem>();
         _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps);
         _rotateToRightForceps = new MoveToPoint(_rightHalfForceps);
     }
 
-    public void StartTakeInForceps(bool isTakeInForceps = true)
+    public void StartTakeInForceps(int stateForceps)
     {
-        if (_isTakeInForceps == isTakeInForceps)  return;
+        if (_stateForceps == (StateForceps)stateForceps)  return;
 
-        _isTakeInForceps = isTakeInForceps;
-        
-        var delta = (isTakeInForceps) ? 4 : -4;
+        _stateForceps = (StateForceps)stateForceps;
+
+        var delta = ((StateForceps)stateForceps == StateForceps.InForceps) ? 4 : -4;
         
         var newRotateLeftForceps = Quaternion.Euler(_leftHalfForceps.rotation.eulerAngles.x,
             _leftHalfForceps.rotation.eulerAngles.y, _leftHalfForceps.rotation.eulerAngles.z + delta);
         var newRotateRightForceps = Quaternion.Euler(_rightHalfForceps.rotation.eulerAngles.x,
             _rightHalfForceps.rotation.eulerAngles.y, _rightHalfForceps.rotation.eulerAngles.z - delta);
+        
         _rotateToLeftForceps.SetTargetPosition(_leftHalfForceps.position);
         _rotateToRightForceps.SetTargetPosition(_rightHalfForceps.position);
         _rotateToLeftForceps.SetTargetRotation(newRotateLeftForceps);
@@ -45,7 +54,7 @@ public class Forceps : MonoBehaviour
         StartCoroutine(_rotateToLeftForceps.StartAsync(2f));
         StartCoroutine(_rotateToRightForceps.StartAsync(2f));
         
-        takeObject.SetActive(isTakeInForceps);
+        takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
     }
 
     public void StartFireMagnesium()
@@ -55,7 +64,7 @@ public class Forceps : MonoBehaviour
 
     private IEnumerator FireMagnesium()
     {
-        if (!_isTakeInForceps || _isMagnesiumBurned) yield break;
+        if (_stateForceps != StateForceps.InForceps) yield break;
 
         yield return new WaitForSeconds(0.8f);
 
@@ -93,7 +102,7 @@ public class Forceps : MonoBehaviour
             yield return new WaitForSeconds(delta);
         }
 
-        _isMagnesiumBurned = true;
+        _stateForceps = StateForceps.BurnedInForceps;
         light.enabled = false;
     }
 }

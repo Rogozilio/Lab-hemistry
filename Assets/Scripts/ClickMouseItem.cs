@@ -10,6 +10,8 @@ public class ClickMouseItem : MouseItem
 
     private int _numberClick;
 
+    public int NumberClick => _numberClick;
+
     private void OnMouseDown()
     {
         base.OnMouseDown();

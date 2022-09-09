@@ -9,6 +9,9 @@ public class Cup : MonoBehaviour
     
     private int _countWaterDrop;
 
+    public int CountWaterDrop => _countWaterDrop;
+    public bool IsHaveShavingsPiece => Magnesium.activeSelf;
+
     public void AddWaterDrop()
     {
         _countWaterDrop++;

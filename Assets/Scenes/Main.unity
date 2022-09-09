@@ -2444,7 +2444,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &237611047
 Transform:
   m_ObjectHideFlags: 0
@@ -2488,6 +2488,21 @@ MonoBehaviour:
   stateAfterOnActionStart: 0
   stateAfterOnAction: 0
   stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000000
+  startActionConditionScript: []
+  actionConditionScript: []
+  endActionConditionScript:
+  - {fileID: 1646794340}
+  indexPropertyStartAction: 
+  indexPropertyAction: 
+  indexPropertyEndAction: 00000000
+  startActionOperators: 
+  actionOperators: 
+  endActionOperators: 02000000
+  startActionValue: []
+  actionValue: []
+  endActionValue:
+  - 1
   target: {fileID: 1966231049}
   stateStart: 4
   _events:
@@ -2497,11 +2512,11 @@ MonoBehaviour:
         - m_Target: {fileID: 1966231059}
           m_TargetAssemblyTypeName: Forceps, Assembly-CSharp
           m_MethodName: StartTakeInForceps
-          m_Mode: 6
+          m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 1
@@ -2511,7 +2526,19 @@ MonoBehaviour:
         m_Calls: []
     onActionEnd:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 2093295011}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
 --- !u!1001 &257198903
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5728,6 +5755,7 @@ Transform:
   - {fileID: 1989688614}
   - {fileID: 1967765172}
   - {fileID: 1449959209}
+  - {fileID: 1137531963}
   - {fileID: 1674012253}
   - {fileID: 1937656848}
   m_Father: {fileID: 505326037}
@@ -8416,9 +8444,9 @@ MonoBehaviour:
   startScale: {x: 0, y: 0, z: 0}
   returnToStartingPosition: 1
   IsMoveRigidbody: 1
-  IsExtentsX: 0
+  IsExtentsX: 1
   IsExtentsY: 0
-  IsExtentsZ: 0
+  IsExtentsZ: 1
 --- !u!114 &848491184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10040,6 +10068,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1065057011}
+  - component: {fileID: 1065057013}
+  - component: {fileID: 1065057012}
   m_Layer: 0
   m_Name: CapPosition
   m_TagString: Untagged
@@ -10062,6 +10092,73 @@ Transform:
   m_Father: {fileID: 202915995}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1065057012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065057010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca450bb1f0e8df4aac2f2afb2e290e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateAfterOnActionStart: 0
+  stateAfterOnAction: 0
+  stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000000
+  startActionConditionScript:
+  - {fileID: 1966231059}
+  actionConditionScript: []
+  endActionConditionScript: []
+  indexPropertyStartAction: 00000000
+  indexPropertyAction: 
+  indexPropertyEndAction: 
+  startActionOperators: 02000000
+  actionOperators: 
+  endActionOperators: 
+  startActionValue:
+  - 1
+  actionValue: []
+  endActionValue: []
+  target: {fileID: 1646794334}
+  stateStart: 6
+  _events:
+    onActionStart:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2093295011}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+    onAction:
+      m_PersistentCalls:
+        m_Calls: []
+    onActionEnd:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!65 &1065057013
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065057010}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1097485198
 GameObject:
   m_ObjectHideFlags: 0
@@ -10681,6 +10778,116 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128957932}
   m_Mesh: {fileID: -257278029260952120, guid: 8e5c027d787d4294c912a755e2bd8bea, type: 3}
+--- !u!1 &1137531962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1137531963}
+  - component: {fileID: 1137531966}
+  - component: {fileID: 1137531964}
+  m_Layer: 0
+  m_Name: ColliderDripWater
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1137531963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137531962}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 632680594}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1137531964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137531962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eca450bb1f0e8df4aac2f2afb2e290e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateAfterOnActionStart: 0
+  stateAfterOnAction: 0
+  stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000000
+  startActionConditionScript: []
+  actionConditionScript: []
+  endActionConditionScript: []
+  indexPropertyStartAction: 
+  indexPropertyAction: 
+  indexPropertyEndAction: 
+  startActionOperators: 
+  actionOperators: 
+  endActionOperators: 
+  startActionValue: []
+  actionValue: []
+  endActionValue: []
+  target: {fileID: 1936684417}
+  stateStart: 0
+  _events:
+    onActionStart:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 632680598}
+          m_TargetAssemblyTypeName: Cup, Assembly-CSharp
+          m_MethodName: AddWaterDrop
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1936684417}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    onAction:
+      m_PersistentCalls:
+        m_Calls: []
+    onActionEnd:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!65 &1137531966
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137531962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.01}
+  m_Center: {x: 0, y: 0, z: 0.007}
 --- !u!1 &1172880371 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7805575971628962986, guid: cfd61811c3c6c0e42b4ba2ff0bf08984, type: 3}
@@ -13264,9 +13471,8 @@ GameObject:
   - component: {fileID: 1449959209}
   - component: {fileID: 1449959210}
   - component: {fileID: 1449959211}
-  - component: {fileID: 1449959212}
   m_Layer: 0
-  m_Name: ColliderDripWater
+  m_Name: ColliderBottleWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13298,8 +13504,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1, z: 0.03}
-  m_Center: {x: 0, y: 0, z: 0.015}
+  m_Size: {x: 0.1, y: 0.1, z: 0.15}
+  m_Center: {x: 0, y: 0, z: 0.1}
 --- !u!114 &1449959211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13313,8 +13519,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateAfterOnActionStart: 6
-  stateAfterOnAction: 0
+  stateAfterOnAction: 2
   stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000100
+  startActionConditionScript: []
+  actionConditionScript:
+  - {fileID: 632680598}
+  endActionConditionScript: []
+  indexPropertyStartAction: 
+  indexPropertyAction: 00000000
+  indexPropertyEndAction: 
+  startActionOperators: 
+  actionOperators: 03000000
+  endActionOperators: 
+  startActionValue: []
+  actionValue:
+  - 10
+  endActionValue: []
   target: {fileID: 721876400}
   stateStart: 3
   _events:
@@ -13335,44 +13556,8 @@ MonoBehaviour:
           m_CallState: 2
     onAction:
       m_PersistentCalls:
-        m_Calls: []
-    onActionEnd:
-      m_PersistentCalls:
-        m_Calls: []
---- !u!114 &1449959212
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449959208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eca450bb1f0e8df4aac2f2afb2e290e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stateAfterOnActionStart: 0
-  stateAfterOnAction: 0
-  stateAfterOnActionEnd: 0
-  target: {fileID: 1936684417}
-  stateStart: 0
-  _events:
-    onActionStart:
-      m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 632680598}
-          m_TargetAssemblyTypeName: Cup, Assembly-CSharp
-          m_MethodName: AddWaterDrop
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1936684417}
+        - m_Target: {fileID: 1449959208}
           m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_MethodName: SetActive
           m_Mode: 6
@@ -13384,9 +13569,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    onAction:
-      m_PersistentCalls:
-        m_Calls: []
     onActionEnd:
       m_PersistentCalls:
         m_Calls: []
@@ -15613,18 +15795,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2093295011}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1646794338}
@@ -15751,7 +15921,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 632680594}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1674012254
 MonoBehaviour:
@@ -15768,6 +15938,25 @@ MonoBehaviour:
   stateAfterOnActionStart: 6
   stateAfterOnAction: 0
   stateAfterOnActionEnd: 2
+  isChangeStateOnCondition: 010000
+  startActionConditionScript:
+  - {fileID: 1966231059}
+  - {fileID: 632680598}
+  actionConditionScript: []
+  endActionConditionScript:
+  - {fileID: 1966231059}
+  indexPropertyStartAction: 0000000001000000
+  indexPropertyAction: 
+  indexPropertyEndAction: 00000000
+  startActionOperators: 0200000002000000
+  actionOperators: 
+  endActionOperators: 02000000
+  startActionValue:
+  - 2
+  - 0
+  actionValue: []
+  endActionValue:
+  - 0
   target: {fileID: 1966231049}
   stateStart: 3
   _events:
@@ -15804,6 +15993,18 @@ MonoBehaviour:
     onActionEnd:
       m_PersistentCalls:
         m_Calls:
+        - m_Target: {fileID: 2132380857}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
         - m_Target: {fileID: 1937656847}
           m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_MethodName: SetActive
@@ -18672,7 +18873,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 632680594}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1937656849
 MonoBehaviour:
@@ -18689,6 +18890,19 @@ MonoBehaviour:
   stateAfterOnActionStart: 0
   stateAfterOnAction: 0
   stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000000
+  startActionConditionScript: []
+  actionConditionScript: []
+  endActionConditionScript: []
+  indexPropertyStartAction: 
+  indexPropertyAction: 
+  indexPropertyEndAction: 
+  startActionOperators: 
+  actionOperators: 
+  endActionOperators: 
+  startActionValue: []
+  actionValue: []
+  endActionValue: []
   target: {fileID: 2037177665}
   stateStart: 0
   _events:
@@ -18698,11 +18912,11 @@ MonoBehaviour:
         - m_Target: {fileID: 1966231059}
           m_TargetAssemblyTypeName: Forceps, Assembly-CSharp
           m_MethodName: StartTakeInForceps
-          m_Mode: 6
+          m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -18718,6 +18932,18 @@ MonoBehaviour:
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 2132380857}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
           m_CallState: 2
     onAction:
       m_PersistentCalls:
@@ -23374,8 +23600,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.08, y: 0.08, z: 0.05}
-  m_Center: {x: 0, y: 0, z: 0.035}
+  m_Size: {x: 0.08, y: 0.08, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0.09}
 --- !u!114 &2093295014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23389,8 +23615,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateAfterOnActionStart: 6
-  stateAfterOnAction: 0
+  stateAfterOnAction: 2
   stateAfterOnActionEnd: 0
+  isChangeStateOnCondition: 000100
+  startActionConditionScript: []
+  actionConditionScript:
+  - {fileID: 1966231059}
+  endActionConditionScript: []
+  indexPropertyStartAction: 
+  indexPropertyAction: 00000000
+  indexPropertyEndAction: 
+  startActionOperators: 
+  actionOperators: 02000000
+  endActionOperators: 
+  startActionValue: []
+  actionValue:
+  - 2
+  endActionValue: []
   target: {fileID: 1966231049}
   stateStart: 3
   _events:
@@ -23423,7 +23664,19 @@ MonoBehaviour:
           m_CallState: 2
     onAction:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 2093295011}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     onActionEnd:
       m_PersistentCalls:
         m_Calls: []
@@ -23691,6 +23944,21 @@ MonoBehaviour:
   stateAfterOnActionStart: 6
   stateAfterOnAction: 0
   stateAfterOnActionEnd: 2
+  isChangeStateOnCondition: 000000
+  startActionConditionScript: []
+  actionConditionScript: []
+  endActionConditionScript:
+  - {fileID: 1966231059}
+  indexPropertyStartAction: 
+  indexPropertyAction: 
+  indexPropertyEndAction: 00000000
+  startActionOperators: 
+  actionOperators: 
+  endActionOperators: 02000000
+  startActionValue: []
+  actionValue: []
+  endActionValue:
+  - 1
   target: {fileID: 1966231049}
   stateStart: 3
   _events:
@@ -23727,6 +23995,18 @@ MonoBehaviour:
     onActionEnd:
       m_PersistentCalls:
         m_Calls:
+        - m_Target: {fileID: 2132380857}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
         - m_Target: {fileID: 237611046}
           m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_MethodName: SetActive

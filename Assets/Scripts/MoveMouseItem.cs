@@ -89,14 +89,26 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseUp()
     {
+        _isActive = false;
+        
+        if(StateItem.State == StateItems.Interacts) return;
+            
         StateItem.ChangeState(StateItems.Idle);
 
         if (_useCoroutine == null)
         {
             _useCoroutine = StartCoroutine(_moveToRespawn.StartAsync(10f));
         }
+    }
 
-        _isActive = false;
+    private void LateUpdate()
+    {
+        if (!_isActive && StateItem.State != StateItems.Interacts)
+        {
+            StartCoroutine(_moveToRespawn.StartAsync(10f));
+            
+            StateItem.ChangeState(StateItems.Idle);
+        }
     }
 
 
@@ -111,7 +123,7 @@ public class MoveMouseItem : MouseItem
         _moveToMouse.SetTargetRotation(_targetStartRotate);
         _moveToMouse.Start(10f);
 
-        if (_moveToMouse.Distance < 0.1f)
+        if (_moveToMouse.Distance < 0.15f)
         {
             StateItem.ChangeState(StateItems.Drag);
         }
