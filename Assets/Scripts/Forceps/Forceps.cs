@@ -69,8 +69,8 @@ public class Forceps : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
 
         var light = takeObject.GetComponent<Light>();
-        var minIntensity = 0.04f;
-        var maxIntensity = 0.22f;
+        var minIntensity = 0.01f;
+        var maxIntensity = 0.12f;
         light.enabled = true;
         light.intensity = 0f;
         var time = 1.25f;
