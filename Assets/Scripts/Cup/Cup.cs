@@ -11,8 +11,11 @@ public class Cup : MonoBehaviour
 
     private int _countWaterDrop;
     private Vector3 _prevPosition;
+    private Vector3 _waterOriginScale;
     private Renderer _rendererWater;
-    private static readonly int Color1 = Shader.PropertyToID("_Color");
+
+    private bool _isChangeScaleFinish;
+    private bool _isChangeColorFinish;
 
     private Color32[] _resultColors = new Color32[]
     {
@@ -37,20 +40,26 @@ public class Cup : MonoBehaviour
     public int CountWaterDrop => _countWaterDrop;
     public bool IsHaveShavingsPiece => Magnesium.activeSelf;
     public bool IsHaveWater => Water.activeSelf;
+    public bool IsReadyForPaperIndicator => _isChangeColorFinish && _isChangeScaleFinish;
 
     private void Awake()
     {
         _rendererWater = Water.GetComponent<Renderer>();
         _resultColor = _resultColors[Random.Range(0, _resultColors.Length)];
         _originColor = _rendererWater.material.color;
+        _waterOriginScale = Water.transform.localScale;
     }
 
     public void AddWaterDrop()
     {
         _countWaterDrop++;
-        if (_countWaterDrop >= 10)
-        {
+
+        if (!Water.activeSelf)
             Water.SetActive(true);
+        
+        if (_countWaterDrop <= 10)
+        {
+            Water.transform.localScale = _waterOriginScale * (_countWaterDrop / 10f);
         }
     }
 
@@ -77,11 +86,15 @@ public class Cup : MonoBehaviour
             var decrease = (1 - 0.5f) / steps;
             if (Magnesium.transform.localScale.x >= 0.5f)
                 Magnesium.transform.localScale -= new Vector3(decrease, decrease, decrease);
+            else
+                _isChangeScaleFinish = true;
 
-            var a = (_resultColor - _originColor) / steps;
+                var stepColor = (_resultColor - _originColor) / steps;
             //Color
             if (_rendererWater.material.color != _resultColor)
-                _rendererWater.material.color += a;
+                _rendererWater.material.color += stepColor;
+            else 
+                _isChangeColorFinish = true;
         }
     }
 }

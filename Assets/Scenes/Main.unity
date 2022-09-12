@@ -2590,17 +2590,15 @@ MonoBehaviour:
   isChangeStateOnCondition: 000000
   startActionConditionScript:
   - {fileID: 632680598}
-  - {fileID: 632680598}
   actionConditionScript: []
   endActionConditionScript: []
-  indexPropertyStartAction: 0100000002000000
+  indexPropertyStartAction: 03000000
   indexPropertyAction: 
   indexPropertyEndAction: 
-  startActionOperators: 0200000002000000
+  startActionOperators: 02000000
   actionOperators: 
   endActionOperators: 
   startActionValue:
-  - 1
   - 1
   actionValue: []
   endActionValue: []
@@ -11061,7 +11059,7 @@ MonoBehaviour:
   - {fileID: 632680598}
   endActionConditionScript: []
   indexPropertyStartAction: 
-  indexPropertyAction: 0100000002000000
+  indexPropertyAction: 0100000000000000
   indexPropertyEndAction: 
   startActionOperators: 
   actionOperators: 0200000002000000
@@ -11069,7 +11067,7 @@ MonoBehaviour:
   startActionValue: []
   actionValue:
   - 1
-  - 1
+  - 10
   endActionValue: []
   target: {fileID: 1306974073}
   stateStart: 3
@@ -17769,11 +17767,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_SizeDelta.x
