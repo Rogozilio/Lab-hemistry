@@ -37,6 +37,12 @@ public class MoveMouseItem : MouseItem
         set => _hitWall = value;
     }
 
+    public void BackToRespawn()
+    {
+        StartCoroutine(_moveToRespawn.StartAsync(10f));
+    }
+    
+
     private void Awake()
     {
         base.Awake();
@@ -60,6 +66,8 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseDrag()
     {
+        if(!isActiveAndEnabled) return;
+        
         if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
             && _hitWall != Vector3.zero)
         {
@@ -69,6 +77,8 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseDown()
     {
+        if(!isActiveAndEnabled) return;
+        
         base.OnMouseDown();
 
         _targetStartPosition = transform.position + startPos;
@@ -79,6 +89,7 @@ public class MoveMouseItem : MouseItem
             StateItem.ChangeState(StateItems.Drag);
             if (_useCoroutine != null)
             {
+                Debug.Log("asd");
                 StopCoroutine(_useCoroutine);
                 _useCoroutine = null;
             }
@@ -89,6 +100,8 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseUp()
     {
+        if(!isActiveAndEnabled) return;
+        
         _isActive = false;
         
         if(StateItem.State == StateItems.Interacts) return;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -216,7 +217,7 @@ public class ActionPlaceEditor : Editor
     {
         _actionPlace = (ActionPlace)target;
 
-        if (_actionPlace.isChangeStateOnCondition.Length == 0)
+        if (_actionPlace.isChangeStateOnCondition == null)
             _actionPlace.isChangeStateOnCondition = new[] { false, false, false };
     }
 
@@ -315,7 +316,8 @@ public class ActionPlaceEditor : Editor
 
         GUILayout.EndHorizontal();
 
-        ShowScripts(ref scripts, ref indexProperty, ref operators, ref values);
+        if(scripts != null)
+            ShowScripts(ref scripts, ref indexProperty, ref operators, ref values);
     }
 
     private void ShowScripts(ref List<MonoBehaviour> scripts, ref List<int> indexProperty, ref List<Operator> operators,

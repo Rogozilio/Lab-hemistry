@@ -31,15 +31,17 @@ public class MousePointerObject : MonoBehaviour
     {
         foreach (var hit in hits)
         {
-            if (hit.collider.TryGetComponent(out MoveMouseItem moveItem) && !_item||
+            if (hit.collider.TryGetComponent(out MoveMouseItem moveItem) && !_item ||
                 (moveItem && !_item.IsActive && moveItem.IsReadyToAction))
             {
+                if (!moveItem.isActiveAndEnabled) continue;
                 _item = moveItem;
                 _item.ShowOutline();
             }
             else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) && !_item ||
                      (clickItem && !_item.IsActive && clickItem.IsReadyToAction))
             {
+                if (!clickItem.isActiveAndEnabled) continue;
                 clickItem.ShowOutline();
             }
             else if (hit.collider.CompareTag("Wall"))

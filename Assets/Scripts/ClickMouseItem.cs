@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class ClickMouseItem : MouseItem
 {
     public UnityEvent[] OnClicks;
@@ -12,11 +13,17 @@ public class ClickMouseItem : MouseItem
 
     public int NumberClick => _numberClick;
 
+    private void Start()
+    {
+        //For checkbox enable/disable script in inspector
+    }
     private void OnMouseDown()
     {
+        if(!isActiveAndEnabled) return;
+        
         base.OnMouseDown();
 
-        if (IsReadyToAction && StateItem.State == StateItems.Idle)
+        if (IsReadyToAction && OnClicks.Length > 0 && StateItem.State == StateItems.Idle)
         {
             StateItem.ChangeState(StateItems.Interacts);
 
@@ -27,6 +34,7 @@ public class ClickMouseItem : MouseItem
 
     private void OnMouseExit()
     {
+        if(!isActiveAndEnabled) return;
         base.OnMouseExit();
     }
 }

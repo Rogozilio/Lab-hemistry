@@ -202,12 +202,11 @@ public class StageSystem : MonoBehaviour
     void GiveButtonsState () 
     {
         buttons[0].SetState(StageButton.State.Current); 
-        buttonIndex = 0; 
-        buttons[1].SetState(StageButton.State.Active); 
+        buttonIndex = 0;
 
-        for (int i = 2; i < buttons.Count; i++) 
+        for (int i = 1; i < buttons.Count; i++) 
         {
-            buttons[i].SetState(StageButton.State.Inactive); 
+            buttons[i].SetState(StageButton.State.Active); 
         }
     }
 

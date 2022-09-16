@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(StateItem))]
+[RequireComponent(typeof(Outline))]
 public class MouseItem : MonoBehaviour
 {
     private bool _isReadyToAction;
@@ -27,14 +28,7 @@ public class MouseItem : MonoBehaviour
 
     protected void OnMouseOver()
     {
-        if (_stateItem.State == StateItems.Idle)
-        {
-            _isReadyToAction = true;
-        }
-        else
-        {
-            _isReadyToAction = false;
-        }
+        _isReadyToAction = _stateItem.State == StateItems.Idle;
     }
 
     protected void OnMouseDown()
