@@ -1,131 +1,137 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class ConnectTransform : MonoBehaviour
 {
+    struct TransformInfo
+    {
+        private readonly Transform _transform;
+        private Vector3 _prevPosition;
+        private Quaternion _prevRotation;
+        private Quaternion _prevLocalRotation;
+        private Vector3 _prevUp;
+        private Vector3 _prevRight;
+        private Vector3 _prevForward;
+
+        public Transform transform => _transform;
+        public Vector3 prevPosition => _prevPosition;
+        public Quaternion prevRotation => _prevRotation;
+        public Quaternion prevLocalRotation => _prevLocalRotation;
+        public Vector3 prevUp => _prevUp;
+        public Vector3 prevRight => _prevRight;
+        public Vector3 prevForward => _prevForward;
+
+        public bool IsMove => _prevPosition != _transform.position;
+        public bool IsRotate => _prevRotation != _transform.rotation;
+        public bool IsMoveOrRotate => IsMove || IsRotate;
+
+        public TransformInfo(Transform transform)
+        {
+            _transform = transform;
+            _prevPosition = transform.position;
+            _prevRotation = transform.rotation;
+            _prevLocalRotation = transform.localRotation;
+            _prevUp = transform.up;
+            _prevRight = transform.right;
+            _prevForward = transform.forward;
+        }
+
+        public void RefreshPrevPosition()
+        {
+            _prevPosition = _transform.position;
+        }
+
+        public void RefreshPrevRotation()
+        {
+            _prevRotation = _transform.rotation;
+        }
+
+        public void RefreshPrevLocalRotation()
+        {
+            _prevLocalRotation = _transform.localRotation;
+        }
+
+        public void RefreshPrevUp()
+        {
+            _prevUp = _transform.up;
+        }
+
+        public void RefreshPrevRight()
+        {
+            _prevRight = _transform.right;
+        }
+
+        public void RefreshPrevForward()
+        {
+            _prevForward = _transform.forward;
+        }
+
+        public void RefreshAll()
+        {
+            RefreshPrevPosition();
+            RefreshPrevRotation();
+            RefreshPrevLocalRotation();
+            RefreshPrevUp();
+            RefreshPrevRight();
+            RefreshPrevForward();
+        }
+    }
+
     public Transform target;
 
     private bool _isChangeCurrentObject;
     private bool _isChangeTargetObject;
 
-    private Vector3 _newPositionCurrentObject;
-    private Vector3 _newPositionTargetObject;
-    private Quaternion _newRotateCurrentObject;
-    private Quaternion _newRotateTargetObject;
+    private TransformInfo _currentObject;
+    private TransformInfo _targetObject;
 
-    private Vector3 _originTransform;
-    private Vector3 _originTarget;
-
-    private float _distance => Vector3.Distance(_originTarget , _originTransform);
-    private Vector3 _offset
+    private void OnEnable()
     {
-        get
-        {
-            if(_isChangeCurrentObject)
-                return _originTarget - _originTransform;
-            if (_isChangeTargetObject)
-                return _originTransform - _originTarget;
-            return Vector3.zero;
-        }
+        _currentObject = new TransformInfo(transform);
+        _targetObject = new TransformInfo(target);
     }
 
-    private void Awake()
-    {
-        _newPositionCurrentObject = transform.position;
-        _newPositionTargetObject = target.position;
-        _newRotateCurrentObject = transform.rotation;
-        _newRotateTargetObject = target.rotation;
-
-        _originTransform = transform.position;
-        _originTarget = target.position;
-    }
-    
     private void Update()
     {
-        // Debug.Log(Matrix4x4.Rotate(transform.rotation));
-        // Debug.Log(transform.localToWorldMatrix);
-        // Debug.Log(transform.right);
-        // Debug.Log(transform.up);
-        // Debug.Log(transform.forward);
-        _isChangeCurrentObject = IsObjectMove();
-        _isChangeTargetObject = IsObjectMove(true);
+        IsObjectMove();
+    }
+
+    private void IsObjectMove()
+    {
+        if (_currentObject.IsMoveOrRotate)
+        {
+            if (_currentObject.IsMove)
+                MoveTo(_currentObject, _targetObject);
+            if (_currentObject.IsRotate)
+                RotateTo(_currentObject, _targetObject);
+        }
+        else if (_targetObject.IsMoveOrRotate)
+        {
+            if (_targetObject.IsMove)
+                MoveTo(_targetObject, _currentObject);
+            if (_targetObject.IsRotate)
+                RotateTo(_targetObject, _currentObject);
+        }
+
+        _currentObject.RefreshAll();
+        _targetObject.RefreshAll();
+    }
+
+    private void MoveTo(TransformInfo moving, TransformInfo stay)
+    {
+        stay.transform.position = moving.transform.position
+                                  + (stay.transform.position - moving.prevPosition);
+    }
+
+    private void RotateTo(TransformInfo moving, TransformInfo stay)
+    {
+        var dir = stay.transform.position - moving.transform.position;
+        var rot = moving.transform.rotation * Quaternion.Inverse(moving.prevRotation);
+        dir = rot * dir;
+        stay.transform.position = moving.transform.position + dir;
         
-        // Debug.Log(_isChangeCurrentObject);
-        // Debug.Log(_isChangeTargetObject);
-
-        // if (_isChangeCurrentObject)
-        // {
-        //     MoveTo(transform, target);
-        //     _newPositionTargetObject = target.position;
-        // }
-        // else if (_isChangeTargetObject)
-        // {
-        //     MoveTo(target, transform);
-        //     _newPositionCurrentObject = transform.position;
-        // }
+        stay.transform.Rotate(rot.eulerAngles, Space.World);
     }
-
-    private bool IsObjectMove(bool isTarget = false)
-    {
-        if (!isTarget)
-        {
-            if (_newPositionCurrentObject == transform.position &&
-                _newRotateCurrentObject == transform.rotation) return false;
-            if (_newPositionCurrentObject != transform.position)
-                MoveTo(transform, target);
-            else if(_newRotateCurrentObject != transform.rotation)
-                RotateTo(transform, target);
-            _newPositionCurrentObject = transform.position;
-            _newRotateCurrentObject = transform.rotation;
-            _newPositionTargetObject = target.position;
-            _newRotateTargetObject = target.rotation;
-            return true;
-        }
-        else
-        {
-            if (_newPositionTargetObject == target.position &&
-                _newRotateTargetObject == target.rotation) return false;
-
-            MoveTo(target, transform);
-            _newPositionCurrentObject = transform.position;
-            _newRotateCurrentObject = transform.rotation;
-            _newPositionTargetObject = target.position;
-            _newRotateTargetObject = target.rotation;
-            return true;
-        }
-
-        return false;
-    }
-
-    private void MoveTo(Transform moving, Transform stay)
-    {
-        var point = stay.position - _newPositionCurrentObject;
-        point = new Vector3(point.x / moving.localScale.x, point.y / moving.localScale.y,
-            point.z / moving.localScale.z);
-        stay.position = moving.localToWorldMatrix.MultiplyPoint3x4(point);
-    }
-
-    private void RotateTo(Transform moving, Transform stay)
-    {
-        var point = stay.position - moving.position;
-        point = new Vector3(point.x / moving.localScale.x, point.y / moving.localScale.y,
-            point.z / moving.localScale.z);
-        stay.position = moving.localToWorldMatrix.MultiplyPoint3x4(point);
-
-        stay.rotation = moving.rotation;
-    }
-
-    public Vector3 GetRelativePosition(Transform origin, Vector3 position) {
-        Vector3 distance = position - origin.position;
-        Vector3 relativePosition = Vector3.zero;
-        relativePosition.x = Vector3.Dot(distance, origin.right.normalized);
-        relativePosition.y = Vector3.Dot(distance, origin.up.normalized);
-        relativePosition.z = Vector3.Dot(distance, origin.forward.normalized);
-
-        return relativePosition;
-    }
-    
 }

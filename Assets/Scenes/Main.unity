@@ -1180,7 +1180,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 122104923}
-  - component: {fileID: 122104924}
   m_Layer: 0
   m_Name: tube_holder_respawn
   m_TagString: Untagged
@@ -1204,19 +1203,6 @@ Transform:
   m_Father: {fileID: 2090038361}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &122104924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 122104922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c09a884c834599408d5a4c43f912b42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 1088358622}
 --- !u!1 &122577658
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,7 +2107,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &153043253
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15595,6 +15581,7 @@ GameObject:
   - component: {fileID: 1336448223}
   - component: {fileID: 1336448222}
   - component: {fileID: 1336448224}
+  - component: {fileID: 1336448225}
   m_Layer: 0
   m_Name: tube_holder_low.001 (1)
   m_TagString: Untagged
@@ -15802,6 +15789,19 @@ MonoBehaviour:
       axisInput: 0
       axis: 0
       edge: {x: 0, y: 0}
+--- !u!114 &1336448225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336448213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c09a884c834599408d5a4c43f912b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1088358622}
 --- !u!1 &1340704632
 GameObject:
   m_ObjectHideFlags: 0
@@ -22785,7 +22785,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1765389990
 MonoBehaviour:
   m_ObjectHideFlags: 0
