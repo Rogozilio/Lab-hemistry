@@ -37,11 +37,34 @@ public class MoveMouseItem : MouseItem
         set => _hitWall = value;
     }
 
+    public void ResetPointRespawn()
+    {
+        if (IsMoveRigidbody)
+        {
+            _moveToRespawn = new MoveToPoint(transform, transform.position,
+                transform.rotation, transform.localScale, _rigidbody);
+        }
+        else
+        {
+            _moveToRespawn = new MoveToPoint(transform, transform.position,
+                transform.rotation, transform.localScale);
+        }
+    }
+
+
     public void BackToRespawn()
     {
-        StartCoroutine(_moveToRespawn.StartAsync(10f));
+        if (_isActive)
+        {
+            StateItem.ChangeState(StateItems.BackToMouse);
+        }
+        else
+        {
+            StartCoroutine(_moveToRespawn.StartAsync(10f));
+            StateItem.ChangeState(StateItems.Idle);
+        }
     }
-    
+
 
     private void Awake()
     {
@@ -49,6 +72,10 @@ public class MoveMouseItem : MouseItem
 
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<BoxCollider>();
+    }
+
+    private void OnEnable()
+    {
         if (IsMoveRigidbody)
         {
             _moveToRespawn = new MoveToPoint(transform, transform.position,
@@ -66,8 +93,8 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseDrag()
     {
-        if(!isActiveAndEnabled) return;
-        
+        if (!isActiveAndEnabled) return;
+
         if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
             && _hitWall != Vector3.zero)
         {
@@ -77,8 +104,8 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseDown()
     {
-        if(!isActiveAndEnabled) return;
-        
+        if (!isActiveAndEnabled) return;
+
         base.OnMouseDown();
 
         _targetStartPosition = transform.position + startPos;
@@ -89,7 +116,6 @@ public class MoveMouseItem : MouseItem
             StateItem.ChangeState(StateItems.Drag);
             if (_useCoroutine != null)
             {
-                Debug.Log("asd");
                 StopCoroutine(_useCoroutine);
                 _useCoroutine = null;
             }
@@ -100,12 +126,12 @@ public class MoveMouseItem : MouseItem
 
     private void OnMouseUp()
     {
-        if(!isActiveAndEnabled) return;
-        
+        if (!isActiveAndEnabled) return;
+
         _isActive = false;
-        
-        if(StateItem.State == StateItems.Interacts) return;
-            
+
+        if (StateItem.State == StateItems.Interacts) return;
+
         StateItem.ChangeState(StateItems.Idle);
 
         if (_useCoroutine == null)
@@ -114,17 +140,6 @@ public class MoveMouseItem : MouseItem
         }
     }
 
-    private void LateUpdate()
-    {
-        if (!_isActive && StateItem.State != StateItems.Interacts)
-        {
-            StartCoroutine(_moveToRespawn.StartAsync(10f));
-            
-            StateItem.ChangeState(StateItems.Idle);
-        }
-    }
-
-
     private void MoveItem(Vector3 position)
     {
         var offset = _collider.bounds.min;
@@ -132,7 +147,7 @@ public class MoveMouseItem : MouseItem
             IsExtentsY ? _collider.bounds.extents.y : 0,
             IsExtentsZ ? _collider.bounds.extents.z : 0);
         _moveToMouse.SetOffsetTransform(offset);
-        _moveToMouse.SetTargetPosition(position);
+        _moveToMouse.SetTargetPosition(position + startPos);
         _moveToMouse.SetTargetRotation(_targetStartRotate);
         _moveToMouse.Start(10f);
 

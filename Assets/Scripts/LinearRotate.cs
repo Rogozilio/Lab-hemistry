@@ -8,9 +8,11 @@ public class LinearRotate : LinearInput
     public Axis axis = Axis.Y;
     [MinMaxSlider(0, 360)]
     public Vector2 edgeRotate;
-    
+
+    public Vector3 offsetPosition;
     
     private int _index;
+    private Vector3 _newPivot;
     private Quaternion _nextRotate;
 
     private StateItem _stateItem;
@@ -32,6 +34,7 @@ public class LinearRotate : LinearInput
         }
         
         _index = (int)axis;
+        _newPivot = transform.position + offsetPosition;
     }
 
     private void Update()
@@ -45,6 +48,10 @@ public class LinearRotate : LinearInput
             _nextRotate[_index] = GetNextAngleRotate(Quaternion.Inverse(_nextRotate));
             if (_nextRotate[_index] + angle > edgeRotate.y) 
                 _nextRotate[_index] = edgeRotate.y - angle;
+
+            var dir = _newPivot - transform.position;
+            dir = Quaternion.Euler(_nextRotate[0], _nextRotate[1], _nextRotate[2]) * dir;
+            transform.position = _newPivot - dir;
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);
         }
         else if (_nextRotate[_index] > 0)
@@ -52,6 +59,10 @@ public class LinearRotate : LinearInput
             _nextRotate[_index] = GetNextAngleRotate(_nextRotate);
             if (angle - _nextRotate[_index] < edgeRotate.x)
                 _nextRotate[_index] = angle - edgeRotate.x;
+            
+            var dir = _newPivot - transform.position;
+            dir = Quaternion.Euler(-_nextRotate[0], -_nextRotate[1], -_nextRotate[2]) * dir;
+            transform.position = _newPivot - dir;
             transform.Rotate(-_nextRotate[0], -_nextRotate[1], -_nextRotate[2], Space.World);
         }
         

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 
 public class MiniTestTube : MonoBehaviour
@@ -16,105 +18,128 @@ public class MiniTestTube : MonoBehaviour
         [InspectorName("(CuSO4+NaOH+Fire):2")] CuSO4_NaOH_Fire_half
     }
 
-    private StateMiniTestTube _state;
+    public GameObject Liquid;
+    public GameObject Sediment;
+    public GameObject BurnedLiquid;
+    public GameObject LiquidFlow;
+    public Transform StartLiquidFlow;
 
-    private GameObject _bottomWater;
-    private GameObject _topWater;
-    private GameObject _sediment;
-    private MeshRenderer _rendererSediment;
+    private StateMiniTestTube _stateMiniTestTube;
+    private StateItem _stateItem;
+    private float _downMiniTube;
+    private float _topMiniTube;
+
+    private Renderer _rendererLiquid;
+    private Renderer _rendererSediment;
+    private Renderer _rendererBurnLiquid;
+    private LiquidFlow _liquidFlowScript;
 
     private int _countLiquid;
 
-    public StateMiniTestTube State => _state;
+    public StateMiniTestTube stateMiniTestTube => _stateMiniTestTube;
     public int CountLiquid => _countLiquid;
+
+    public void SetStateMiniTestTube(int index)
+    {
+        _stateMiniTestTube = (StateMiniTestTube)index;
+    }
 
     private void Awake()
     {
-        _bottomWater = transform.GetChild(0).gameObject;
-        _topWater = transform.GetChild(1).gameObject;
-        _sediment = transform.GetChild(2).gameObject;
-        _rendererSediment = _sediment.GetComponent<MeshRenderer>();
+        _downMiniTube = 0.45f;
+        _topMiniTube = 0.55f;
+
+        _rendererLiquid = Liquid.GetComponent<Renderer>();
+        _rendererSediment = Sediment.GetComponent<Renderer>();
+        _rendererBurnLiquid = BurnedLiquid.GetComponent<Renderer>();
+        _liquidFlowScript = LiquidFlow.GetComponent<LiquidFlow>();
+        _stateItem = GetComponent<StateItem>();
+    }
+
+    private void FixedUpdate()
+    {
+        PourOutLiquid();
     }
 
     public void AddLiquid(LiquidDrop liquid)
     {
-        if (_countLiquid == 0)
-            ChangeColor(liquid.GetColor, 180);
-
         _countLiquid++;
 
-        switch (_countLiquid)
+        var step = (_topMiniTube - _downMiniTube) / 30f;
+
+        if (liquid.typeLiquid == TypeLiquid.CuSO4)
         {
-            case 1:
-                _bottomWater.SetActive(true);
-                _bottomWater.transform.localScale = new Vector3(0.8f, 0.8f, 0.5f);
-                _bottomWater.transform.localPosition = new Vector3(0f, 0f, -0.0243f);
-                break;
-            case 2:
-                _bottomWater.transform.localScale = Vector3.one;
-                _bottomWater.transform.localPosition = Vector3.zero;
-                break;
-            default:
-                _topWater.SetActive(true);
-                _topWater.transform.localScale += new Vector3(0f, 0f, 0.5f);
-                _topWater.transform.localPosition += new Vector3(0f, 0f, 0.02049f);
-                break;
+            var colorCuSO4 = new Color32(liquid.GetColor.r, liquid.GetColor.g, liquid.GetColor.b, 30);
+
+            _rendererLiquid.material.SetColor("_Colour", colorCuSO4);
         }
 
-        var stateLiquid = liquid.typeLiquid;
-
-        if (_state == StateMiniTestTube.Empty && stateLiquid == TypeLiquid.CuSO4 && _countLiquid == 8)
+        if (liquid.typeLiquid == TypeLiquid.NaOH)
         {
-            _state = StateMiniTestTube.CuSO4;
+            transform.GetChild(1).gameObject.SetActive(true);
+
+            var alphaSediment = new Color32(0, 0, 0, 255 / 4);
+            _rendererSediment.material.color += alphaSediment;
         }
-        else if (stateLiquid == TypeLiquid.NaOH && _countLiquid > 8)
-        {
-            if(_state == StateMiniTestTube.CuSO4)
-                ChangeColor(new Color32(42, 164,221, 150), 150, true);
-            
-            _state = StateMiniTestTube.CuSo4_NaOH;
 
-            GetSediment();
+        _rendererLiquid.material.SetFloat("_FillAmount", _downMiniTube + step * _countLiquid);
+
+        if (_stateMiniTestTube == StateMiniTestTube.Empty && liquid.typeLiquid == TypeLiquid.CuSO4 && _countLiquid == 8)
+        {
+            _stateMiniTestTube = StateMiniTestTube.CuSO4;
+        }
+        else if (liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid > 8)
+        {
+            _stateMiniTestTube = StateMiniTestTube.CuSo4_NaOH;
         }
     }
 
-    private void ChangeColor(Color32 newColor, byte alpha, bool isPlusColor = false)
+    private IEnumerator BurnLiquid()
     {
-        var rendererBottomWater = _bottomWater.GetComponent<MeshRenderer>();
-        var rendererTopWater = _topWater.GetComponent<MeshRenderer>();
-        
-        
-        if (isPlusColor)
+        var finish = _rendererLiquid.material.GetFloat("_FillAmount");
+        var point = _rendererBurnLiquid.material.GetFloat("_FillAmount");
+
+        yield return new WaitForSeconds(2f);
+
+        while (point < finish)
         {
-            var deltaColor = newColor - rendererBottomWater.material.color;
-            rendererBottomWater.material.color += deltaColor;
-            rendererTopWater.material.color += deltaColor;
+            point += Time.deltaTime * Random.Range(0.001f, 0.01f);
+            _rendererBurnLiquid.material.SetFloat("_FillAmount", point);
+            yield return null;
         }
-        else
-        {
-            rendererBottomWater.material.color =
-                new Color32(newColor.r, newColor.g, newColor.b, alpha);
-            rendererTopWater.material.color =
-                new Color32(newColor.r, newColor.g, newColor.b, alpha);
-        }
+
+        _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire;
+        Liquid.SetActive(false);
+        Sediment.SetActive(false);
     }
 
-    private void GetSediment()
+    public void StartBurnLiquid()
     {
-        if (_sediment.activeSelf)
+        StartCoroutine(BurnLiquid());
+    }
+
+    public void PourOutLiquid()
+    {
+        if (_stateItem.State != StateItems.LinearRotate) return;
+        
+        if (transform.rotation.eulerAngles.x is >= 0f and <= 180f)
         {
-            var a = _rendererSediment.material.GetFloat("_Smoothness");
-            _rendererSediment.material.SetFloat("_Smoothness",
-                _rendererSediment.material.GetFloat("_Smoothness") - 0.125f);
-        }
-        else
-        {
-            _sediment.SetActive(true);
-            foreach (var render in _sediment.transform.GetComponentsInChildren<MeshRenderer>())
+            if (!LiquidFlow.activeSelf && _rendererBurnLiquid.material.GetFloat("_FillAmount") > _downMiniTube)
             {
-                render.material.color = new Color32(7, 31,49, 255);
+                LiquidFlow.SetActive(true);
+                _liquidFlowScript.SetPositionStart(StartLiquidFlow.position);
+                _liquidFlowScript.step = 0.0002f;
+                _liquidFlowScript.limit = _downMiniTube + ((_topMiniTube - _downMiniTube) / 30f * _countLiquid / 2f);
             }
-            _rendererSediment.material.color = new Color32(7, 31,49, 255);
+
+            if (_liquidFlowScript.stateFlowLiquid == StateFlowLiquid.Pour)
+            {
+                _liquidFlowScript.PourOutLiquid(_rendererBurnLiquid, "_FillAmount");
+            }
+        }
+        else
+        {
+            _liquidFlowScript.ChangeStateFlowLiquid(3);
         }
     }
 }

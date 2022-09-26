@@ -25,8 +25,6 @@ public class BottleLiquid : MonoBehaviour
         _state = GetComponent<StateItem>();
         _rigidbodyLiquid = liquidDrop.GetComponent<Rigidbody>();
         _liquidDropScript = liquidDrop.GetComponent<LiquidDrop>();
-        liquidDrop.GetComponent<SkinnedMeshRenderer>().material.color =
-            transform.GetChild(0).GetComponent<MeshRenderer>().material.color;
     }
 
     void FixedUpdate()
@@ -36,6 +34,8 @@ public class BottleLiquid : MonoBehaviour
             && !liquidDrop.activeSelf && _state.State == StateItems.LinearRotate)
         {
             liquidDrop.SetActive(true);
+            liquidDrop.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor",
+                transform.GetChild(0).GetComponent<MeshRenderer>().material.GetColor("_Colour"));
             _liquidDropScript.typeLiquid = _typeLiquid;
             liquidDrop.transform.position = StartLiquidDrop.position;
             _rigidbodyLiquid.velocity = Vector3.down * (Time.fixedDeltaTime * SpeedLiquidDrop);

@@ -23,12 +23,14 @@ public class StateItem : MonoBehaviour
     {
         SetState(state, linearValue);
         
+        //Parent
         if(transform.parent.TryGetComponent(out StateItem parentStateItem))
-            parentStateItem.SetState(state, linearValue);
+            parentStateItem.SetState(state);
 
-        foreach (var child in GetComponentsInChildren<StateItem>())
+        //Child
+        for (int i = 0; i < transform.childCount; i++)
         {
-            child.SetState(state, linearValue);
+            transform.GetChild(i).GetComponent<StateItem>()?.SetState(state);
         }
     }
 
@@ -43,7 +45,7 @@ public class StateItem : MonoBehaviour
                 break;
             case StateItems.LinearMove:
                 State = state;
-                TryGetComponent(out LinearMove linearMove);
+                if (!TryGetComponent(out LinearMove linearMove)) break;
                 linearMove.axisInput = linearValue.axisInput;
                 linearMove.axis = linearValue.axis;
                 linearMove.EdgeMove = linearValue.edge;
@@ -51,7 +53,7 @@ public class StateItem : MonoBehaviour
                 break;
             case StateItems.LinearRotate:
                 State = state;
-                TryGetComponent(out LinearRotate linearRotate);
+                if (!TryGetComponent(out LinearRotate linearRotate)) break;
                 linearRotate.axisInput = linearValue.axisInput;
                 linearRotate.axis = linearValue.axis;
                 linearRotate.edgeRotate = linearValue.edge;

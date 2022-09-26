@@ -17,12 +17,7 @@ public class LiquidDrop : MonoBehaviour
     
     [HideInInspector] public TypeLiquid typeLiquid;
 
-    public Color32 GetColor => _color;
-
-    private void Awake()
-    {
-        _color = GetComponent<SkinnedMeshRenderer>().material.color;
-    }
+    public Color32 GetColor => GetComponent<SkinnedMeshRenderer>().material.GetColor("_BaseColor");
 
     private void OnEnable()
     {

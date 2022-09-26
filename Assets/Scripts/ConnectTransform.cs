@@ -14,6 +14,8 @@ public class ConnectTransform : MonoBehaviour
         private Vector3 _prevUp;
         private Vector3 _prevRight;
         private Vector3 _prevForward;
+        private StateItems _prevState;
+        private StateItem _stateItem;
 
         public Transform transform => _transform;
         public Vector3 prevPosition => _prevPosition;
@@ -22,6 +24,8 @@ public class ConnectTransform : MonoBehaviour
         public Vector3 prevUp => _prevUp;
         public Vector3 prevRight => _prevRight;
         public Vector3 prevForward => _prevForward;
+        public StateItems prevState => _prevState;
+        public StateItem stateItem => _stateItem;
 
         public bool IsMove => _prevPosition != _transform.position;
         public bool IsRotate => _prevRotation != _transform.rotation;
@@ -29,6 +33,7 @@ public class ConnectTransform : MonoBehaviour
 
         public TransformInfo(Transform transform)
         {
+            _stateItem = transform.GetComponent<StateItem>();
             _transform = transform;
             _prevPosition = transform.position;
             _prevRotation = transform.rotation;
@@ -36,6 +41,7 @@ public class ConnectTransform : MonoBehaviour
             _prevUp = transform.up;
             _prevRight = transform.right;
             _prevForward = transform.forward;
+            _prevState = _stateItem.State;
         }
 
         public void RefreshPrevPosition()
@@ -68,6 +74,11 @@ public class ConnectTransform : MonoBehaviour
             _prevForward = _transform.forward;
         }
 
+        public void RefreshPrevState()
+        {
+            _prevState = _stateItem.State;
+        }
+
         public void RefreshAll()
         {
             RefreshPrevPosition();
@@ -76,6 +87,7 @@ public class ConnectTransform : MonoBehaviour
             RefreshPrevUp();
             RefreshPrevRight();
             RefreshPrevForward();
+            RefreshPrevState();
         }
     }
 
@@ -95,6 +107,7 @@ public class ConnectTransform : MonoBehaviour
 
     private void Update()
     {
+        ChangeState();
         IsObjectMove();
     }
 
@@ -119,6 +132,18 @@ public class ConnectTransform : MonoBehaviour
         _targetObject.RefreshAll();
     }
 
+    private void ChangeState()
+    {
+        if (_currentObject.prevState != _currentObject.stateItem.State)
+        {
+            _targetObject.stateItem.ChangeState(_currentObject.stateItem.State);
+        }
+        else if (_targetObject.prevState != _targetObject.stateItem.State)
+        {
+            _currentObject.stateItem.ChangeState(_targetObject.stateItem.State);
+        }
+    }
+
     private void MoveTo(TransformInfo moving, TransformInfo stay)
     {
         stay.transform.position = moving.transform.position
@@ -128,10 +153,10 @@ public class ConnectTransform : MonoBehaviour
     private void RotateTo(TransformInfo moving, TransformInfo stay)
     {
         var dir = stay.transform.position - moving.transform.position;
-        var rot = moving.transform.rotation * Quaternion.Inverse(moving.prevRotation);
-        dir = rot * dir;
+        var angle = moving.transform.rotation * Quaternion.Inverse(moving.prevRotation);
+        dir = angle * dir;
         stay.transform.position = moving.transform.position + dir;
-        
-        stay.transform.Rotate(rot.eulerAngles, Space.World);
+
+        stay.transform.Rotate(angle.eulerAngles, Space.World);
     }
 }

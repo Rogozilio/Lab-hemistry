@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using GD.MinMaxSlider;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 [Serializable]
 public class ItemMoveMap
@@ -34,6 +36,8 @@ public class ItemMap
     public LinearValue linearMoveValue;
 
     public LinearValue linearRotateValue;
+
+    public UnityEvent onEventInEnd;
 
     public ItemMap()
     {
@@ -82,6 +86,8 @@ public class MoveMap : MonoBehaviour
                 _stateItem.ChangeState(datas[index].nextState);
                 break;
         }
+        
+        datas[index].onEventInEnd?.Invoke();
     }
 }
 
@@ -202,6 +208,7 @@ public class MoveMapEditor : Editor
                 GUILayout.EndHorizontal();
             }
 
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("datas").GetArrayElementAtIndex(i).FindPropertyRelative("onEventInEnd"));
 
             GUILayout.EndVertical();
             GUILayout.Space(10f);
