@@ -10,14 +10,26 @@ public enum StateFlowLiquid
     Pour,
     EndPour
 }
+
 public class LiquidFlow : MonoBehaviour
 {
-    
+    private Color _colorLiquidOut;
+    private Color _colorLiquidIn;
 
     public StateFlowLiquid stateFlowLiquid;
     public float flowSpeed = 1f;
     public float step;
     public float limit;
+
+    public Color SetColorOut
+    {
+        set => _colorLiquidOut = value;
+    }
+
+    public Color SetColorIn
+    {
+        set => _colorLiquidIn = value;
+    }
 
     public void SetPositionStart(Vector3 start)
     {
@@ -29,22 +41,25 @@ public class LiquidFlow : MonoBehaviour
         stateFlowLiquid = (StateFlowLiquid)index;
     }
 
-    public void PourOutLiquid(Renderer liquid, string name = "_Color")
+    public void PourOutLiquid(LevelLiquid levelLiquid)
     {
-        var volumeLiquid = liquid.material.GetFloat(name);
-        
-        if (volumeLiquid > limit)
-            liquid.material.SetFloat(name, volumeLiquid - step);
+        if (levelLiquid.levelLiquid > limit)
+            levelLiquid.levelLiquid -= step;
         else
             stateFlowLiquid = StateFlowLiquid.EndPour;
     }
 
-    public void PourInLiquid(Renderer liquid)
+    public void PourInLiquid(LevelLiquid levelLiquid)
     {
-        if(stateFlowLiquid != StateFlowLiquid.Pour) return;
-        
-        var prevFillAmount = liquid.material.GetFloat("_FillAmount");
-        liquid.material.SetFloat("_FillAmount", prevFillAmount + step);
+        if (stateFlowLiquid != StateFlowLiquid.Pour) return;
+
+        levelLiquid.levelLiquid += step;
+
+        if (_colorLiquidOut != _colorLiquidIn)
+        {
+            _colorLiquidIn = _colorLiquidOut;
+            levelLiquid.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorLiquidIn);
+        }
     }
 
     private void OnEnable()
@@ -67,6 +82,7 @@ public class LiquidFlow : MonoBehaviour
                     stateFlowLiquid = StateFlowLiquid.NotPour;
                     gameObject.SetActive(false);
                 }
+
                 break;
         }
     }

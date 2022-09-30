@@ -1,69 +1,140 @@
-Shader "Unlit/LiquidTest"
+Shader "Unlit/ClippedObject"
 {
-    //show values to edit in inspector
-    Properties{
-        _Color ("Tint", Color) = (0, 0, 0, 1)
+    Properties
+    {
         _MainTex ("Texture", 2D) = "white" {}
-        _Smoothness ("Smoothness", Range(0, 1)) = 0
-        _Metallic ("Metalness", Range(0, 1)) = 0
-        [HDR]_Emission ("Emission", color) = (0,0,0)
-
-        [HDR]_CutoffColor("Cutoff Color", Color) = (1,0,0,0)
+        _Color ("Tint", Color) = (1,1,1,1)
     }
+    SubShader
+    {
+        // The shader is semi-transparent
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" "IgnoreProjector"="True" }
+        LOD 100
 
-    SubShader{
-        //the material is completely non-transparent and is rendered at the same time as the other opaque geometry
-        Tags{ "RenderType"="Opaque" "Queue"="Geometry"}
 
-        // render faces regardless if they point towards the camera or away from it
-        Cull Off
+        CGINCLUDE
+            #include "UnityCG.cginc"
 
-        CGPROGRAM
-        //the shader is a surface shader, meaning that it will be extended by unity in the background
-        //to have fancy lighting and other features
-        //our surface shader function is called surf and we use our custom lighting model
-        //fullforwardshadows makes sure unity adds the shadow passes the shader might need
-        //vertex:vert makes the shader use vert as a vertex shader function
-        #pragma surface surf Standard fullforwardshadows
-        #pragma target 3.0
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
 
-        sampler2D _MainTex;
-        fixed4 _Color;
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
+                float4 worldPos : TEXCOORD2;
+                float4 vertex : SV_POSITION;
+                
+            };
 
-        half _Smoothness;
-        half _Metallic;
-        half3 _Emission;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float4 _Color;
+            float4 _Plane;
 
-        float4 _Plane;
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.worldPos = mul(UNITY_MATRIX_M, v.vertex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
 
-        float4 _CutoffColor;
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float distance = dot(i.worldPos, _Plane.xyz);
+		distance = distance + _Plane.w;
+		clip(-distance);
 
-        //input struct which is automatically filled by unity
-        struct Input {
-            float2 uv_MainTex;
-            float3 worldPos;
-            float facing : VFACE;
-        };
-
-        //the surface shader function which sets parameters the lighting function then uses
-        void surf (Input i, inout SurfaceOutputStandard o) {
-            //calculate signed distance to plane
-            float distance = dot(i.worldPos, _Plane.xyz);
-            distance = distance + _Plane.w;
-            //discard surface above plane
-            clip(-distance);
-
-            float facing = i.facing * 0.5 + 0.5;
-
-            //normal color stuff
-            fixed4 col = tex2D(_MainTex, i.uv_MainTex);
-            col *= _Color;
-            o.Albedo = col.rgb * facing;
-            o.Metallic = _Metallic * facing;
-            o.Smoothness = _Smoothness * facing;
-            o.Emission = lerp(_CutoffColor, _Emission, facing);
-        }
+                // sample the texture
+                fixed4 col = tex2D(_MainTex, i.uv);
+                col *= _Color;
+                // apply fog
+                UNITY_APPLY_FOG(i.fogCoord, col);
+                return col;
+            }
         ENDCG
+
+        // The first pass will write only in the
+        // stencil buffer the value 2 for the clipped
+        // object. Only front faces are rendered to get the difference
+        // for back faces. All depth and color buffer related stuff are discarded.
+        Pass
+        {
+            Cull Back
+            ZTest Always
+            ZWrite Off
+            Blend Zero One
+
+            Stencil {
+                Ref 2
+                Comp Always
+                Pass Replace
+            }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+            ENDCG
+        }
+
+        // The second pass will write only in the stencil buffer
+        // the value 1 for pixels with a current value of 0. Since
+        // we have previously written value 2 for front faces, the only
+        // remaining pixels available will be the clipping plane part, where
+        // the back faces are visible (if any).
+        // All depth and color buffer related stuff are discarded.
+        Pass {
+            Cull Front
+            ZTest Always
+            ZWrite Off
+            Blend Zero One
+
+            Stencil {
+                Ref 0
+                Comp Equal
+                Pass IncrSat
+            }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+            ENDCG
+        }
+
+        // The last pass for the clipped object is actually the real render pass.
+        // Only visible front faces with a pixel value in stencil buffer equals to 2
+        // will be rendered. A traditional blending operation for semi-transparency
+        // is used.
+        // NOTE : Actually this pass also uses the fragment shader with the clipping
+        // function, but it is useless as the clipped part of the object has a value
+        // of 0 in the stencil buffer and won't be rendered anyway. I was too lazy to
+        // copy/paste the fragment shader...
+        Pass
+        {
+            Stencil {
+                Ref 2
+                Comp Equal
+            }
+
+            Blend SrcAlpha OneMinusSrcAlpha
+            Cull Back
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+            ENDCG
+        }
     }
-    FallBack "Standard" //fallback adds a shadow pass so we get shadows on other objects
 }

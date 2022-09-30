@@ -7,9 +7,11 @@ using UnityEngine;
 [RequireComponent(typeof(Outline))]
 public class MouseItem : MonoBehaviour
 {
+    private bool _isActive;
     private bool _isReadyToAction;
     private StateItem _stateItem;
 
+    public bool IsActive => _isActive;
     public bool IsReadyToAction
     {
         get => _isReadyToAction;
@@ -34,6 +36,12 @@ public class MouseItem : MonoBehaviour
     protected void OnMouseDown()
     {
         HideOutline();
+        _isActive = true;
+    }
+    
+    protected void OnMouseUp()
+    {
+        _isActive = false;
     }
 
     protected void OnMouseExit()

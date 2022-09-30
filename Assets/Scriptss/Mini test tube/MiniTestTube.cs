@@ -24,17 +24,18 @@ public class MiniTestTube : MonoBehaviour
     public GameObject LiquidFlow;
     public Transform StartLiquidFlow;
 
-    private StateMiniTestTube _stateMiniTestTube;
+    private StateMiniTestTube _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire;
     private StateItem _stateItem;
-    private float _downMiniTube;
-    private float _topMiniTube;
 
     private Renderer _rendererLiquid;
+    private LevelLiquid _levelLiquid;
     private Renderer _rendererSediment;
     private Renderer _rendererBurnLiquid;
+    private LevelLiquid _levelBurnLiquid;
     private LiquidFlow _liquidFlowScript;
 
     private int _countLiquid;
+    private float _step;
 
     public StateMiniTestTube stateMiniTestTube => _stateMiniTestTube;
     public int CountLiquid => _countLiquid;
@@ -46,14 +47,14 @@ public class MiniTestTube : MonoBehaviour
 
     private void Awake()
     {
-        _downMiniTube = 0.45f;
-        _topMiniTube = 0.55f;
-
+        _stateItem = GetComponent<StateItem>();
         _rendererLiquid = Liquid.GetComponent<Renderer>();
         _rendererSediment = Sediment.GetComponent<Renderer>();
         _rendererBurnLiquid = BurnedLiquid.GetComponent<Renderer>();
+        _levelLiquid = Liquid.GetComponent<LevelLiquid>();
+        _levelBurnLiquid = BurnedLiquid.GetComponent<LevelLiquid>();
         _liquidFlowScript = LiquidFlow.GetComponent<LiquidFlow>();
-        _stateItem = GetComponent<StateItem>();
+        _step = 1f / 30f;
     }
 
     private void FixedUpdate()
@@ -65,13 +66,10 @@ public class MiniTestTube : MonoBehaviour
     {
         _countLiquid++;
 
-        var step = (_topMiniTube - _downMiniTube) / 30f;
-
         if (liquid.typeLiquid == TypeLiquid.CuSO4)
         {
             var colorCuSO4 = new Color32(liquid.GetColor.r, liquid.GetColor.g, liquid.GetColor.b, 30);
-
-            _rendererLiquid.material.SetColor("_Colour", colorCuSO4);
+            _rendererLiquid.material.SetColor("_LiquidColor", colorCuSO4);
         }
 
         if (liquid.typeLiquid == TypeLiquid.NaOH)
@@ -82,7 +80,7 @@ public class MiniTestTube : MonoBehaviour
             _rendererSediment.material.color += alphaSediment;
         }
 
-        _rendererLiquid.material.SetFloat("_FillAmount", _downMiniTube + step * _countLiquid);
+        _levelLiquid.levelLiquid += _step;
 
         if (_stateMiniTestTube == StateMiniTestTube.Empty && liquid.typeLiquid == TypeLiquid.CuSO4 && _countLiquid == 8)
         {
@@ -96,20 +94,19 @@ public class MiniTestTube : MonoBehaviour
 
     private IEnumerator BurnLiquid()
     {
-        var finish = _rendererLiquid.material.GetFloat("_FillAmount");
-        var point = _rendererBurnLiquid.material.GetFloat("_FillAmount");
+        yield return new WaitForSeconds(1.5f);
 
-        yield return new WaitForSeconds(2f);
-
-        while (point < finish)
+        while (_levelBurnLiquid.levelLiquid < _levelLiquid.levelLiquid)
         {
-            point += Time.deltaTime * Random.Range(0.001f, 0.01f);
-            _rendererBurnLiquid.material.SetFloat("_FillAmount", point);
+            _levelBurnLiquid.levelLiquid += Time.deltaTime * Random.Range(0.05f, 0.15f);
             yield return null;
         }
 
         _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire;
-        Liquid.SetActive(false);
+
+        _rendererLiquid.material.SetColor("_LiquidColor"
+            , _rendererBurnLiquid.material.GetColor("_LiquidColor"));
+        BurnedLiquid.SetActive(false);
         Sediment.SetActive(false);
     }
 
@@ -118,23 +115,25 @@ public class MiniTestTube : MonoBehaviour
         StartCoroutine(BurnLiquid());
     }
 
-    public void PourOutLiquid()
+    private void PourOutLiquid()
     {
         if (_stateItem.State != StateItems.LinearRotate) return;
-        
-        if (transform.rotation.eulerAngles.x is >= 0f and <= 180f)
+
+        if (transform.rotation.eulerAngles.x is >= -0.5f and <= 180f)
         {
-            if (!LiquidFlow.activeSelf && _rendererBurnLiquid.material.GetFloat("_FillAmount") > _downMiniTube)
+            if (!LiquidFlow.activeSelf && _levelBurnLiquid.levelLiquid > 0 &&
+                _levelLiquid.levelLiquid > _liquidFlowScript.limit)
             {
                 LiquidFlow.SetActive(true);
+                _liquidFlowScript.SetColorOut = _rendererLiquid.material.GetColor("_LiquidColor");
                 _liquidFlowScript.SetPositionStart(StartLiquidFlow.position);
-                _liquidFlowScript.step = 0.0002f;
-                _liquidFlowScript.limit = _downMiniTube + ((_topMiniTube - _downMiniTube) / 30f * _countLiquid / 2f);
+                _liquidFlowScript.step = 0.005f;
+                _liquidFlowScript.limit = _levelBurnLiquid.levelLiquid / 2f;
             }
 
             if (_liquidFlowScript.stateFlowLiquid == StateFlowLiquid.Pour)
             {
-                _liquidFlowScript.PourOutLiquid(_rendererBurnLiquid, "_FillAmount");
+                _liquidFlowScript.PourOutLiquid(_levelLiquid);
             }
         }
         else

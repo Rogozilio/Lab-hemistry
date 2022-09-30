@@ -8,9 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Chem_Boiling_Liquid_tube
-  m_Shader: {fileID: 4800000, guid: eeffd1b31474f8f498e8859df22e22b2, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a960e6529c896114eb5fbc3847fcb6eb, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - RETRACT_BACKFACES
+  - VERTEX_COLOR
+  - _INVERSE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -93,6 +96,7 @@ Material:
     - Vector1_D45DB484: 0.05
     - Vector1_F2BB55D7: -0.02
     - Vector1_F51841FD: 16.9
+    - _Alpha: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -106,15 +110,16 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EdgeWidth: 0.537
     - _EnvironmentReflections: 1
-    - _Fill: 0.5
+    - _Fill: 0
     - _FillAmount: 0.53
     - _FoamWidth: 0
     - _FresnelPower: 0
     - _GlossMapScale: 0
-    - _Glossiness: 0
+    - _Glossiness: 0.292
     - _GlossyReflections: 0
-    - _Metallic: 0
+    - _Metallic: 0.632
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -127,21 +132,29 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _StencilComp: 8
+    - _StencilMask: 227
     - _StencilValue: 255
     - _Surface: 0
     - _Transparency: 0.834
+    - _Val: 7.45
     - _WobbleX: 0
     - _WobbleZ: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
+    - _inverse: 1
+    - _retractBackfaces: 1
+    - _vertexColor: 1
     m_Colors:
     - Color_17C6C3C7: {r: 1, g: 1, b: 1, a: 0}
     - Color_1EA00901: {r: 1, g: 1, b: 1, a: 0}
     - Color_FB35205B: {r: 0.40094337, g: 0.6140097, b: 1, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.4433962, g: 0.20705765, b: 0.20705765, a: 0.9019608}
+    - _Color: {r: 0.9339623, g: 0.066082224, b: 0.066082224, a: 0.9019608}
+    - _Color1: {r: 0, g: 0.031594753, b: 1, a: 1}
+    - _Color2: {r: 0.0141509175, g: 0.10791685, b: 1, a: 1}
     - _Colour: {r: 0.16037738, g: 0.15054291, b: 0.15054291, a: 1}
     - _CutoffColor: {r: 1, g: 0.08962262, b: 0.08962262, a: 0}
     - _EdgeRingColor: {r: 0.6509434, g: 0.58673835, b: 0, a: 1}
@@ -149,10 +162,12 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelColor: {r: 0.03773582, g: 0.0072979648, b: 0.0072979648, a: 0}
-    - _LiquidColor: {r: 0, g: 0, b: 0, a: 0}
+    - _LiquidColor: {r: 0, g: 0, b: 0, a: 1}
     - _PlaneNormal: {r: 0, g: 1, b: 0, a: 0}
+    - _PlanePos: {r: 0, g: 0, b: 0, a: 0}
     - _PlanePosition: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.95686275}
+    - _SectionColor: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Speed: {r: -1.47, g: 0.5, b: 0, a: 0}
     - _SurfaceColor: {r: 0.6509434, g: 0.16273585, b: 0.38211256, a: 0}

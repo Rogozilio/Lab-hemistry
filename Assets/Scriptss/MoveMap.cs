@@ -51,7 +51,7 @@ public class MoveMap : MonoBehaviour
 
     private StateItem _stateItem;
     private MoveToPoint _moveToMapPoint;
-
+    
     public void StartToMove(int index)
     {
         _stateItem = GetComponent<StateItem>();
@@ -64,7 +64,7 @@ public class MoveMap : MonoBehaviour
 
     private IEnumerator MoveToPoint(int index)
     {
-        while (_moveToMapPoint.Distance > 0.01f || _moveToMapPoint.Angle > 0.01f)
+        while (_moveToMapPoint.Distance > 0.001f || _moveToMapPoint.Angle > 0.001f)
         {
             if (_stateItem.State == StateItems.Idle)
                 yield break;
@@ -86,7 +86,7 @@ public class MoveMap : MonoBehaviour
                 _stateItem.ChangeState(datas[index].nextState);
                 break;
         }
-        
+
         datas[index].onEventInEnd?.Invoke();
     }
 }
@@ -208,7 +208,8 @@ public class MoveMapEditor : Editor
                 GUILayout.EndHorizontal();
             }
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("datas").GetArrayElementAtIndex(i).FindPropertyRelative("onEventInEnd"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("datas").GetArrayElementAtIndex(i)
+                .FindPropertyRelative("onEventInEnd"));
 
             GUILayout.EndVertical();
             GUILayout.Space(10f);

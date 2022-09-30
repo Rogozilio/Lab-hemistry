@@ -5,8 +5,8 @@ using UnityEngine;
 public class MousePointerObject : MonoBehaviour
 {
     private Camera _camera;
-
-    private MoveMouseItem _item;
+    
+    private MouseItem _item;
     private Vector3 _hitWall;
 
     void Awake()
@@ -37,12 +37,15 @@ public class MousePointerObject : MonoBehaviour
                 if (!moveItem.isActiveAndEnabled) continue;
                 _item = moveItem;
                 _item.ShowOutline();
+                
             }
             else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) && !_item ||
                      (clickItem && !_item.IsActive && clickItem.IsReadyToAction))
             {
                 if (!clickItem.isActiveAndEnabled) continue;
-                clickItem.ShowOutline();
+                _item = clickItem;
+                _item.ShowOutline();
+                
             }
             else if (hit.collider.CompareTag("Wall"))
             {
@@ -50,9 +53,10 @@ public class MousePointerObject : MonoBehaviour
             }
         }
 
-        if (_item && _hitWall != Vector3.zero)
+        if (_item?.GetType() == typeof(MoveMouseItem) && _hitWall != Vector3.zero)
         {
-            _item.SetHitWall = _hitWall;
+            var itemMove = _item as MoveMouseItem;
+            itemMove.SetHitWall = _hitWall;
         }
     }
 }

@@ -21,7 +21,7 @@ public class MoveMouseItem : MouseItem
 
     private Rigidbody _rigidbody;
 
-    private bool _isActive;
+    //private bool _isActive;
     private Vector3 _hitWall;
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
@@ -30,7 +30,7 @@ public class MoveMouseItem : MouseItem
     private Coroutine _useCoroutine;
     private Collider _collider;
 
-    public bool IsActive => _isActive;
+    //public bool IsActive => _isActive;
 
     public Vector3 SetHitWall
     {
@@ -54,7 +54,7 @@ public class MoveMouseItem : MouseItem
 
     public void BackToRespawn()
     {
-        if (_isActive)
+        if (IsActive)
         {
             StateItem.ChangeState(StateItems.BackToMouse);
         }
@@ -106,8 +106,6 @@ public class MoveMouseItem : MouseItem
     {
         if (!isActiveAndEnabled) return;
 
-        base.OnMouseDown();
-
         _targetStartPosition = transform.position + startPos;
         _targetStartRotate = transform.rotation * startRot;
 
@@ -120,15 +118,16 @@ public class MoveMouseItem : MouseItem
                 _useCoroutine = null;
             }
         }
-
-        _isActive = true;
+        base.OnMouseDown();
+        //_isActive = true;
     }
 
     private void OnMouseUp()
     {
         if (!isActiveAndEnabled) return;
-
-        _isActive = false;
+        
+        base.OnMouseUp();
+        //_isActive = false;
 
         if (StateItem.State == StateItems.Interacts) return;
 

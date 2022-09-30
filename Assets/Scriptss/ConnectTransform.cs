@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ConnectTransform : MonoBehaviour
@@ -8,6 +9,8 @@ public class ConnectTransform : MonoBehaviour
     struct TransformInfo
     {
         private readonly Transform _transform;
+        private Vector3 _originPosition;
+        private Quaternion _originRotation;
         private Vector3 _prevPosition;
         private Quaternion _prevRotation;
         private Quaternion _prevLocalRotation;
@@ -18,9 +21,14 @@ public class ConnectTransform : MonoBehaviour
         private StateItem _stateItem;
 
         public Transform transform => _transform;
+
+        public Vector3 originPosition => _originPosition;
         public Vector3 prevPosition => _prevPosition;
+        
+        public Quaternion originRotation => _originRotation;
         public Quaternion prevRotation => _prevRotation;
         public Quaternion prevLocalRotation => _prevLocalRotation;
+        
         public Vector3 prevUp => _prevUp;
         public Vector3 prevRight => _prevRight;
         public Vector3 prevForward => _prevForward;
@@ -28,13 +36,15 @@ public class ConnectTransform : MonoBehaviour
         public StateItem stateItem => _stateItem;
 
         public bool IsMove => _prevPosition != _transform.position;
-        public bool IsRotate => _prevRotation != _transform.rotation;
+        public bool IsRotate => _prevRotation.eulerAngles != _transform.rotation.eulerAngles;
         public bool IsMoveOrRotate => IsMove || IsRotate;
 
         public TransformInfo(Transform transform)
         {
             _stateItem = transform.GetComponent<StateItem>();
             _transform = transform;
+            _originPosition = transform.position;
+            _originRotation = transform.rotation;
             _prevPosition = transform.position;
             _prevRotation = transform.rotation;
             _prevLocalRotation = transform.localRotation;
@@ -93,16 +103,22 @@ public class ConnectTransform : MonoBehaviour
 
     public Transform target;
 
-    private bool _isChangeCurrentObject;
-    private bool _isChangeTargetObject;
-
     private TransformInfo _currentObject;
     private TransformInfo _targetObject;
 
+    private Vector3 _fromCurrentToTarget;
+    private Vector3 _fromTargetToCurrent;
+    
+    private Quaternion _prevOriginCT;
+    private Quaternion _prevOriginTC;
+    
     private void OnEnable()
     {
         _currentObject = new TransformInfo(transform);
         _targetObject = new TransformInfo(target);
+
+        _fromCurrentToTarget = target.position - transform.position;
+        _fromTargetToCurrent = transform.position - target.position;
     }
 
     private void Update()
@@ -115,17 +131,11 @@ public class ConnectTransform : MonoBehaviour
     {
         if (_currentObject.IsMoveOrRotate)
         {
-            if (_currentObject.IsMove)
-                MoveTo(_currentObject, _targetObject);
-            if (_currentObject.IsRotate)
-                RotateTo(_currentObject, _targetObject);
+            MoveAndRotate(_currentObject, _targetObject, _fromCurrentToTarget);
         }
         else if (_targetObject.IsMoveOrRotate)
         {
-            if (_targetObject.IsMove)
-                MoveTo(_targetObject, _currentObject);
-            if (_targetObject.IsRotate)
-                RotateTo(_targetObject, _currentObject);
+            MoveAndRotate(_targetObject, _currentObject, _fromTargetToCurrent);
         }
 
         _currentObject.RefreshAll();
@@ -144,19 +154,11 @@ public class ConnectTransform : MonoBehaviour
         }
     }
 
-    private void MoveTo(TransformInfo moving, TransformInfo stay)
+    private void MoveAndRotate(TransformInfo moving, TransformInfo stay, Vector3 dir)
     {
-        stay.transform.position = moving.transform.position
-                                  + (stay.transform.position - moving.prevPosition);
-    }
-
-    private void RotateTo(TransformInfo moving, TransformInfo stay)
-    {
-        var dir = stay.transform.position - moving.transform.position;
-        var angle = moving.transform.rotation * Quaternion.Inverse(moving.prevRotation);
+        var angle = moving.transform.rotation * Quaternion.Inverse(moving.originRotation);
         dir = angle * dir;
         stay.transform.position = moving.transform.position + dir;
-
-        stay.transform.Rotate(angle.eulerAngles, Space.World);
+        stay.transform.rotation = angle * stay.originRotation;
     }
 }
