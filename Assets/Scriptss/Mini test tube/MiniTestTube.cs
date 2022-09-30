@@ -15,7 +15,10 @@ public class MiniTestTube : MonoBehaviour
         CuSO4,
         [InspectorName("CuSO4+NaOH")] CuSo4_NaOH,
         [InspectorName("CuSO4+NaOH+Fire")] CuSO4_NaOH_Fire,
-        [InspectorName("(CuSO4+NaOH+Fire):2")] CuSO4_NaOH_Fire_half
+        [InspectorName("(CuSO4+NaOH+Fire):2")] CuSO4_NaOH_Fire_half,
+        [InspectorName("(CuSO4+NaOH+Fire):2+NaOH")]CuSO4_NaOH_Fire_half_NaOH,
+        [InspectorName("(CuSO4+NaOH+Fire):2+H2SO4")]CuSO4_NaOH_Fire_half_H2SO4,
+        NotActive
     }
 
     public GameObject Liquid;
@@ -24,7 +27,7 @@ public class MiniTestTube : MonoBehaviour
     public GameObject LiquidFlow;
     public Transform StartLiquidFlow;
 
-    private StateMiniTestTube _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire;
+    private StateMiniTestTube _stateMiniTestTube = StateMiniTestTube.Empty;
     private StateItem _stateItem;
 
     private Renderer _rendererLiquid;
@@ -72,7 +75,7 @@ public class MiniTestTube : MonoBehaviour
             _rendererLiquid.material.SetColor("_LiquidColor", colorCuSO4);
         }
 
-        if (liquid.typeLiquid == TypeLiquid.NaOH)
+        if (liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid < 12)
         {
             transform.GetChild(1).gameObject.SetActive(true);
 
@@ -86,9 +89,17 @@ public class MiniTestTube : MonoBehaviour
         {
             _stateMiniTestTube = StateMiniTestTube.CuSO4;
         }
-        else if (liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid > 8)
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4 && liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid > 8)
         {
             _stateMiniTestTube = StateMiniTestTube.CuSo4_NaOH;
+        }
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half && liquid.typeLiquid == TypeLiquid.NaOH)
+        {
+            _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire_half_NaOH;
+        }
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half && liquid.typeLiquid == TypeLiquid.H2SO4)
+        {
+            _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire_half_H2SO4;
         }
     }
 
@@ -118,8 +129,8 @@ public class MiniTestTube : MonoBehaviour
     private void PourOutLiquid()
     {
         if (_stateItem.State != StateItems.LinearRotate) return;
-
-        if (transform.rotation.eulerAngles.x is >= -0.5f and <= 180f)
+        
+        if (transform.rotation.eulerAngles.x >= 352f)
         {
             if (!LiquidFlow.activeSelf && _levelBurnLiquid.levelLiquid > 0 &&
                 _levelLiquid.levelLiquid > _liquidFlowScript.limit)
