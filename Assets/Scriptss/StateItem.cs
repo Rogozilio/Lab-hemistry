@@ -65,34 +65,3 @@ public class StateItem : MonoBehaviour
         }
     }
 }
-
-[CustomEditor(typeof(StateItem))]
-public class StateItemEditor : Editor
-{
-    private StateItem parentStateItem;
-    private void OnEnable()
-    {
-        Selection.activeGameObject.transform.parent.TryGetComponent(out parentStateItem);
-    }
-
-    // public override void OnInspectorGUI()
-    // {
-    //     var stateItem = target as StateItem;
-    //     
-    //     if (parentStateItem)
-    //     {
-    //         EditorGUILayout.BeginHorizontal();
-    //         EditorGUILayout.LabelField("State(Parent) = ");
-    //         stateItem.State = (StateItems)EditorGUILayout.EnumPopup(stateItem.State);
-    //         EditorGUILayout.EndHorizontal();
-    //         parentStateItem.State = stateItem.State;
-    //     }
-    //     else
-    //     {
-    //         EditorGUILayout.BeginHorizontal();
-    //         EditorGUILayout.LabelField("State");
-    //         stateItem.State = (StateItems)EditorGUILayout.EnumPopup(stateItem.State);
-    //         EditorGUILayout.EndHorizontal();
-    //     }
-    // }
-}

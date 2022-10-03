@@ -16,8 +16,8 @@ public class MiniTestTube : MonoBehaviour
         [InspectorName("CuSO4+NaOH")] CuSo4_NaOH,
         [InspectorName("CuSO4+NaOH+Fire")] CuSO4_NaOH_Fire,
         [InspectorName("(CuSO4+NaOH+Fire):2")] CuSO4_NaOH_Fire_half,
-        [InspectorName("(CuSO4+NaOH+Fire):2+NaOH")]CuSO4_NaOH_Fire_half_NaOH,
-        [InspectorName("(CuSO4+NaOH+Fire):2+H2SO4")]CuSO4_NaOH_Fire_half_H2SO4,
+        [InspectorName("(CuSO4+NaOH+Fire):2+NaOH")] CuSO4_NaOH_Fire_half_NaOH,
+        [InspectorName("(CuSO4+NaOH+Fire):2+H2SO4")] CuSO4_NaOH_Fire_half_H2SO4,
         NotActive
     }
 
@@ -38,10 +38,14 @@ public class MiniTestTube : MonoBehaviour
     private LiquidFlow _liquidFlowScript;
 
     private int _countLiquid;
+    private int _countNaOH;
+    private int _countH2SO4;
     private float _step;
 
     public StateMiniTestTube stateMiniTestTube => _stateMiniTestTube;
     public int CountLiquid => _countLiquid;
+    public int CountH2SO4 => _countH2SO4;
+    public int CountNaOH => _countNaOH;
 
     public void SetStateMiniTestTube(int index)
     {
@@ -75,7 +79,7 @@ public class MiniTestTube : MonoBehaviour
             _rendererLiquid.material.SetColor("_LiquidColor", colorCuSO4);
         }
 
-        if (liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid < 12)
+        if (_stateMiniTestTube == StateMiniTestTube.CuSo4_NaOH && liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid < 12)
         {
             transform.GetChild(1).gameObject.SetActive(true);
 
@@ -89,18 +93,41 @@ public class MiniTestTube : MonoBehaviour
         {
             _stateMiniTestTube = StateMiniTestTube.CuSO4;
         }
-        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4 && liquid.typeLiquid == TypeLiquid.NaOH && _countLiquid > 8)
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4 && liquid.typeLiquid == TypeLiquid.NaOH &&
+                 _countLiquid > 8)
         {
             _stateMiniTestTube = StateMiniTestTube.CuSo4_NaOH;
         }
         else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half && liquid.typeLiquid == TypeLiquid.NaOH)
         {
             _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire_half_NaOH;
+            _countNaOH++;
         }
         else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half && liquid.typeLiquid == TypeLiquid.H2SO4)
         {
             _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire_half_H2SO4;
+            _countH2SO4++;
         }
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half_H2SO4 && _countH2SO4 < 15)
+        {
+            _countH2SO4++;
+            var delta = new Color(0.53f, 0.65f, 0.86f, 0.04f) - _rendererLiquid.material.GetColor("_LiquidColor");
+            ChangeColorLiquid(delta / (15 - _countH2SO4), true);
+        }
+        else if (_stateMiniTestTube == StateMiniTestTube.CuSO4_NaOH_Fire_half_NaOH && _countNaOH < 15)
+        {
+            _countNaOH++;
+            var delta = new Color(0.05f, 0.05f, 0.05f, 1f) - _rendererLiquid.material.GetColor("_LiquidColor");
+            ChangeColorLiquid(delta / (15 - _countNaOH), true);
+        }
+    }
+
+    private void ChangeColorLiquid(Color newColor, bool isPlus = false)
+    {
+        if (isPlus)
+            newColor += _rendererLiquid.material.GetColor("_LiquidColor");
+
+        _rendererLiquid.material.SetColor("_LiquidColor", newColor);
     }
 
     private IEnumerator BurnLiquid()
@@ -129,7 +156,7 @@ public class MiniTestTube : MonoBehaviour
     private void PourOutLiquid()
     {
         if (_stateItem.State != StateItems.LinearRotate) return;
-        
+
         if (transform.rotation.eulerAngles.x >= 352f)
         {
             if (!LiquidFlow.activeSelf && _levelBurnLiquid.levelLiquid > 0 &&

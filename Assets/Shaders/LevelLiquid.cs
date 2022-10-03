@@ -16,6 +16,7 @@ public class LevelLiquid : MonoBehaviour
     private Renderer _rendererTube;
 
     public Renderer Surface;
+    public Renderer SurfaceMask;
     public Transform Plane;
     public OriginLevelLiquid originLevelLiquid = OriginLevelLiquid.Center;
     public Vector3 originOffset;
@@ -60,10 +61,11 @@ public class LevelLiquid : MonoBehaviour
         var offset = center * level;
         Plane.localPosition = _originPlane + offset;
         _rendererTube.material.SetVector("_PlanePos", Plane.position);
+        SurfaceMask.material.SetVector("_PlanePos", Plane.position);
 
         Plane.rotation = Quaternion.LookRotation(Vector3.forward);
 
-        Surface.transform.position =
+        //Surface.transform.position =
             new Vector3(Surface.transform.position.x, Plane.position.y, Surface.transform.position.z);
         Surface.transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
