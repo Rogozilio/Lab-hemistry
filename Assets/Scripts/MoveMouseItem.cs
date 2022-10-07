@@ -20,8 +20,7 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public bool IsExtentsZ;
 
     private Rigidbody _rigidbody;
-
-    //private bool _isActive;
+    
     private Vector3 _hitWall;
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
@@ -29,8 +28,6 @@ public class MoveMouseItem : MouseItem
     private MoveToPoint _moveToMouse;
     private Coroutine _useCoroutine;
     private Collider _collider;
-
-    //public bool IsActive => _isActive;
 
     public Vector3 SetHitWall
     {
@@ -52,7 +49,7 @@ public class MoveMouseItem : MouseItem
     }
 
 
-    public void BackToRespawn()
+    public void BackToRespawnOrBackToMouse()
     {
         if (IsActive)
         {
@@ -60,9 +57,15 @@ public class MoveMouseItem : MouseItem
         }
         else
         {
-            StartCoroutine(_moveToRespawn.StartAsync(10f));
-            StateItem.ChangeState(StateItems.Idle);
+            BackToRespawn();
         }
+    }
+
+    public void BackToRespawn()
+    {
+        _isActive = false;
+        StateItem.ChangeState(StateItems.Idle);
+        StartCoroutine(_moveToRespawn.StartAsync(10f));
     }
 
 
@@ -71,7 +74,7 @@ public class MoveMouseItem : MouseItem
         base.Awake();
 
         _rigidbody = GetComponent<Rigidbody>();
-        _collider = GetComponent<BoxCollider>();
+        _collider = GetComponent<Collider>();
     }
 
     private void OnEnable()
@@ -119,7 +122,6 @@ public class MoveMouseItem : MouseItem
             }
         }
         base.OnMouseDown();
-        //_isActive = true;
     }
 
     private void OnMouseUp()
@@ -127,7 +129,6 @@ public class MoveMouseItem : MouseItem
         if (!isActiveAndEnabled) return;
         
         base.OnMouseUp();
-        //_isActive = false;
 
         if (StateItem.State == StateItems.Interacts) return;
 

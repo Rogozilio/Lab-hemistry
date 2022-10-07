@@ -7,8 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(Outline))]
 public class MouseItem : MonoBehaviour
 {
-    private bool _isActive;
-    private bool _isReadyToAction;
+    protected bool _isActive;
+    protected bool _isReadyToAction;
     private StateItem _stateItem;
 
     public bool IsActive => _isActive;

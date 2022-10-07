@@ -26,13 +26,16 @@ public class GlassCup : MonoBehaviour
     public GameObject fewPieceMarble;
     public GameObject powder;
     public GameObject bubble;
-    
+    public Renderer bottomSmoke;
+    public ParticleSystem tubeSmokeParticle;
 
     public StateGlassCup stateGlassCup => _stateGlassCup;
 
+    public bool IsPlayParticleTubeSmoke => tubeSmokeParticle.isPlaying;
+
     public int countLiquidHCI => _countLiquidHCI;
 
-    private IEnumerator Timer()
+    private IEnumerator TimerForReleaseCO2()
     {
         var timer = 0f;
         while (timer < timeReleaseCO2)
@@ -48,6 +51,20 @@ public class GlassCup : MonoBehaviour
         Cap.GetComponent<ClickMouseItem>().enabled = true;
     }
 
+    private IEnumerator ShowBottomSmoke()
+    {
+        bottomSmoke.gameObject.SetActive(true);
+        var newColor = bottomSmoke.material.GetColor("_TintColor");
+        while (newColor.a < 0.04f)
+        {
+            newColor += new Color(0f, 0f, 0f, 0.00005f);
+            bottomSmoke.material.SetColor("_TintColor", newColor);
+            yield return null;
+        }
+
+        _stateGlassCup = StateGlassCup.Smoke;
+    }
+
     public void StartReleaseCO2()
     {
         if (_stateGlassCup == StateGlassCup.Marble_HCI)
@@ -55,7 +72,7 @@ public class GlassCup : MonoBehaviour
             Cap.GetComponent<ClickMouseItem>().enabled = false;
             sliderCO2.gameObject.SetActive(true);
             bubble.SetActive(true);
-            StartCoroutine(Timer());
+            StartCoroutine(TimerForReleaseCO2());
         }
     }
     
@@ -81,5 +98,10 @@ public class GlassCup : MonoBehaviour
 
         powder.transform.localScale = 
             new Vector3(powder.transform.localScale.x, powder.transform.localScale.y, _countLiquidHCI * 0.1f);
+    }
+
+    public void StartShowBottomSmoke()
+    {
+        StartCoroutine(ShowBottomSmoke());
     }
 }
