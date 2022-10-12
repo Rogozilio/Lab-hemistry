@@ -30,7 +30,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineColor.r
-    value: 0.09710693
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineColor.g
@@ -38,7 +38,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineColor.b
-    value: 0
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineColor.a
@@ -46,7 +46,11 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineWidth
-    value: 5
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: isRenderChildren
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: precomputeOutline

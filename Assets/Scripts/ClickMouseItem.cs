@@ -12,29 +12,27 @@ public class ClickMouseItem : MouseItem
     private int _numberClick;
 
     public int NumberClick => _numberClick;
-
-    private void Start()
+    
+    private void Update()
     {
-        //For checkbox enable/disable script in inspector
+        _isActive = StateItem.State != StateItems.Idle;
+        
+        if (Input.GetMouseButtonDown(0) && IsReadyToAction && !IsActive)
+        {
+            MouseClick();
+        }
     }
-    private void OnMouseDown()
+    
+    private void MouseClick()
     {
         if(!isActiveAndEnabled) return;
-        
-        base.OnMouseDown();
 
-        if (IsReadyToAction && OnClicks.Length > 0 && StateItem.State == StateItems.Idle)
+        if (OnClicks.Length > 0)
         {
             StateItem.ChangeState(StateItems.Interacts);
 
             OnClicks[_numberClick++].Invoke();
             _numberClick = (_numberClick < OnClicks.Length) ? _numberClick: 0;
         }
-    }
-
-    private void OnMouseExit()
-    {
-        if(!isActiveAndEnabled) return;
-        base.OnMouseExit();
     }
 }

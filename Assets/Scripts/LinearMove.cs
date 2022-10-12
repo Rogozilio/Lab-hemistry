@@ -41,6 +41,7 @@ public class LinearMove : LinearInput
         }
 
         UpdateOriginInput();
+        base.OnEnable();
         _startPoint = transform.position;
         _index = (int)axis;
     }

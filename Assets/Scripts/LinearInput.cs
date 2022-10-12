@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 
 public class LinearInput : MonoBehaviour
@@ -9,6 +11,24 @@ public class LinearInput : MonoBehaviour
     public Axis axisInput;
 
     public float GetOriginInput => _originInput;
+
+    protected void OnEnable()
+    {
+        switch (axisInput)
+        {
+            case Axis.X:
+                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Horizontal, new Vector2(10 ,0), CursorMode.Auto);
+                break;
+            case Axis.Y:
+                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Vertical, new Vector2(0 ,10), CursorMode.Auto);
+                break;
+        }
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.Cursor.SetCursor(CursorSkin.Instance?.Arrow, Vector2.zero, CursorMode.Auto);
+    }
 
     // Update is called once per frame
     public void UpdateOriginInput()

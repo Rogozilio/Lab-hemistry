@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MousePointerObject : MonoBehaviour
 {
@@ -18,7 +19,6 @@ public class MousePointerObject : MonoBehaviour
     {
         RaycastHit[] hits = RaycastAll();
         MoveObjectToPlane(hits);
-        
     }
 
     RaycastHit[] RaycastAll()
@@ -29,29 +29,34 @@ public class MousePointerObject : MonoBehaviour
 
     private void MoveObjectToPlane(RaycastHit[] hits)
     {
+        var isHitMouseItem = false;
+        
         foreach (var hit in hits)
         {
-            if (hit.collider.TryGetComponent(out MoveMouseItem moveItem) && !_item ||
-                (moveItem && !_item.IsActive && moveItem.IsReadyToAction))
+            if (EventSystem.current.IsPointerOverGameObject())
             {
-                if (!moveItem.isActiveAndEnabled) continue;
-                _item = moveItem;
-                _item.ShowOutline();
-                
+                break;
             }
-            else if (hit.collider.TryGetComponent(out ClickMouseItem clickItem) && !_item ||
-                     (clickItem && !_item.IsActive && clickItem.IsReadyToAction))
+            
+            if (hit.collider.TryGetComponent(out MouseItem mouseItem) && !_item ||
+                (mouseItem && !_item.IsActive))
             {
-                if (!clickItem.isActiveAndEnabled) continue;
-                _item = clickItem;
-                _item.ShowOutline();
-                
+                if (!mouseItem.isActiveAndEnabled) continue;
+                if(!Equals(_item, mouseItem))
+                    _item?.HideOutline();
+                _item = mouseItem;
+                isHitMouseItem = true;
             }
             else if (hit.collider.CompareTag("Wall"))
             {
                 _hitWall = hit.point;
             }
         }
+        
+        if(isHitMouseItem)
+            _item?.ShowOutline();
+        else
+            _item?.HideOutline();
 
         if (_item?.GetType() == typeof(MoveMouseItem) && _hitWall != Vector3.zero)
         {

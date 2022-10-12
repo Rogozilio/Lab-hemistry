@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 
 [RequireComponent(typeof(StateItem))]
@@ -12,6 +13,7 @@ public class MouseItem : MonoBehaviour
     private StateItem _stateItem;
 
     public bool IsActive => _isActive;
+
     public bool IsReadyToAction
     {
         get => _isReadyToAction;
@@ -28,38 +30,33 @@ public class MouseItem : MonoBehaviour
         _stateItem = GetComponent<StateItem>();
     }
 
-    protected void OnMouseOver()
-    {
-        _isReadyToAction = _stateItem.State == StateItems.Idle;
-    }
-
-    protected void OnMouseDown()
-    {
-        HideOutline();
-        _isActive = true;
-    }
-    
-    protected void OnMouseUp()
+    private void OnDisable()
     {
         _isActive = false;
     }
 
-    protected void OnMouseExit()
-    {
-        _isReadyToAction = false;
-
-        HideOutline();
-    }
-
     public void ShowOutline()
     {
+        _isReadyToAction = true;
         if (!_outline.enabled)
+        {
             _outline.enabled = true;
+
+            if (GetType() == typeof(MoveMouseItem))
+                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Select, new Vector2(10, 10),CursorMode.Auto);
+            else
+                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Click, new Vector2(10, 0), CursorMode.Auto);
+        }
     }
 
     public void HideOutline()
     {
+        _isReadyToAction = false;
         if (_outline.enabled)
+        {
             _outline.enabled = false;
+            
+            UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Arrow, Vector2.zero, CursorMode.Auto);
+        }
     }
 }

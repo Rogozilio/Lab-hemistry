@@ -33,7 +33,7 @@ Material:
     - _AlphaCutoff: 0.5
     - _Length: -0.03
     - _Power: 0.64
-    - _Strength: 0.005
+    - _Strength: 0.015
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

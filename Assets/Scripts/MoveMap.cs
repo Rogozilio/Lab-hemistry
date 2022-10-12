@@ -51,14 +51,19 @@ public class MoveMap : MonoBehaviour
 
     private StateItem _stateItem;
     private MoveToPoint _moveToMapPoint;
-    
-    public void StartToMove(int index)
+
+    private void Awake()
     {
         _stateItem = GetComponent<StateItem>();
+    }
+
+    public void StartToMove(int index)
+    {
         var data = datas[index].move;
 
         _moveToMapPoint = new MoveToPoint(transform, data.target.position + data.offsetPos,
             data.target.rotation * data.offsetRot);
+        _moveToMapPoint.SetSpeedTRS = new Vector3(2.5f, 2.5f, 2.5f);
         StartCoroutine(MoveToPoint(index));
     }
 
@@ -69,7 +74,7 @@ public class MoveMap : MonoBehaviour
             if (_stateItem?.State == StateItems.Idle)
                 yield break;
 
-            _moveToMapPoint.Start(2.5f);
+            _moveToMapPoint.Start();
 
             yield return null;
         }

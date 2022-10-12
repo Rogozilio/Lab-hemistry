@@ -46,7 +46,7 @@ Material:
     - _VoroniPower: 2
     - _VoronoiAgitation: 1
     - _VoronoiScale: 3
-    - _World_Orientation: 1
+    - _World_Orientation: 0
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _Normal_Tiling: {r: 4, g: 1.56, b: 0, a: 0}

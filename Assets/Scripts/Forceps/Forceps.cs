@@ -31,6 +31,8 @@ public class Forceps : MonoBehaviour
         _stateItem = GetComponent<StateItem>();
         _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps);
         _rotateToRightForceps = new MoveToPoint(_rightHalfForceps);
+        _rotateToLeftForceps.SetSpeedTRS = new Vector3(2f, 2f, 2f);
+        _rotateToRightForceps.SetSpeedTRS = new Vector3(2f, 2f, 2f);
     }
 
     public void StartTakeInForceps(int stateForceps)
@@ -51,8 +53,8 @@ public class Forceps : MonoBehaviour
         _rotateToLeftForceps.SetTargetRotation(newRotateLeftForceps);
         _rotateToRightForceps.SetTargetRotation(newRotateRightForceps);
 
-        StartCoroutine(_rotateToLeftForceps.StartAsync(2f));
-        StartCoroutine(_rotateToRightForceps.StartAsync(2f));
+        StartCoroutine(_rotateToLeftForceps.StartAsync());
+        StartCoroutine(_rotateToRightForceps.StartAsync());
         
         takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
     }

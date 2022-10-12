@@ -52,6 +52,9 @@ public class LiquidFlow : MonoBehaviour
     public void PourInLiquid(LevelLiquid levelLiquid)
     {
         if (stateFlowLiquid != StateFlowLiquid.Pour) return;
+        
+        if(!levelLiquid.gameObject.activeSelf)
+            levelLiquid.gameObject.SetActive(true);
 
         levelLiquid.levelLiquid += step;
 

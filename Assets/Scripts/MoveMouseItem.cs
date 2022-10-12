@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -20,7 +21,7 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public bool IsExtentsZ;
 
     private Rigidbody _rigidbody;
-    
+
     private Vector3 _hitWall;
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
@@ -46,12 +47,14 @@ public class MoveMouseItem : MouseItem
             _moveToRespawn = new MoveToPoint(transform, transform.position,
                 transform.rotation, transform.localScale);
         }
+
+        _moveToRespawn.SetSpeedTRS = new Vector3(10f, 10f, 10f);
     }
 
 
     public void BackToRespawnOrBackToMouse()
     {
-        if (IsActive)
+        if (Input.GetMouseButton(0))
         {
             StateItem.ChangeState(StateItems.BackToMouse);
         }
@@ -63,9 +66,12 @@ public class MoveMouseItem : MouseItem
 
     public void BackToRespawn()
     {
-        _isActive = false;
-        StateItem.ChangeState(StateItems.Idle);
-        StartCoroutine(_moveToRespawn.StartAsync(10f));
+        StateItem.ChangeState(StateItems.BackToRespawn);
+        
+        StartCoroutine(_moveToRespawn.StartAsync(() =>
+        {
+            StateItem.ChangeState(StateItems.Idle);
+        }));
     }
 
 
@@ -92,51 +98,65 @@ public class MoveMouseItem : MouseItem
                 transform.rotation, transform.localScale);
             _moveToMouse = new MoveToPoint(transform);
         }
+
+        _moveToMouse.SetSpeedTRS = new Vector3(10f, 10f, 10f);
+        _moveToRespawn.SetSpeedTRS = new Vector3(10f, 10f, 10f);
+        ;
     }
 
-    private void OnMouseDrag()
+    private void Update()
     {
-        if (!isActiveAndEnabled) return;
+        _isActive = StateItem.State != StateItems.Idle;
 
-        if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
-            && _hitWall != Vector3.zero)
+        if (Input.GetMouseButtonDown(0))
         {
-            MoveItem(_hitWall);
-        }
-    }
+            _targetStartPosition = transform.position + startPos;
+            _targetStartRotate = transform.rotation * startRot;
 
-    private void OnMouseDown()
-    {
-        if (!isActiveAndEnabled) return;
-
-        _targetStartPosition = transform.position + startPos;
-        _targetStartRotate = transform.rotation * startRot;
-
-        if (IsReadyToAction)
-        {
-            StateItem.ChangeState(StateItems.Drag);
-            if (_useCoroutine != null)
+            if (IsReadyToAction)
             {
-                StopCoroutine(_useCoroutine);
-                _useCoroutine = null;
+                StateItem.ChangeState(StateItems.Drag);
+                if (_useCoroutine != null)
+                {
+                    StopCoroutine(_useCoroutine);
+                    _useCoroutine = null;
+                }
             }
         }
-        base.OnMouseDown();
-    }
 
-    private void OnMouseUp()
-    {
-        if (!isActiveAndEnabled) return;
-        
-        base.OnMouseUp();
-
-        if (StateItem.State == StateItems.Interacts) return;
-
-        StateItem.ChangeState(StateItems.Idle);
-
-        if (_useCoroutine == null)
+        if (Input.GetMouseButton(0))
         {
-            _useCoroutine = StartCoroutine(_moveToRespawn.StartAsync(10f));
+            if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
+                && _hitWall != Vector3.zero)
+            {
+                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Hold, new Vector2(10, 10), CursorMode.Auto);
+                MoveItem(_hitWall);
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (StateItem.State == StateItems.Interacts) return;
+
+            UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Arrow, Vector2.zero, CursorMode.Auto);
+            
+            if (_useCoroutine == null)
+            {
+                StateItem.ChangeState(StateItems.BackToRespawn);
+                
+                _useCoroutine = StartCoroutine(_moveToRespawn.StartAsync(() =>
+                {
+                    StateItem.ChangeState(StateItems.Idle);
+                }));
+            }
+        }
+        
+        if (!Input.GetMouseButton(0))
+        {
+            if (StateItem.State is not (StateItems.Interacts or StateItems.Idle))
+            {
+                BackToRespawn();
+            }
         }
     }
 
@@ -149,7 +169,7 @@ public class MoveMouseItem : MouseItem
         _moveToMouse.SetOffsetTransform(offset);
         _moveToMouse.SetTargetPosition(position + startPos);
         _moveToMouse.SetTargetRotation(_targetStartRotate);
-        _moveToMouse.Start(10f);
+        _moveToMouse.Start();
 
         if (_moveToMouse.Distance < 0.15f)
         {

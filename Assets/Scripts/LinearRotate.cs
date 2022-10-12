@@ -25,13 +25,14 @@ public class LinearRotate : LinearInput
 
     private void OnEnable()
     {
-        UpdateOriginInput();
-        
         if (_stateItem.State != StateItems.LinearRotate)
         {
             enabled = false;
             return;
         }
+        
+        base.OnEnable();
+        UpdateOriginInput();
         
         _index = (int)axis;
         _newPivot = transform.position + offsetPosition;
@@ -50,6 +51,7 @@ public class LinearRotate : LinearInput
                 _nextRotate[_index] = edgeRotate.y - angle;
 
             var dir = _newPivot - transform.position;
+            
             dir = Quaternion.Euler(_nextRotate[0], _nextRotate[1], _nextRotate[2]) * dir;
             transform.position = _newPivot - dir;
             transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], Space.World);

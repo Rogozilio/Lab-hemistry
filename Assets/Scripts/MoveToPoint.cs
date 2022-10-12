@@ -19,6 +19,10 @@ public struct Target
 
 public class MoveToPoint
 {
+    public delegate void DelegateInEnd();
+
+    private DelegateInEnd _delegateInEnd;
+
     private Transform _transform;
     private Target _toPoint;
 
@@ -33,11 +37,19 @@ public class MoveToPoint
     private float _angle => Quaternion.Angle(_transform.rotation, _toPoint.Rotation);
     private bool _isMoveNext => _distance > 0.001f || _angle > 0.001f;
 
+    private Vector3 _speedTRS;
+    private bool _isMoveRigidbody;
+
     private Rigidbody _rigidbody;
     private Collider _collider;
 
     public float Distance => _distance;
     public float Angle => _angle;
+
+    public Vector3 SetSpeedTRS
+    {
+        set => _speedTRS = value;
+    }
 
     public void SetOffsetTransform(Vector3 offsetTransform)
     {
@@ -63,49 +75,80 @@ public class MoveToPoint
         Vector3 toScale = default, Rigidbody rigidbody = null, Collider collider = null)
     {
         _transform = from;
-        _toPoint = new Target(toPosition, toRotation, toScale);
+        _toPoint = new Target(toPosition == default ? _transform.position : toPosition,
+            toRotation == default ? _transform.rotation : toRotation,
+            toScale == default ? _transform.localScale : toScale);
         _rigidbody = rigidbody;
         _collider = collider;
+        _isMoveRigidbody = rigidbody;
     }
 
 
-    private void MoveTo(float speed = 1f)
+    private void MoveInPosition()
     {
         var transformPos = _offsetTransform == default ? _transform.position : _offsetTransform;
         var newPosition =
             Vector3.MoveTowards(transformPos, _toPoint.Position,
-                _distance * speed * Time.fixedDeltaTime);
-        var newRotation =
-            Quaternion.RotateTowards(_transform.rotation, _toPoint.Rotation, _angle * speed * Time.fixedDeltaTime);
-        
-        if (_rigidbody)
+                _distance * _speedTRS[0] * Time.fixedDeltaTime);
+
+        if (_isMoveRigidbody)
         {
             _rigidbody.position = _offsetTransform == default
                 ? newPosition
                 : newPosition + _rigidbody.position - _offsetTransform;
-            _rigidbody.rotation = newRotation;
         }
         else
         {
             _transform.position = _offsetTransform == default
                 ? newPosition
-                : newPosition + _transform.position - _offsetTransform;;
+                : newPosition + _transform.position - _offsetTransform;
+        }
+    }
+
+    private void MoveInRotation()
+    {
+        var newRotation =
+            Quaternion.RotateTowards(_transform.rotation, _toPoint.Rotation,
+                _angle * _speedTRS[1] * Time.fixedDeltaTime);
+
+        if (_isMoveRigidbody)
+        {
+            _rigidbody.rotation = newRotation;
+        }
+        else
+        {
             _transform.rotation = newRotation;
         }
     }
 
-    public IEnumerator StartAsync(float speed = 1f)
+    private void MoveInScale()
+    {
+        var newScale = Vector3.MoveTowards(_transform.localScale, _toPoint.Scale, _speedTRS[2] * Time.fixedDeltaTime);
+
+        _transform.localScale = newScale;
+    }
+
+    private void MoveTo()
+    {
+        MoveInPosition();
+        MoveInRotation();
+        MoveInScale();
+    }
+
+    public IEnumerator StartAsync(DelegateInEnd delegateInEnd = null)
     {
         while (_isMoveNext)
         {
-            MoveTo(speed);
+            MoveTo();
 
             yield return null;
         }
+
+        delegateInEnd?.Invoke();
     }
 
-    public void Start(float speed = 1f)
+    public void Start()
     {
-        MoveTo(speed);
+        MoveTo();
     }
 }

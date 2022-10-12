@@ -87,6 +87,8 @@ public class MiniTestTube : MonoBehaviour
             _rendererSediment.material.color += alphaSediment;
         }
 
+        if(!_levelLiquid.gameObject.activeSelf)
+            _levelLiquid.gameObject.SetActive(true);
         _levelLiquid.levelLiquid += _step;
 
         if (_stateMiniTestTube == StateMiniTestTube.Empty && liquid.typeLiquid == TypeLiquid.CuSO4 && _countLiquid == 8)
@@ -134,6 +136,9 @@ public class MiniTestTube : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
 
+        if(!_levelBurnLiquid.gameObject.activeSelf)
+            _levelBurnLiquid.gameObject.SetActive(true);
+        
         while (_levelBurnLiquid.levelLiquid < _levelLiquid.levelLiquid)
         {
             _levelBurnLiquid.levelLiquid += Time.deltaTime * Random.Range(0.05f, 0.15f);

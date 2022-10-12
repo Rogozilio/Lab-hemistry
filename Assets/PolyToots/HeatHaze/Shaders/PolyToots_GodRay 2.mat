@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Noise_Perlin:
-        m_Texture: {fileID: 2800000, guid: 4e09e53147d81cc42b740e149dca5022, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9ff1aecbc9e444a448204a57a5a85038, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -31,9 +31,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
-    - _Length: 0
-    - _Power: 0.1
-    - _Strength: 0.05
+    - _Length: -0.03
+    - _Power: 0.64
+    - _Strength: 0.007
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

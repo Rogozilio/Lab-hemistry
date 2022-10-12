@@ -12,7 +12,8 @@ public enum StateItems
     Drag,
     LinearMove,
     LinearRotate,
-    Interacts
+    Interacts,
+    BackToRespawn
 }
 
 public class StateItem : MonoBehaviour
