@@ -24,12 +24,8 @@ public class Forceps : MonoBehaviour
 
     public StateForceps stateForceps => _stateForceps;
 
-    public int targetFrameRate = 60;
-
     private void OnEnable()
     {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = targetFrameRate;
         _leftHalfForceps = transform.GetChild(0);
         _rightHalfForceps = transform.GetChild(1);
         _stateForceps = StateForceps.NotInForceps;
@@ -91,7 +87,7 @@ public class Forceps : MonoBehaviour
         var maxIntensity = 0.12f;
         light.enabled = true;
         light.intensity = 0f;
-        var time = 1.25f;
+        var time = 1.5f;
 
         while (light.intensity < minIntensity)
         {

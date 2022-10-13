@@ -141,8 +141,8 @@ public class MiniTestTube : MonoBehaviour
         
         while (_levelBurnLiquid.levelLiquid < _levelLiquid.levelLiquid)
         {
-            _levelBurnLiquid.levelLiquid += Time.deltaTime * Random.Range(0.05f, 0.15f);
-            yield return null;
+            _levelBurnLiquid.levelLiquid += Time.fixedDeltaTime * Random.Range(0.01f, 0.1f);
+            yield return new WaitForFixedUpdate();
         }
 
         _stateMiniTestTube = StateMiniTestTube.CuSO4_NaOH_Fire;

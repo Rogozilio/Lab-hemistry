@@ -84,7 +84,7 @@ public class SampleDataListLoader : Operation<SampleDataList>
 	//  Tech  ------------------------------------------------------- 
 	void OnLoadError (string message) 
 	{
-		GoBackWithError("Не получилось загрузить образцы"); 
+		//GoBackWithError("Не получилось загрузить образцы"); 
 	}
 
 }

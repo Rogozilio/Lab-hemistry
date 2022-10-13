@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: eb8f0fc7162ea694fa73cafefe1f0b6c
 ModelImporter:
-  serializedVersion: 20200
+  serializedVersion: 21202
   internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Lab_window.001
-    second: {fileID: 2100000, guid: ba6350035f51f514c9b7411422239dbd, type: 2}
+    second: {fileID: 2100000, guid: 1916e77f56cc9124eb242e223d17cc65, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -33,7 +33,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: plastik_black
-    second: {instanceID: 0}
+    second: {fileID: -8292974436746531321, guid: a9dd8cbafae164145b109791debed2f3, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -44,6 +44,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -73,6 +74,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 1
@@ -84,6 +86,7 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8

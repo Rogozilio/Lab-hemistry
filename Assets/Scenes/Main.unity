@@ -33464,7 +33464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &684253612
 Transform:
   m_ObjectHideFlags: 0
@@ -55401,7 +55401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1335146374
 Transform:
   m_ObjectHideFlags: 0
@@ -58249,7 +58249,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1409748282
 Transform:
   m_ObjectHideFlags: 0
@@ -73991,11 +73991,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6243949380307898961, guid: 6f205ee4290fb8d41b45fc6435618f1b, type: 3}
       propertyPath: m_SizeDelta.x
@@ -81183,7 +81183,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   takeObject: {fileID: 2037177665}
-  targetFrameRate: 60
 --- !u!114 &1966231060
 MonoBehaviour:
   m_ObjectHideFlags: 0

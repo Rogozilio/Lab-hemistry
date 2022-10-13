@@ -129,11 +129,11 @@ public class StageSystem : MonoBehaviour
             return; 
         }
 
-        if (index == 0) 
-        {
-            restartDialog.Show(OnRestartConfirmed); 
-            return; 
-        }
+        // if (index == 0) 
+        // {
+        //     restartDialog.Show(OnRestartConfirmed); 
+        //     return; 
+        // }
 
         _SetStage(index); 
     }

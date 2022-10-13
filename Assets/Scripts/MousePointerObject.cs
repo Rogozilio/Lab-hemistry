@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class MousePointerObject : MonoBehaviour
 {
     private Camera _camera;
-    
+
     private MouseItem _item;
     private Vector3 _hitWall;
 
@@ -14,7 +14,7 @@ public class MousePointerObject : MonoBehaviour
     {
         _camera = Camera.main;
     }
-    
+
     void Update()
     {
         RaycastHit[] hits = RaycastAll();
@@ -30,21 +30,29 @@ public class MousePointerObject : MonoBehaviour
     private void MoveObjectToPlane(RaycastHit[] hits)
     {
         var isHitMouseItem = false;
-        
+        var minDistance = 100f;
+
         foreach (var hit in hits)
         {
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 break;
             }
-            
+
             if (hit.collider.TryGetComponent(out MouseItem mouseItem) && !_item ||
                 (mouseItem && !_item.IsActive))
             {
                 if (!mouseItem.isActiveAndEnabled) continue;
-                if(!Equals(_item, mouseItem))
-                    _item?.HideOutline();
-                _item = mouseItem;
+
+                if (Vector3.Distance(_camera.transform.position, mouseItem.transform.position) < minDistance)
+                {
+                    if (!Equals(_item, mouseItem))
+                        _item?.HideOutline();
+                    
+                    minDistance = Vector3.Distance(_camera.transform.position, mouseItem.transform.position);
+                    _item = mouseItem;
+                }
+
                 isHitMouseItem = true;
             }
             else if (hit.collider.CompareTag("Wall"))
@@ -52,8 +60,8 @@ public class MousePointerObject : MonoBehaviour
                 _hitWall = hit.point;
             }
         }
-        
-        if(isHitMouseItem)
+
+        if (isHitMouseItem)
             _item?.ShowOutline();
         else
             _item?.HideOutline();

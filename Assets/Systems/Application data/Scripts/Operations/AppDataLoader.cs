@@ -16,7 +16,7 @@ public class AppDataLoader : Operation<AppData>
 
 
 	//  Operation  -------------------------------------------------- 
-	bool allLoaded => infoPanel != null && labData != null; 
+	bool allLoaded => infoPanel != null; 
 
     public void Start () 
     {
