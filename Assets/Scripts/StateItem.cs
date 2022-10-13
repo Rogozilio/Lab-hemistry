@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;using UnityEditor;
+using System.Collections.Generic;
+using Cursor;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -40,9 +42,21 @@ public class StateItem : MonoBehaviour
         switch (state)
         {
             case StateItems.Default: break;
+            case StateItems.Idle:
+                State = state;
+                CursorSkin.Instance.UseArrow();
+                break;
+            case StateItems.Interacts:
+                State = state;
+                CursorSkin.Instance.UseLoad();
+                break;
             case StateItems.BackToMouse:
                 if(State != StateItems.Idle && State != StateItems.Default)
                     State = state;
+                break;
+            case StateItems.BackToRespawn:
+                State = state;
+                CursorSkin.Instance.UseLoad();
                 break;
             case StateItems.LinearMove:
                 State = state;

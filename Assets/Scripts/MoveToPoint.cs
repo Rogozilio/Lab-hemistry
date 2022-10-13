@@ -140,8 +140,8 @@ public class MoveToPoint
         while (_isMoveNext)
         {
             MoveTo();
-
-            yield return null;
+            
+            yield return new WaitForFixedUpdate();
         }
 
         delegateInEnd?.Invoke();

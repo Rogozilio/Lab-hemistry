@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GD.MinMaxSlider;
 
 public class LinearRotate : LinearInput
 {
     public Axis axis = Axis.Y;
-    [MinMaxSlider(0, 360)]
+    //[MinMaxSlider(0, 360)]
     public Vector2 edgeRotate;
 
     public Vector3 offsetPosition;
@@ -16,6 +15,13 @@ public class LinearRotate : LinearInput
     private Quaternion _nextRotate;
 
     private StateItem _stateItem;
+
+    public LinearValue linearValue => new LinearValue()
+    {
+        axis = axis,
+        axisInput = axisInput,
+        edge = edgeRotate
+    };
 
 
     private void Awake()

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cursor
 {
@@ -10,19 +12,78 @@ namespace Cursor
         public Texture2D Click;
         public Texture2D Select;
         public Texture2D Hold;
-        
+        public Texture2D[] load;
+
+        private bool _isLoadActive;
+
         public static CursorSkin Instance { get; private set; }
-        
-        private void Awake() 
+
+        private void Awake()
         {
-            if (Instance != null && Instance != this) 
-            { 
-                Destroy(this); 
-            } 
-            else 
-            { 
-                Instance = this; 
-            } 
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
+        }
+        
+        public void UseArrow()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Arrow, Vector2.zero, CursorMode.Auto);
+        }
+
+        public void UseHorizontal()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Horizontal, new Vector2(10, 0), CursorMode.Auto);
+        }
+
+        public void UseVertical()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Vertical, new Vector2(0, 10), CursorMode.Auto);
+        }
+
+        public void UseClick()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Click, new Vector2(10, 0), CursorMode.Auto);
+        }
+
+        public void UseSelect()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Select, new Vector2(10, 10), CursorMode.Auto);
+        }
+
+        public void UseHold()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.Hold, new Vector2(10, 10), CursorMode.Auto);
+        }
+
+        public void UseLoad()
+        {
+            _isLoadActive = true;
+            StartCoroutine(AnimateCursorLoad());
+        }
+
+        private IEnumerator AnimateCursorLoad()
+        {
+            while (true)
+            {
+                for (var i = 0; i < load.Length; i++)
+                {
+                    if (!_isLoadActive) yield break;
+                    
+                    UnityEngine.Cursor.SetCursor(Instance.load[i], Vector2.zero, CursorMode.Auto);
+                    yield return new WaitForFixedUpdate();
+                }
+            }
         }
     }
 }

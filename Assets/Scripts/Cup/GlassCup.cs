@@ -57,9 +57,9 @@ public class GlassCup : MonoBehaviour
         var newColor = bottomSmoke.material.GetColor("_TintColor");
         while (newColor.a < 0.04f)
         {
-            newColor += new Color(0f, 0f, 0f, 0.00005f);
+            newColor += new Color(0f, 0f, 0f, 0.00015f);
             bottomSmoke.material.SetColor("_TintColor", newColor);
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         _stateGlassCup = StateGlassCup.Smoke;

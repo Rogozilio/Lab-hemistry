@@ -14,7 +14,7 @@ public class IndicatorPaper : MonoBehaviour
         _rendererChild = transform.GetChild(0).GetComponent<Renderer>();
 
         _moveToPoint = new MoveToPoint(transform.parent, default, default, new Vector3(1, 1, 0.3f));
-        _moveToPoint.SetSpeedTRS = new Vector3(0f, 0f, 0.5f);
+        _moveToPoint.SetSpeedTRS = new Vector3(0f, 0f, 1f);
     }
 
     public void SetColor(Renderer renderer)

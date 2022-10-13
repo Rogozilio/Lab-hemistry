@@ -12,6 +12,7 @@ public class Forceps : MonoBehaviour
         InForceps,
         BurnedInForceps
     }
+
     [SerializeField] private GameObject takeObject;
     private Transform _leftHalfForceps;
     private Transform _rightHalfForceps;
@@ -23,39 +24,54 @@ public class Forceps : MonoBehaviour
 
     public StateForceps stateForceps => _stateForceps;
 
+    public int targetFrameRate = 60;
+
     private void OnEnable()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = targetFrameRate;
         _leftHalfForceps = transform.GetChild(0);
         _rightHalfForceps = transform.GetChild(1);
         _stateForceps = StateForceps.NotInForceps;
         _stateItem = GetComponent<StateItem>();
         _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps);
         _rotateToRightForceps = new MoveToPoint(_rightHalfForceps);
-        _rotateToLeftForceps.SetSpeedTRS = new Vector3(2f, 2f, 2f);
-        _rotateToRightForceps.SetSpeedTRS = new Vector3(2f, 2f, 2f);
+        _rotateToLeftForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
+        _rotateToRightForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
     }
 
     public void StartTakeInForceps(int stateForceps)
     {
-        if (_stateForceps == (StateForceps)stateForceps)  return;
+        if (_stateForceps == (StateForceps)stateForceps) return;
 
         _stateForceps = (StateForceps)stateForceps;
 
         var delta = ((StateForceps)stateForceps == StateForceps.InForceps) ? 4 : -4;
-        
+
         var newRotateLeftForceps = Quaternion.Euler(_leftHalfForceps.rotation.eulerAngles.x,
             _leftHalfForceps.rotation.eulerAngles.y, _leftHalfForceps.rotation.eulerAngles.z + delta);
         var newRotateRightForceps = Quaternion.Euler(_rightHalfForceps.rotation.eulerAngles.x,
             _rightHalfForceps.rotation.eulerAngles.y, _rightHalfForceps.rotation.eulerAngles.z - delta);
-        
+
         _rotateToLeftForceps.SetTargetPosition(_leftHalfForceps.position);
         _rotateToRightForceps.SetTargetPosition(_rightHalfForceps.position);
         _rotateToLeftForceps.SetTargetRotation(newRotateLeftForceps);
         _rotateToRightForceps.SetTargetRotation(newRotateRightForceps);
 
-        StartCoroutine(_rotateToLeftForceps.StartAsync());
-        StartCoroutine(_rotateToRightForceps.StartAsync());
-        
+        _stateItem.ChangeState(StateItems.Interacts);
+
+        var linearValue = GetComponent<LinearMove>().linearValue;
+        linearValue.edge = new Vector2(0, 100);
+
+        StartCoroutine(_rotateToLeftForceps.StartAsync(() =>
+        {
+            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
+        }));
+        StartCoroutine(_rotateToRightForceps.StartAsync(() =>
+        {
+            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
+        }));
+
         takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
     }
 

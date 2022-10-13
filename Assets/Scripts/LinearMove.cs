@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GD.MinMaxSlider;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ public class LinearMove : LinearInput
 {
     public Axis axis = Axis.Y;
     
-    [MinMaxSlider(-100, 100)]public Vector2 EdgeMove;
+    /*[MinMaxSlider(-100, 100)]*/public Vector2 EdgeMove;
     public float speed = 1f;
 
     private Vector3 _startPoint;
@@ -25,6 +24,13 @@ public class LinearMove : LinearInput
     private Vector3 _nextPosition;
 
     private StateItem _stateItem;
+    
+    public LinearValue linearValue => new LinearValue()
+    {
+        axis = axis,
+        axisInput = axisInput,
+        edge = EdgeMove
+    };
 
 
     private void Awake()

@@ -17,18 +17,18 @@ public class LinearInput : MonoBehaviour
         switch (axisInput)
         {
             case Axis.X:
-                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Horizontal, new Vector2(10 ,0), CursorMode.Auto);
+                CursorSkin.Instance.UseHorizontal();
                 break;
             case Axis.Y:
-                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Vertical, new Vector2(0 ,10), CursorMode.Auto);
+                CursorSkin.Instance.UseVertical();
                 break;
         }
     }
 
-    private void OnDisable()
-    {
-        UnityEngine.Cursor.SetCursor(CursorSkin.Instance?.Arrow, Vector2.zero, CursorMode.Auto);
-    }
+    // private void OnDisable()
+    // {
+    //     UnityEngine.Cursor.SetCursor(CursorSkin.Instance?.Arrow, Vector2.zero, CursorMode.Auto);
+    // }
 
     // Update is called once per frame
     public void UpdateOriginInput()

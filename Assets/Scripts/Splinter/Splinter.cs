@@ -59,14 +59,14 @@ public class Splinter : MonoBehaviour
         fire.transform.localScale = Vector3.zero;
         while (mainFire.startColor.color.a < 1f)
         {
-            alpha += Random.Range(0.001f, 0.005f);
-            scale += Random.Range(0.01f, 0.015f);
+            alpha += Random.Range(0.02f, 0.03f);
+            scale += Random.Range(0.02f, 0.03f);
 
             mainFire.startColor = new Color(mainFire.startColor.color.r, mainFire.startColor.color.g,
                 mainFire.startColor.color.b, alpha);
             fire.transform.localScale =
                 (fire.transform.localScale.x < 1f) ? new Vector3(scale, scale, scale) : Vector3.one;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         _stateFireSplinter = StateFireSplinter.Fire;
@@ -79,14 +79,14 @@ public class Splinter : MonoBehaviour
         var mainFire = fire.main;
         while (mainFire.startColor.color.a > 0f)
         {
-            alpha -= Random.Range(0.001f, 0.005f);
-            scale -= Random.Range(0.01f, 0.015f);
+            alpha -= Random.Range(0.02f, 0.03f);
+            scale -= Random.Range(0.02f, 0.03f);
 
             mainFire.startColor = new Color(mainFire.startColor.color.r, mainFire.startColor.color.g,
                 mainFire.startColor.color.b, alpha);
             fire.transform.localScale =
                 (fire.transform.localScale.x > 0f) ? new Vector3(scale, scale, scale) : Vector3.zero;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         _stateFireSplinter = StateFireSplinter.NotFire;

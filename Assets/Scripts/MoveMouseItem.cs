@@ -48,7 +48,7 @@ public class MoveMouseItem : MouseItem
                 transform.rotation, transform.localScale);
         }
 
-        _moveToRespawn.SetSpeedTRS = new Vector3(10f, 10f, 10f);
+        _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
     }
 
 
@@ -99,8 +99,8 @@ public class MoveMouseItem : MouseItem
             _moveToMouse = new MoveToPoint(transform);
         }
 
-        _moveToMouse.SetSpeedTRS = new Vector3(10f, 10f, 10f);
-        _moveToRespawn.SetSpeedTRS = new Vector3(10f, 10f, 10f);
+        _moveToMouse.SetSpeedTRS = new Vector3(15f, 15f, 15f);
+        _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
         ;
     }
 
@@ -129,7 +129,7 @@ public class MoveMouseItem : MouseItem
             if (StateItem.State is StateItems.Drag or StateItems.BackToMouse
                 && _hitWall != Vector3.zero)
             {
-                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Hold, new Vector2(10, 10), CursorMode.Auto);
+                CursorSkin.Instance.UseHold();
                 MoveItem(_hitWall);
             }
         }
@@ -138,8 +138,6 @@ public class MoveMouseItem : MouseItem
         {
             if (StateItem.State == StateItems.Interacts) return;
 
-            UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Arrow, Vector2.zero, CursorMode.Auto);
-            
             if (_useCoroutine == null)
             {
                 StateItem.ChangeState(StateItems.BackToRespawn);
@@ -174,39 +172,6 @@ public class MoveMouseItem : MouseItem
         if (_moveToMouse.Distance < 0.15f)
         {
             StateItem.ChangeState(StateItems.Drag);
-        }
-    }
-}
-
-[CustomEditor(typeof(MoveMouseItem))]
-public class MoveMouseItemEditor : Editor
-{
-    private bool _isUseBoundCollider = true;
-
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-
-        var moveMouseItem = target as MoveMouseItem;
-        if (moveMouseItem.IsMoveRigidbody)
-        {
-            _isUseBoundCollider = EditorGUILayout.Foldout(_isUseBoundCollider, "Bounds Extension", true);
-
-            if (_isUseBoundCollider)
-            {
-                var width = 15f;
-                var space = 20f;
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(space);
-                GUILayout.Label("Use Extents", GUILayout.Width(EditorGUIUtility.labelWidth - space));
-                moveMouseItem.IsExtentsX = EditorGUILayout.Toggle(moveMouseItem.IsExtentsX, GUILayout.Width(width));
-                GUILayout.Label("X", GUILayout.Width(width));
-                moveMouseItem.IsExtentsY = EditorGUILayout.Toggle(moveMouseItem.IsExtentsY, GUILayout.Width(width));
-                GUILayout.Label("Y", GUILayout.Width(width));
-                moveMouseItem.IsExtentsZ = EditorGUILayout.Toggle(moveMouseItem.IsExtentsZ, GUILayout.Width(width));
-                GUILayout.Label("Z", GUILayout.Width(width));
-                GUILayout.EndHorizontal();
-            }
         }
     }
 }

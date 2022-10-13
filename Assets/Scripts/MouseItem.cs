@@ -43,9 +43,9 @@ public class MouseItem : MonoBehaviour
             _outline.enabled = true;
 
             if (GetType() == typeof(MoveMouseItem))
-                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Select, new Vector2(10, 10),CursorMode.Auto);
+                CursorSkin.Instance.UseSelect();
             else
-                UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Click, new Vector2(10, 0), CursorMode.Auto);
+                CursorSkin.Instance.UseClick();
         }
     }
 
@@ -56,7 +56,7 @@ public class MouseItem : MonoBehaviour
         {
             _outline.enabled = false;
             
-            UnityEngine.Cursor.SetCursor(CursorSkin.Instance.Arrow, Vector2.zero, CursorMode.Auto);
+            CursorSkin.Instance.UseArrow();
         }
     }
 }

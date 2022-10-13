@@ -89,7 +89,7 @@ public class Cup : MonoBehaviour
             else
                 _isChangeScaleFinish = true;
 
-                var stepColor = (_resultColor - _originColor) / steps;
+            var stepColor = (_resultColor - _originColor) / steps;
             //Color
             if (_rendererWater.material.color != _resultColor)
                 _rendererWater.material.color += stepColor;
