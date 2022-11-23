@@ -3,12 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using Cursor;
 using UnityEngine;
+public enum Axis
+{
+    X,
+    Y,
+    Z,
+    localX,
+    localY,
+    localZ
+}
 
+public enum AxisInput
+{
+    X,
+    Y,
+    InvertX,
+    InvertY
+}
 public class LinearInput : MonoBehaviour
 {
     private float _originInput;
 
-    public Axis axisInput;
+    public AxisInput axisInput;
 
     public float GetOriginInput => _originInput;
 
@@ -16,35 +32,45 @@ public class LinearInput : MonoBehaviour
     {
         switch (axisInput)
         {
-            case Axis.X:
-                CursorSkin.Instance.UseHorizontal();
+            case AxisInput.X:
+            case AxisInput.InvertX:
+                CursorSkin.Instance?.UseHorizontal();
                 break;
-            case Axis.Y:
-                CursorSkin.Instance.UseVertical();
+            case AxisInput.Y:
+            case AxisInput.InvertY:
+                CursorSkin.Instance?.UseVertical();
                 break;
         }
     }
 
-    // private void OnDisable()
-    // {
-    //     UnityEngine.Cursor.SetCursor(CursorSkin.Instance?.Arrow, Vector2.zero, CursorMode.Auto);
-    // }
-
     // Update is called once per frame
     public void UpdateOriginInput()
     {
-        if (axisInput == Axis.X)
-            _originInput = Input.mousePosition.x;
-        else if (axisInput == Axis.Y)
-            _originInput = Input.mousePosition.y;
+        switch (axisInput)
+        {
+            case AxisInput.X or AxisInput.InvertX:
+                _originInput = Input.mousePosition.x;
+                break;
+            case AxisInput.Y or AxisInput.InvertY:
+                _originInput = Input.mousePosition.y;
+                break;
+        }
     }
 
-    public float GetInputValue(bool isForMove = true)
+    public float GetInputValue()
     {
-        if (axisInput == Axis.X)
-            return !isForMove ? Input.mousePosition.x - _originInput : -(Input.mousePosition.x - _originInput);
-        if (axisInput == Axis.Y)
-            return Input.mousePosition.y - _originInput;
-        return 0f;
+        switch (axisInput)
+        {
+            case AxisInput.X: 
+                return Input.mousePosition.x - _originInput;
+            case AxisInput.Y:
+                return Input.mousePosition.y - _originInput;
+            case AxisInput.InvertX:
+                return (Input.mousePosition.x - _originInput) * -1;
+            case AxisInput.InvertY:
+                return (Input.mousePosition.y - _originInput) * -1;
+            default:
+                return 0f;
+        }
     }
 }

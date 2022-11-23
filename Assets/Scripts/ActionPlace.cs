@@ -10,7 +10,8 @@ public enum Operator
     [InspectorName("<=")] LessEquals,
     [InspectorName("=")] Equally,
     [InspectorName(">=")] MoreEquals,
-    [InspectorName(">")] More
+    [InspectorName(">")] More,
+    [InspectorName("!=")] NotEqually
 }
 
 public class ActionPlace : MonoBehaviour
@@ -45,6 +46,9 @@ public class ActionPlace : MonoBehaviour
     [HideInInspector] [SerializeField] public List<string> actionValue;
     [HideInInspector] [SerializeField] public List<string> endActionValue;
 
+    [HideInInspector] [SerializeField] public LinearValue[] linearValues = new LinearValue[3];
+    [HideInInspector] [SerializeField] public Vector3[] offsetLinearRotate = new Vector3[3];
+
     public GameObject target;
     public StateItems stateStart = StateItems.Drag;
 
@@ -63,7 +67,7 @@ public class ActionPlace : MonoBehaviour
             if (!isChangeStateOnCondition[0])
             {
                 _isActionStart = true;
-                _stateItem?.ChangeState(stateAfterOnActionStart);
+                _stateItem?.ChangeState(stateAfterOnActionStart, linearValues[0], offsetLinearRotate[0]);
             }
 
             if (!IsCompliesCondition(startActionConditionScript, indexPropertyStartAction
@@ -72,7 +76,7 @@ public class ActionPlace : MonoBehaviour
             if (isChangeStateOnCondition[0])
             {
                 _isActionStart = true;
-                _stateItem?.ChangeState(stateAfterOnActionStart);
+                _stateItem?.ChangeState(stateAfterOnActionStart, linearValues[0], offsetLinearRotate[0]);
             }
 
             _events.onActionStart.Invoke();
@@ -84,13 +88,13 @@ public class ActionPlace : MonoBehaviour
         if (other.gameObject == target && _isActionStart)
         {
             if (!isChangeStateOnCondition[1])
-                _stateItem?.ChangeState(stateAfterOnAction);
+                _stateItem?.ChangeState(stateAfterOnAction, linearValues[1], offsetLinearRotate[1]);
 
             if (!IsCompliesCondition(actionConditionScript, indexPropertyAction
                     , actionOperators, actionValue)) return;
 
             if (isChangeStateOnCondition[1])
-                _stateItem?.ChangeState(stateAfterOnAction);
+                _stateItem?.ChangeState(stateAfterOnAction, linearValues[1], offsetLinearRotate[1]);
 
             _events.onAction.Invoke();
         }
@@ -103,7 +107,7 @@ public class ActionPlace : MonoBehaviour
             if (!isChangeStateOnCondition[1])
             {
                 _isActionStart = false;
-                _stateItem?.ChangeState(stateAfterOnActionEnd);
+                _stateItem?.ChangeState(stateAfterOnActionEnd, linearValues[2], offsetLinearRotate[2]);
             }
 
             if (!IsCompliesCondition(endActionConditionScript, indexPropertyEndAction
@@ -112,7 +116,7 @@ public class ActionPlace : MonoBehaviour
             if (isChangeStateOnCondition[1])
             {
                 _isActionStart = false;
-                _stateItem?.ChangeState(stateAfterOnActionEnd);
+                _stateItem?.ChangeState(stateAfterOnActionEnd, linearValues[2], offsetLinearRotate[2]);
             }
 
             _events.onActionEnd.Invoke();
@@ -133,18 +137,20 @@ public class ActionPlace : MonoBehaviour
 
             var type = property[index[i]].PropertyType.UnderlyingSystemType;
 
-
             var value = property[index[i]].GetValue(scripts[i]);
 
             if (type.BaseType == typeof(Enum))
                 isCompletedAll[i] = IsValueCompleteCondition((int)value, operators[i], int.Parse(values[i]));
-            if (type == typeof(bool))
-                isCompletedAll[i] =
-                    IsValueCompleteCondition((bool)value, operators[i], values[i] != "0");
-            if (type == typeof(int))
+            else if (type == typeof(bool))
+                isCompletedAll[i] = IsValueCompleteCondition((bool)value, operators[i], values[i] != "0");
+            else if (type == typeof(byte))
+                isCompletedAll[i] = IsValueCompleteCondition((byte)value, operators[i], byte.Parse(values[i]));
+            else if (type == typeof(int))
                 isCompletedAll[i] = IsValueCompleteCondition((int)value, operators[i], int.Parse(values[i]));
-            if (type == typeof(float))
+            else if (type == typeof(float))
                 isCompletedAll[i] = IsValueCompleteCondition((float)value, operators[i], float.Parse(values[i]));
+            else
+                Debug.LogWarning("Add condition for type " + type);
         }
 
         foreach (var isCompleteCondition in isCompletedAll)
@@ -160,6 +166,7 @@ public class ActionPlace : MonoBehaviour
         switch (op)
         {
             case Operator.Equally: return value1 == value2;
+            case Operator.NotEqually: return value1 != value2;
         }
 
         return false;
@@ -174,6 +181,7 @@ public class ActionPlace : MonoBehaviour
             case Operator.Equally: return value1 == value2;
             case Operator.MoreEquals: return value1 >= value2;
             case Operator.More: return value1 > value2;
+            case Operator.NotEqually: return value1 != value2;
         }
 
         return false;
@@ -188,6 +196,7 @@ public class ActionPlace : MonoBehaviour
             case Operator.Equally: return value1 == value2;
             case Operator.MoreEquals: return value1 >= value2;
             case Operator.More: return value1 > value2;
+            case Operator.NotEqually: return value1 != value2;
         }
 
         return false;

@@ -38,25 +38,29 @@ public class MouseItem : MonoBehaviour
     public void ShowOutline()
     {
         _isReadyToAction = true;
-        if (!_outline.enabled)
-        {
-            _outline.enabled = true;
+        
+        if(!IsActive && GetType() == typeof(ClickMouseItem) && _stateItem.State != StateItems.Interacts)
+            CursorSkin.Instance.UseClick();
 
-            if (GetType() == typeof(MoveMouseItem))
-                CursorSkin.Instance.UseSelect();
-            else
-                CursorSkin.Instance.UseClick();
-        }
+        if (_outline.enabled) return;
+        
+        _outline.enabled = true;
+
+        if (GetType() == typeof(MoveMouseItem))
+            CursorSkin.Instance.UseSelect();
     }
 
     public void HideOutline()
     {
         _isReadyToAction = false;
-        if (_outline.enabled)
-        {
-            _outline.enabled = false;
+        
+        if (!_outline.enabled) return;
+        
+        _outline.enabled = false;
+        
+        if(IsActive) return;
             
+        if(_stateItem.State != StateItems.Interacts)
             CursorSkin.Instance.UseArrow();
-        }
     }
 }

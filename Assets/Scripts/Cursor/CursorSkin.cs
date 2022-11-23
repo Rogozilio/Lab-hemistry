@@ -15,6 +15,7 @@ namespace Cursor
         public Texture2D[] load;
 
         private bool _isLoadActive;
+        private Coroutine _coroutineUseLoad;
 
         public static CursorSkin Instance { get; private set; }
 
@@ -69,7 +70,9 @@ namespace Cursor
         public void UseLoad()
         {
             _isLoadActive = true;
-            StartCoroutine(AnimateCursorLoad());
+            if(_coroutineUseLoad != null)
+                StopCoroutine(_coroutineUseLoad);
+            _coroutineUseLoad = StartCoroutine(AnimateCursorLoad());
         }
 
         private IEnumerator AnimateCursorLoad()
@@ -80,7 +83,7 @@ namespace Cursor
                 {
                     if (!_isLoadActive) yield break;
                     
-                    UnityEngine.Cursor.SetCursor(Instance.load[i], Vector2.zero, CursorMode.Auto);
+                    UnityEngine.Cursor.SetCursor(Instance.load[i], new Vector2(10, 10), CursorMode.Auto);
                     yield return new WaitForFixedUpdate();
                 }
             }

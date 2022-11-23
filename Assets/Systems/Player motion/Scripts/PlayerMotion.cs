@@ -34,7 +34,7 @@ public class PlayerMotion : MonoBehaviour
 
 	void Start () 
 	{
-		MoveToPoint(startPoint); 
+		MoveToPoint(1); 
 	}
 
 	void Update () 
@@ -50,7 +50,18 @@ public class PlayerMotion : MonoBehaviour
 
 	void OnValidate () 
 	{
-		startPoint = Mathf.Clamp(startPoint, 1, navigation.pointCount); 
+		startPoint = Mathf.Clamp(startPoint, 1, navigation.pointCount);
+		if(onMoveToPoint.Count < startPoint)
+			for (int i = onMoveToPoint.Count; i < startPoint; i++)
+			{
+				onMoveToPoint.Add(new UnityEvent());
+			}
+		else if(onMoveToPoint.Count > startPoint)
+			for (int i = onMoveToPoint.Count; i > startPoint; i--)
+			{
+				onMoveToPoint.RemoveAt(i-1);
+			}
+			
 	}
 
 
@@ -76,7 +87,7 @@ public class PlayerMotion : MonoBehaviour
 
 
 	//  Events  ----------------------------------------------------- 
-	public UnityEvent onMoveToPoint; 
+	public List<UnityEvent> onMoveToPoint; 
 
 
 	
@@ -98,7 +109,7 @@ public class PlayerMotion : MonoBehaviour
 		ViewPoint viewPoint = navigation.MoveToPoint(pointID); 
 		inputReciever.moveToPoint.SetInput(viewPoint); 
 
-		onMoveToPoint.Invoke(); 
+		onMoveToPoint[pointID - 1].Invoke(); 
 	}
 
 	public void Rotate (Orientation input) 

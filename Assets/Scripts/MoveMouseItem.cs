@@ -5,6 +5,7 @@ using Cursor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 using VirtualLab.OutlineNS;
 
@@ -15,14 +16,28 @@ public class MoveMouseItem : MouseItem
     [SerializeField] private Vector3 startScale;
 
     [SerializeField] private bool returnToStartingPosition = true;
-    [Space] public bool IsMoveRigidbody;
+
+    [Space] [HideInInspector] public bool IsMoveRigidbody;
     [HideInInspector] public bool IsExtentsX;
     [HideInInspector] public bool IsExtentsY;
     [HideInInspector] public bool IsExtentsZ;
 
+    [Space] [HideInInspector] public bool IsRotateToCamera;
+    [HideInInspector] public bool IsLockX;
+    [HideInInspector] public bool IsLockY;
+    [HideInInspector] public bool IsLockZ;
+    [HideInInspector] public bool IsRight;
+    [HideInInspector] public bool IsUp;
+    [HideInInspector] public bool IsForward = true;
+    [HideInInspector] public bool IsInverse;
+
+    [HideInInspector] public UnityEvent OnMouseDown;
+    [HideInInspector] public UnityEvent OnMouseUp;
+
     private Rigidbody _rigidbody;
 
     private Vector3 _hitWall;
+    private Vector3 _faceAxis;
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
     private MoveToPoint _moveToRespawn;
@@ -67,11 +82,8 @@ public class MoveMouseItem : MouseItem
     public void BackToRespawn()
     {
         StateItem.ChangeState(StateItems.BackToRespawn);
-        
-        StartCoroutine(_moveToRespawn.StartAsync(() =>
-        {
-            StateItem.ChangeState(StateItems.Idle);
-        }));
+
+        StartCoroutine(_moveToRespawn.StartAsync(() => { StateItem.ChangeState(StateItems.Idle); }));
     }
 
 
@@ -101,7 +113,6 @@ public class MoveMouseItem : MouseItem
 
         _moveToMouse.SetSpeedTRS = new Vector3(15f, 15f, 15f);
         _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
-        ;
     }
 
     private void Update()
@@ -110,17 +121,29 @@ public class MoveMouseItem : MouseItem
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (!IsReadyToAction) return;
+
             _targetStartPosition = transform.position + startPos;
             _targetStartRotate = transform.rotation * startRot;
-
-            if (IsReadyToAction)
+            _faceAxis = new Vector3
             {
-                StateItem.ChangeState(StateItems.Drag);
-                if (_useCoroutine != null)
-                {
-                    StopCoroutine(_useCoroutine);
-                    _useCoroutine = null;
-                }
+                x = IsRight ? 1 : 0,
+                y = IsUp ? 1 : 0,
+                z = IsForward ? 1 : 0
+            };
+            _faceAxis = IsInverse ? _faceAxis * -1 : _faceAxis;
+
+            if (OnMouseDown.GetPersistentEventCount() > 0)
+            {
+                OnMouseDown.Invoke();
+                return;
+            }
+
+            StateItem.ChangeState(StateItems.Drag);
+            if (_useCoroutine != null)
+            {
+                StopCoroutine(_useCoroutine);
+                _useCoroutine = null;
             }
         }
 
@@ -136,25 +159,29 @@ public class MoveMouseItem : MouseItem
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (StateItem.State == StateItems.Interacts) return;
+            if (StateItem.State is StateItems.Interacts or StateItems.Idle || !IsActive) return;
+
+            if (OnMouseUp.GetPersistentEventCount() > 0)
+            {
+                OnMouseUp.Invoke();
+                return;
+            }
 
             if (_useCoroutine == null)
             {
-                StateItem.ChangeState(StateItems.BackToRespawn);
-                
                 _useCoroutine = StartCoroutine(_moveToRespawn.StartAsync(() =>
                 {
                     StateItem.ChangeState(StateItems.Idle);
                 }));
             }
+
+            BackToRespawn();
         }
-        
+
         if (!Input.GetMouseButton(0))
         {
-            if (StateItem.State is not (StateItems.Interacts or StateItems.Idle))
-            {
+            if (StateItem.State is not (StateItems.Interacts or StateItems.Idle or StateItems.BackToRespawn))
                 BackToRespawn();
-            }
         }
     }
 
@@ -166,12 +193,22 @@ public class MoveMouseItem : MouseItem
             IsExtentsZ ? _collider.bounds.extents.z : 0);
         _moveToMouse.SetOffsetTransform(offset);
         _moveToMouse.SetTargetPosition(position + startPos);
-        _moveToMouse.SetTargetRotation(_targetStartRotate);
+        _moveToMouse.SetTargetRotation(IsRotateToCamera ? RotateToCamera() : _targetStartRotate);
         _moveToMouse.Start();
 
         if (_moveToMouse.Distance < 0.15f)
         {
             StateItem.ChangeState(StateItems.Drag);
         }
+    }
+
+    private Quaternion RotateToCamera()
+    {
+        var lookPos = Camera.main.transform.position - transform.position;
+        lookPos.x = (IsLockX) ? 0 : lookPos.x;
+        lookPos.y = (IsLockY) ? 0 : lookPos.y;
+        lookPos.z = (IsLockZ) ? 0 : lookPos.z;
+        var q = Quaternion.LookRotation(lookPos) * Quaternion.FromToRotation(_faceAxis, Vector3.forward);
+        return q;
     }
 }

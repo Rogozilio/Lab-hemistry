@@ -26,12 +26,12 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Q)) 
 		{
-			playerMotion.MoveToPreviousPoint(); 
+			//playerMotion.MoveToPreviousPoint(); 
 		}
 
 		if (Input.GetKeyDown(KeyCode.E)) 
 		{
-			playerMotion.MoveToNextPoint(); 
+			//playerMotion.MoveToNextPoint(); 
 		}
 
 		if (Input.GetKeyDown(KeyCode.Alpha1)) 

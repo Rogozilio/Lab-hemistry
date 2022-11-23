@@ -8,6 +8,7 @@ using UnityEngine;
 public class MoveMapEditor : Editor
 {
     private MoveMap _map;
+
     private void OnEnable()
     {
         _map = (MoveMap)target;
@@ -69,7 +70,7 @@ public class MoveMapEditor : Editor
                 GUILayout.Space(space);
                 EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
                 _map.datas[i].linearMoveValue.axisInput =
-                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearMoveValue.axisInput);
+                    (AxisInput)EditorGUILayout.EnumPopup(_map.datas[i].linearMoveValue.axisInput);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -97,7 +98,7 @@ public class MoveMapEditor : Editor
                 GUILayout.Space(space);
                 EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
                 _map.datas[i].linearRotateValue.axisInput =
-                    (Axis)EditorGUILayout.EnumPopup(_map.datas[i].linearRotateValue.axisInput);
+                    (AxisInput)EditorGUILayout.EnumPopup(_map.datas[i].linearRotateValue.axisInput);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -113,9 +114,14 @@ public class MoveMapEditor : Editor
                 _map.datas[i].linearRotateValue.edge.x =
                     EditorGUILayout.FloatField(_map.datas[i].linearRotateValue.edge.x, GUILayout.Width(45f));
                 EditorGUILayout.MinMaxSlider(ref _map.datas[i].linearRotateValue.edge.x,
-                    ref _map.datas[i].linearRotateValue.edge.y, 0f, 360f);
+                    ref _map.datas[i].linearRotateValue.edge.y, -180f, 180f);
                 _map.datas[i].linearRotateValue.edge.y =
                     EditorGUILayout.FloatField(_map.datas[i].linearRotateValue.edge.y, GUILayout.Width(45f));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                _map.datas[i].offsetPosition =
+                    EditorGUILayout.Vector3Field("Offset position", _map.datas[i].offsetPosition);
                 GUILayout.EndHorizontal();
             }
 

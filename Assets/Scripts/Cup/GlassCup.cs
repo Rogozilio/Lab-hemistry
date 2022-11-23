@@ -62,7 +62,8 @@ public class GlassCup : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        _stateGlassCup = StateGlassCup.Smoke;
+        if(_stateGlassCup == StateGlassCup.Marble_HCI_CO2)
+            _stateGlassCup = StateGlassCup.Smoke;
     }
 
     public void StartReleaseCO2()

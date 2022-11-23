@@ -88,6 +88,26 @@ public class CameraZoom : MonoBehaviour
 		resetting = false; 
 	}
 
+	public void ZoomInPoint(float minFOV = 10)
+	{
+		StartCoroutine(ZoomInProcess(minFOV)); 
+	}
+	
+	IEnumerator ZoomInProcess(float minFOV) 
+	{
+		resetting = true; 
+		
+		float resetSpeed = (camera.fieldOfView - minFOV) / resetTime; 
+
+		while (camera.fieldOfView > minFOV) 
+		{
+			ChangeFOV(-resetSpeed); 
+			yield return null; 
+		}
+		
+		resetting = false; 
+	}
+
 }
 
 }

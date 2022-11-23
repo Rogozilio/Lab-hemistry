@@ -6,13 +6,23 @@ using Random = UnityEngine.Random;
 
 public class Cup : MonoBehaviour
 {
+    public enum StateCup
+    {
+        Empty,
+        WithMagnesium,
+        WithMagnesiumAndWater,
+        Mix
+    }
+
     public GameObject Water;
     public GameObject Magnesium;
+    public GameObject PieceMagnesium;
 
     private int _countWaterDrop;
     private Vector3 _prevPosition;
     private Vector3 _waterOriginScale;
     private Renderer _rendererWater;
+    private StateCup _stateCup;
 
     private bool _isChangeScaleFinish;
     private bool _isChangeColorFinish;
@@ -37,6 +47,7 @@ public class Cup : MonoBehaviour
     private Color _originColor;
     private Color _resultColor;
 
+    public StateCup GetStateCup => _stateCup;
     public int CountWaterDrop => _countWaterDrop;
     public bool IsHaveShavingsPiece => Magnesium.activeSelf;
     public bool IsHaveWater => Water.activeSelf;
@@ -56,25 +67,34 @@ public class Cup : MonoBehaviour
 
         if (!Water.activeSelf)
             Water.SetActive(true);
-        
-        if (_countWaterDrop <= 10)
+
+        Water.transform.localScale = _waterOriginScale * (_countWaterDrop / 10f);
+
+        if (_countWaterDrop == 10) _stateCup = StateCup.WithMagnesiumAndWater;
+
+        if (_countWaterDrop > 10)
         {
-            Water.transform.localScale = _waterOriginScale * (_countWaterDrop / 10f);
+            var color = Water.GetComponent<Renderer>().material.GetColor("_BaseColor");
+            Water.GetComponent<Renderer>().material
+                .SetColor("_BaseColor", color + new Color(0.06f, -0.24f, -0.12f, 0f));
         }
+        
+        if(_countWaterDrop == 13) _stateCup = StateCup.Empty;
+            
     }
 
     public void AddPieceMagnesium(Transform target)
     {
+        _stateCup = StateCup.WithMagnesium;
         Magnesium.SetActive(true);
         Magnesium.transform.position = target.position;
         Magnesium.transform.rotation = target.rotation;
         Magnesium.transform.localScale = target.localScale;
+        target.gameObject.SetActive(false);
     }
 
     public void StirAll(Transform glassStick)
     {
-        var steps = 60;
-
         if (_prevPosition == Vector3.zero)
             _prevPosition = glassStick.position;
 
@@ -82,19 +102,15 @@ public class Cup : MonoBehaviour
         {
             _prevPosition = glassStick.position;
 
-            //Scale
-            var decrease = (1 - 0.5f) / steps;
-            if (Magnesium.transform.localScale.x >= 0.5f)
-                Magnesium.transform.localScale -= new Vector3(decrease, decrease, decrease);
+            var color = Magnesium.transform.GetChild(0).GetComponent<Renderer>().material.GetColor("_LiquidColor");
+            color -= new Color(0, 0, 0, 0.01f);
+            if (color.a > 0)
+                Magnesium.transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_LiquidColor", color);
             else
-                _isChangeScaleFinish = true;
-
-            var stepColor = (_resultColor - _originColor) / steps;
-            //Color
-            if (_rendererWater.material.color != _resultColor)
-                _rendererWater.material.color += stepColor;
-            else 
-                _isChangeColorFinish = true;
+            {
+                PieceMagnesium.SetActive(false);
+                _stateCup = StateCup.Mix;
+            }
         }
     }
 }

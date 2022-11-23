@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -25,14 +26,11 @@ public class ClickMouseItem : MouseItem
     
     private void MouseClick()
     {
-        if(!isActiveAndEnabled) return;
+        if (OnClicks.Length == 0) return;
+        
+        StateItem.ChangeState(StateItems.Interacts);
 
-        if (OnClicks.Length > 0)
-        {
-            StateItem.ChangeState(StateItems.Interacts);
-
-            OnClicks[_numberClick++].Invoke();
-            _numberClick = (_numberClick < OnClicks.Length) ? _numberClick: 0;
-        }
+        OnClicks[_numberClick++].Invoke();
+        _numberClick = (_numberClick < OnClicks.Length) ? _numberClick: 0;
     }
 }

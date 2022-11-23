@@ -44,6 +44,9 @@ public class ActionPlaceEditor : Editor
         GUILayout.Label("condition", GUILayout.ExpandWidth(true));
         GUILayout.EndHorizontal();
 
+        ShowOptionLinearRotate(_actionPlace.stateAfterOnActionStart, 0);
+        ShowOptionLinearMove(_actionPlace.stateAfterOnActionStart, 0);
+
         GUILayout.Space(10f);
 
         GUILayout.BeginHorizontal();
@@ -56,6 +59,9 @@ public class ActionPlaceEditor : Editor
         GUILayout.Label("condition", GUILayout.ExpandWidth(true));
         GUILayout.EndHorizontal();
 
+        ShowOptionLinearRotate(_actionPlace.stateAfterOnAction, 1);
+        ShowOptionLinearMove(_actionPlace.stateAfterOnAction, 1);
+        
         GUILayout.Space(10f);
 
         GUILayout.BeginHorizontal();
@@ -67,6 +73,9 @@ public class ActionPlaceEditor : Editor
             EditorGUILayout.Toggle(_actionPlace.isChangeStateOnCondition[2], GUILayout.Width(40f));
         GUILayout.Label("condition", GUILayout.ExpandWidth(true));
         GUILayout.EndHorizontal();
+        
+        ShowOptionLinearRotate(_actionPlace.stateAfterOnActionEnd, 2);
+        ShowOptionLinearMove(_actionPlace.stateAfterOnActionEnd, 2);
 
         if (_indexOnActionStart > 0)
             _actionPlace.stateAfterOnActionStart = (StateItems)_indexOnActionStart;
@@ -179,5 +188,80 @@ public class ActionPlaceEditor : Editor
     private void ShowValue(Type type, ref List<string> value, int i)
     {
         value[i] = EditorGUILayout.TextField(value[i]);
+    }
+
+    private void ShowOptionLinearRotate(StateItems state, int index)
+    {
+        if (state != StateItems.LinearRotate) return;
+        
+        var space = 20f;
+            
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        var linearValue = _actionPlace.linearValues[index];
+        linearValue.axisInput =
+            (AxisInput)EditorGUILayout.EnumPopup(linearValue.axisInput);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("Axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        linearValue.axis =
+            (Axis)EditorGUILayout.EnumPopup(linearValue.axis);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("EdgeMove", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        linearValue.edge.x =
+            EditorGUILayout.FloatField(linearValue.edge.x, GUILayout.Width(45f));
+        EditorGUILayout.MinMaxSlider(ref linearValue.edge.x,
+            ref linearValue.edge.y, -180f, 180f);
+        linearValue.edge.y =
+            EditorGUILayout.FloatField(linearValue.edge.y, GUILayout.Width(45f));
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+       _actionPlace.offsetLinearRotate[index] =
+            EditorGUILayout.Vector3Field("Offset position",   _actionPlace.offsetLinearRotate[index]);
+        GUILayout.EndHorizontal();
+
+        _actionPlace.linearValues[index] = linearValue;
+    }
+
+    private void ShowOptionLinearMove(StateItems state, int index)
+    {
+        if (state != StateItems.LinearMove) return;
+        
+        var space = 20f;
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("AxisInput", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        var linearValue = _actionPlace.linearValues[index];
+        linearValue.axisInput =
+            (AxisInput)EditorGUILayout.EnumPopup(linearValue.axisInput);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("Axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        linearValue.axis =
+            (Axis)EditorGUILayout.EnumPopup(linearValue.axis);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(space);
+        EditorGUILayout.LabelField("EdgeMove", GUILayout.Width(EditorGUIUtility.labelWidth - space));
+        linearValue.edge.x = EditorGUILayout.FloatField(linearValue.edge.x,
+            GUILayout.Width(45f));
+        EditorGUILayout.MinMaxSlider(ref linearValue.edge.x,
+            ref linearValue.edge.y, -100, 100);
+        linearValue.edge.y = EditorGUILayout.FloatField(linearValue.edge.y,
+            GUILayout.Width(45f));
+        GUILayout.EndHorizontal();
+        
+        _actionPlace.linearValues[index] = linearValue;
     }
 }

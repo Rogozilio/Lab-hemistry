@@ -13,22 +13,40 @@ public enum StateFlowLiquid
 
 public class LiquidFlow : MonoBehaviour
 {
-    private Color _colorLiquidOut;
-    private Color _colorLiquidIn;
+    private Color _colorLiquid;
+    private Color _colorSediment;
+    private LevelLiquid _liquid;
+    private LevelLiquid _sediment;
 
     public StateFlowLiquid stateFlowLiquid;
+    public Action actionInEnd;
     public float flowSpeed = 1f;
     public float step;
-    public float limit;
+    public float stepSediment;
+    public float howMach;
 
-    public Color SetColorOut
+    public Color SetColor
     {
-        set => _colorLiquidOut = value;
+        set => _colorLiquid = value;
+    }
+    
+    public Color SetColorSediment
+    {
+        set => _colorSediment = value;
     }
 
-    public Color SetColorIn
+    public Color SetColorFlow
     {
-        set => _colorLiquidIn = value;
+        set => GetComponent<Renderer>().material.SetColor("_BaseColor", value);
+    }
+
+    public LevelLiquid SetLiquid
+    {
+        set => _liquid = value;
+    }
+    public LevelLiquid SetSediment
+    {
+        set => _sediment = value;
     }
 
     public void SetPositionStart(Vector3 start)
@@ -41,28 +59,36 @@ public class LiquidFlow : MonoBehaviour
         stateFlowLiquid = (StateFlowLiquid)index;
     }
 
-    public void PourOutLiquid(LevelLiquid levelLiquid)
+    public void PourOutLiquid(LevelLiquid levelLiquid, LevelLiquid sediment = null)
     {
-        if (levelLiquid.levelLiquid > limit)
-            levelLiquid.levelLiquid -= step;
+        if (howMach > 0)
+        {
+            levelLiquid.level -= (step < howMach) ? step : howMach;
+            if (sediment) sediment.level -= stepSediment;
+            
+            PourInLiquid();
+            
+            howMach -= step;
+        }
         else
+        {
             stateFlowLiquid = StateFlowLiquid.EndPour;
+        }
     }
 
-    public void PourInLiquid(LevelLiquid levelLiquid)
+    private void PourInLiquid()
     {
-        if (stateFlowLiquid != StateFlowLiquid.Pour) return;
+        if(!_liquid.gameObject.activeSelf)
+            _liquid.gameObject.SetActive(true);
+
+        _liquid.level += (step < howMach) ? step : howMach;
+
+        _liquid.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorLiquid);
         
-        if(!levelLiquid.gameObject.activeSelf)
-            levelLiquid.gameObject.SetActive(true);
+        if(!_sediment) return;
 
-        levelLiquid.levelLiquid += step;
-
-        if (_colorLiquidOut != _colorLiquidIn)
-        {
-            _colorLiquidIn = _colorLiquidOut;
-            levelLiquid.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorLiquidIn);
-        }
+        _sediment.level += stepSediment;
+        _sediment.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorSediment);
     }
 
     private void OnEnable()
@@ -83,6 +109,8 @@ public class LiquidFlow : MonoBehaviour
                 if (transform.localScale.z <= 0)
                 {
                     stateFlowLiquid = StateFlowLiquid.NotPour;
+                    
+                    actionInEnd?.Invoke();
                     gameObject.SetActive(false);
                 }
 

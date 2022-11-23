@@ -4,34 +4,28 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public enum Axis
-{
-    X,
-    Y,
-    Z
-}
 
 public class LinearMove : LinearInput
 {
     public Axis axis = Axis.Y;
-    
-    /*[MinMaxSlider(-100, 100)]*/public Vector2 EdgeMove;
+
+    public Vector2 EdgeMove;
     public float speed = 1f;
 
+    private Space _space;
     private Vector3 _startPoint;
-    
+
     private int _index;
     private Vector3 _nextPosition;
 
     private StateItem _stateItem;
-    
+
     public LinearValue linearValue => new LinearValue()
     {
         axis = axis,
         axisInput = axisInput,
         edge = EdgeMove
     };
-
 
     private void Awake()
     {
@@ -49,34 +43,33 @@ public class LinearMove : LinearInput
         UpdateOriginInput();
         base.OnEnable();
         _startPoint = transform.position;
-        _index = (int)axis;
+        _space = (axis < Axis.localX) ? Space.World : Space.Self;
+        _index = (axis < Axis.localX) ? (int)axis : (int)axis - 3;
     }
 
     private void Update()
     {
-        var range =  transform.position - _startPoint;
-        
-        if (GetInputValue() > 0)
-        {
-            _nextPosition[_index] = GetInputValue() / 200f * speed;
-            if (GetNextPosition(_nextPosition, range) > EdgeMove.y)
-                _nextPosition[_index] = EdgeMove.y - range[_index];
-            transform.position += _nextPosition;
-        }
-        else if (GetInputValue() < 0)
-        {
-            _nextPosition[_index] = GetInputValue() / 200f * speed;
-            if (GetNextPosition(_nextPosition, range) < EdgeMove.x)
-                _nextPosition[_index] = EdgeMove.x - range[_index]; 
-            transform.position += _nextPosition;
-        }
-      
+        var inputDir = GetInputValue();
+
+        if (inputDir == 0) return;
+
+        var distance = (transform.position[_index] > _startPoint[_index])
+            ? Vector3.Distance(transform.position, _startPoint)
+            : -Vector3.Distance(transform.position, _startPoint);
+
+        _nextPosition[_index] = inputDir / 200f * speed;
+
+        _nextPosition[_index] =
+            Mathf.Clamp(_nextPosition[_index], EdgeMove.x - distance, EdgeMove.y - distance);
+
+        transform.Translate(_nextPosition, _space);
+
         UpdateOriginInput();
     }
-    
-    private float GetNextPosition(Vector3 nextPositionFromInput, Vector3 range)
+
+    private float GetNextPosition(Vector3 nextPositionFromInput, Vector3 distance)
     {
-        return (range + nextPositionFromInput)[_index];
+        return (distance + nextPositionFromInput)[_index];
     }
 
     private void LateUpdate()

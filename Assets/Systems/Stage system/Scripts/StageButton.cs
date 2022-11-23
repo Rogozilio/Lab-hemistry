@@ -14,7 +14,11 @@ public class StageButton : MonoBehaviour
     // parameters 
     [SerializeField] GameObject currentImage; 
     [SerializeField] GameObject activeImage; 
-    [SerializeField] GameObject inactiveImage; 
+    [SerializeField] GameObject inactiveImage;
+
+    [SerializeField] List<StageButton> subStages;
+
+    public List<StageButton> GetSubStages => subStages;
     // connections 
     Button button; 
     StageSystem stageSystem; 

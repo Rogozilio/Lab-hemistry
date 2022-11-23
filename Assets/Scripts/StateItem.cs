@@ -22,9 +22,9 @@ public class StateItem : MonoBehaviour
 { 
     public StateItems State = StateItems.Idle;
     
-    public void ChangeState(StateItems state, LinearValue linearValue = default)
+    public void ChangeState(StateItems state, LinearValue linearValue = default, Vector3 offset = default)
     {
-        SetState(state, linearValue);
+        SetState(state, linearValue, offset);
         
         //Parent
         if(transform.parent.TryGetComponent(out StateItem parentStateItem))
@@ -37,7 +37,7 @@ public class StateItem : MonoBehaviour
         }
     }
 
-    private void SetState(StateItems state, LinearValue linearValue = default)
+    private void SetState(StateItems state, LinearValue linearValue = default, Vector3 offset = default)
     {
         switch (state)
         {
@@ -72,6 +72,7 @@ public class StateItem : MonoBehaviour
                 linearRotate.axisInput = linearValue.axisInput;
                 linearRotate.axis = linearValue.axis;
                 linearRotate.edgeRotate = linearValue.edge;
+                linearRotate.offsetPosition = offset;
                 linearRotate.enabled = true;
                 break;
             default: 

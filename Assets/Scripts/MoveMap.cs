@@ -18,7 +18,7 @@ public class ItemMoveMap
 [Serializable]
 public struct LinearValue
 {
-    public Axis axisInput;
+    public AxisInput axisInput;
     public Axis axis;
     public Vector2 edge;
 }
@@ -32,6 +32,7 @@ public class ItemMap
     public LinearValue linearMoveValue;
 
     public LinearValue linearRotateValue;
+    public Vector3 offsetPosition;
 
     public UnityEvent onEventInEnd;
 
@@ -53,6 +54,12 @@ public class MoveMap : MonoBehaviour
         _stateItem = GetComponent<StateItem>();
     }
 
+    public void StartToMove0(Transform target)
+    {
+        datas[0].move.target = target;
+        StartToMove(0);
+    }
+
     public void StartToMove(int index)
     {
         var data = datas[index].move;
@@ -67,9 +74,6 @@ public class MoveMap : MonoBehaviour
     {
         while (_moveToMapPoint.Distance > 0.001f || _moveToMapPoint.Angle > 0.001f)
         {
-            if (_stateItem?.State == StateItems.Idle)
-                yield break;
-
             _moveToMapPoint.Start();
 
             yield return new WaitForFixedUpdate();
@@ -81,7 +85,7 @@ public class MoveMap : MonoBehaviour
                 _stateItem?.ChangeState(datas[index].nextState, datas[index].linearMoveValue);
                 break;
             case StateItems.LinearRotate:
-                _stateItem?.ChangeState(datas[index].nextState, datas[index].linearRotateValue);
+                _stateItem?.ChangeState(datas[index].nextState, datas[index].linearRotateValue, datas[index].offsetPosition);
                 break;
             default:
                 _stateItem?.ChangeState(datas[index].nextState);

@@ -14,6 +14,7 @@ public class Forceps : MonoBehaviour
     }
 
     [SerializeField] private GameObject takeObject;
+    [SerializeField] private GameObject pieceMagnesium;
     private Transform _leftHalfForceps;
     private Transform _rightHalfForceps;
     private StateForceps _stateForceps;
@@ -35,6 +36,7 @@ public class Forceps : MonoBehaviour
         _rotateToLeftForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
         _rotateToRightForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
     }
+
 
     public void StartTakeInForceps(int stateForceps)
     {
@@ -68,7 +70,23 @@ public class Forceps : MonoBehaviour
             _stateItem.ChangeState(StateItems.LinearMove, linearValue);
         }));
 
-        takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
+        //takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
+        takeObject.SetActive(true);
+    }
+
+    public void EnableLayerWhite()
+    {
+        _leftHalfForceps.GetChild(0).gameObject.SetActive(true);
+        _rightHalfForceps.GetChild(0).gameObject.SetActive(true);
+        takeObject.transform.GetChild(2).gameObject.SetActive(true);
+        takeObject.transform.GetChild(3).gameObject.SetActive(true);
+    }
+
+    public void EnablePieceMagnesium()
+    {
+        pieceMagnesium.SetActive(true);
+        pieceMagnesium.transform.position = takeObject.transform.position;
+        pieceMagnesium.transform.forward = Vector3.down;
     }
 
     public void StartFireMagnesium()
@@ -80,14 +98,17 @@ public class Forceps : MonoBehaviour
     {
         if (_stateForceps != StateForceps.InForceps) yield break;
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(1.3f);
 
-        var light = takeObject.GetComponent<Light>();
-        var minIntensity = 0.01f;
-        var maxIntensity = 0.12f;
+        var smoke = takeObject.transform.GetChild(0).GetComponent<ParticleSystem>();
+        var light = takeObject.transform.GetChild(1).GetComponent<Light>();
+        var minIntensity = 0.05f;
+        var maxIntensity = 0.1f;
         light.enabled = true;
         light.intensity = 0f;
-        var time = 1.5f;
+        var time = 2f;
+
+        smoke.Play();
 
         while (light.intensity < minIntensity)
         {
@@ -97,6 +118,8 @@ public class Forceps : MonoBehaviour
 
             yield return new WaitForSeconds(delta);
         }
+
+        GetComponent<MoveMap>().StartToMove(2);
 
         while (time > 0)
         {
@@ -114,6 +137,22 @@ public class Forceps : MonoBehaviour
             light.intensity -= delta;
 
             yield return new WaitForSeconds(delta);
+        }
+
+        smoke.Stop();
+
+        if (FindObjectOfType<Cup>().IsHaveShavingsPiece)
+        {
+            GetComponent<MoveMouseItem>().BackToRespawnOrBackToMouse();
+        }
+        else
+        {
+            GetComponent<StateItem>().ChangeState(StateItems.LinearMove, new LinearValue()
+            {
+                axisInput = AxisInput.Y,
+                axis = Axis.Y,
+                edge = new Vector2(-0.115f, 100f)
+            });
         }
 
         _stateForceps = StateForceps.BurnedInForceps;

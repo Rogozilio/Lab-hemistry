@@ -3,29 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
-namespace VirtualLab.PlayerMotion 
+namespace VirtualLab.PlayerMotion
 {
+    public class NavPoints : AbstractNavPoints
+    {
+        [SerializeField] NavPoint[] points;
 
-public class NavPoints : AbstractNavPoints 
-{
-	[SerializeField] NavPoint table; 
-
-	public const int Table = 1; 
-
+        //public const int Table = 1;
 
 
-	public override int pointCount => 1; 
+        public override int pointCount => points.Length;
 
-	public override NavPoint GetPoint (int pointID) 
-	{
-		switch (pointID) 
-		{
-			case Table:    return table; 
-			default: 	   throw new UnityException("Point ID is out of range"); 
-		}
-	}
-
-}
-
+        public override NavPoint GetPoint(int pointID)
+        {
+            return points[pointID - 1] != null ? points[pointID - 1] : throw new UnityException("Point ID is out of range");
+            // switch (pointID) 
+            // {
+            // 	case Table:    return points; 
+            // 	default: 	   throw new UnityException("Point ID is out of range"); 
+            // }
+        }
+    }
 }
