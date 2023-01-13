@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Forceps : MonoBehaviour
+public class Forceps : MonoBehaviour, IRestart
 {
     public enum StateForceps
     {
-        NotInForceps,
-        InForceps,
-        BurnedInForceps
+        Empty,
+        Busy,
+        BurnedIn,
+        NotActive
     }
 
     [SerializeField] private GameObject takeObject;
@@ -18,18 +19,25 @@ public class Forceps : MonoBehaviour
     private Transform _leftHalfForceps;
     private Transform _rightHalfForceps;
     private StateForceps _stateForceps;
+    private StepStageSystem _stepStageSystem;
     private StateItem _stateItem;
 
     private MoveToPoint _rotateToLeftForceps;
     private MoveToPoint _rotateToRightForceps;
 
+    private Quaternion _originRotateLeftHalfForceps;
+    private Quaternion _originRotateRightHalfForceps;
+
     public StateForceps stateForceps => _stateForceps;
 
-    private void OnEnable()
+    private void Awake()
     {
+        _stepStageSystem = FindObjectOfType<StepStageSystem>();
         _leftHalfForceps = transform.GetChild(0);
         _rightHalfForceps = transform.GetChild(1);
-        _stateForceps = StateForceps.NotInForceps;
+        _originRotateLeftHalfForceps = _leftHalfForceps.rotation;
+        _originRotateRightHalfForceps = _rightHalfForceps.rotation;
+        _stateForceps = StateForceps.Empty;
         _stateItem = GetComponent<StateItem>();
         _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps);
         _rotateToRightForceps = new MoveToPoint(_rightHalfForceps);
@@ -37,66 +45,9 @@ public class Forceps : MonoBehaviour
         _rotateToRightForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
     }
 
-
-    public void StartTakeInForceps(int stateForceps)
-    {
-        if (_stateForceps == (StateForceps)stateForceps) return;
-
-        _stateForceps = (StateForceps)stateForceps;
-
-        var delta = ((StateForceps)stateForceps == StateForceps.InForceps) ? 4 : -4;
-
-        var newRotateLeftForceps = Quaternion.Euler(_leftHalfForceps.rotation.eulerAngles.x,
-            _leftHalfForceps.rotation.eulerAngles.y, _leftHalfForceps.rotation.eulerAngles.z + delta);
-        var newRotateRightForceps = Quaternion.Euler(_rightHalfForceps.rotation.eulerAngles.x,
-            _rightHalfForceps.rotation.eulerAngles.y, _rightHalfForceps.rotation.eulerAngles.z - delta);
-
-        _rotateToLeftForceps.SetTargetPosition(_leftHalfForceps.position);
-        _rotateToRightForceps.SetTargetPosition(_rightHalfForceps.position);
-        _rotateToLeftForceps.SetTargetRotation(newRotateLeftForceps);
-        _rotateToRightForceps.SetTargetRotation(newRotateRightForceps);
-
-        _stateItem.ChangeState(StateItems.Interacts);
-
-        var linearValue = GetComponent<LinearMove>().linearValue;
-        linearValue.edge = new Vector2(0, 100);
-
-        StartCoroutine(_rotateToLeftForceps.StartAsync(() =>
-        {
-            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
-        }));
-        StartCoroutine(_rotateToRightForceps.StartAsync(() =>
-        {
-            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
-        }));
-
-        //takeObject.SetActive((StateForceps)stateForceps == StateForceps.InForceps);
-        takeObject.SetActive(true);
-    }
-
-    public void EnableLayerWhite()
-    {
-        _leftHalfForceps.GetChild(0).gameObject.SetActive(true);
-        _rightHalfForceps.GetChild(0).gameObject.SetActive(true);
-        takeObject.transform.GetChild(2).gameObject.SetActive(true);
-        takeObject.transform.GetChild(3).gameObject.SetActive(true);
-    }
-
-    public void EnablePieceMagnesium()
-    {
-        pieceMagnesium.SetActive(true);
-        pieceMagnesium.transform.position = takeObject.transform.position;
-        pieceMagnesium.transform.forward = Vector3.down;
-    }
-
-    public void StartFireMagnesium()
-    {
-        StartCoroutine(FireMagnesium());
-    }
-
     private IEnumerator FireMagnesium()
     {
-        if (_stateForceps != StateForceps.InForceps) yield break;
+        if (_stateForceps != StateForceps.Busy) yield break;
 
         yield return new WaitForSeconds(1.3f);
 
@@ -155,7 +106,83 @@ public class Forceps : MonoBehaviour
             });
         }
 
-        _stateForceps = StateForceps.BurnedInForceps;
+        _stateForceps = StateForceps.BurnedIn;
         light.enabled = false;
+        _stepStageSystem.NextStep();
+    }
+    
+    public void StartTakeInForceps(int stateForceps)
+    {
+        if (_stateForceps == (StateForceps)stateForceps) return;
+
+        _stateForceps = (StateForceps)stateForceps;
+
+        var delta = ((StateForceps)stateForceps == StateForceps.Busy) ? 4 : -4;
+
+        var newRotateLeftForceps = Quaternion.Euler(_leftHalfForceps.rotation.eulerAngles.x,
+            _leftHalfForceps.rotation.eulerAngles.y, _leftHalfForceps.rotation.eulerAngles.z + delta);
+        var newRotateRightForceps = Quaternion.Euler(_rightHalfForceps.rotation.eulerAngles.x,
+            _rightHalfForceps.rotation.eulerAngles.y, _rightHalfForceps.rotation.eulerAngles.z - delta);
+
+        _rotateToLeftForceps.SetTargetPosition(_leftHalfForceps.position);
+        _rotateToRightForceps.SetTargetPosition(_rightHalfForceps.position);
+        _rotateToLeftForceps.SetTargetRotation(newRotateLeftForceps);
+        _rotateToRightForceps.SetTargetRotation(newRotateRightForceps);
+
+        _stateItem.ChangeState(StateItems.Interacts);
+        _stepStageSystem.NextStep();
+
+        var linearValue = GetComponent<LinearMove>().linearValue;
+        linearValue.edge = new Vector2(0, 100);
+
+        StartCoroutine(_rotateToLeftForceps.StartAsync(() =>
+        {
+            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
+        }));
+        StartCoroutine(_rotateToRightForceps.StartAsync(() =>
+        {
+            _stateItem.ChangeState(StateItems.LinearMove, linearValue);
+        }));
+        
+        takeObject.SetActive(true);
+    }
+    
+    private void DisableLayerWhite()
+    {
+        _leftHalfForceps.GetChild(0).gameObject.SetActive(false);
+        _rightHalfForceps.GetChild(0).gameObject.SetActive(false);
+        takeObject.transform.GetChild(2).gameObject.SetActive(false);
+        takeObject.transform.GetChild(3).gameObject.SetActive(false);
+    }
+
+    public void EnableLayerWhite()
+    {
+        _leftHalfForceps.GetChild(0).gameObject.SetActive(true);
+        _rightHalfForceps.GetChild(0).gameObject.SetActive(true);
+        takeObject.transform.GetChild(2).gameObject.SetActive(true);
+        takeObject.transform.GetChild(3).gameObject.SetActive(true);
+    }
+
+    public void EnablePieceMagnesium()
+    {
+        pieceMagnesium.SetActive(true);
+        pieceMagnesium.transform.position = takeObject.transform.position;
+        pieceMagnesium.transform.forward = Vector3.down;
+    }
+
+    public void StartFireMagnesium()
+    {
+        StartCoroutine(FireMagnesium());
+    }
+
+    public void Restart()
+    {
+        _stepStageSystem.RestartStage();
+        _stateForceps = StateForceps.Empty;
+        takeObject.SetActive(false);
+        pieceMagnesium.SetActive(false);
+        _leftHalfForceps.rotation = _originRotateLeftHalfForceps;
+        _rightHalfForceps.rotation = _originRotateRightHalfForceps;
+        DisableLayerWhite();
     }
 }

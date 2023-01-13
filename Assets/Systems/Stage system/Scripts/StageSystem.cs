@@ -14,6 +14,7 @@ namespace VirtualLab
         [SerializeField] List<GameObject> stageTitles;
 
         [SerializeField] RestartDialog restartDialog;
+        [SerializeField] StepStageSystem stepStageSystem;
 
         // connections 
         List<StageButton> buttons = new List<StageButton>();
@@ -71,7 +72,7 @@ namespace VirtualLab
 
         public void OnRestartConfirmed()
         {
-            Restart();
+            stages[buttonIndex].Restart();
         }
 
 
@@ -116,11 +117,11 @@ namespace VirtualLab
 
             foreach (GameObject root in roots)
             {
-                IResettable[] objects = root.GetComponentsInChildren<IResettable>(true);
+                var objects = root.GetComponentsInChildren<IRestart>(true);
 
-                foreach (IResettable obj in objects)
+                foreach (var obj in objects)
                 {
-                    obj.ResetMe();
+                    obj.Restart();
                 }
             }
         }
@@ -162,9 +163,11 @@ namespace VirtualLab
             }
 
             if (isSubStage) subStageIndex = index; else stageIndex = index;
-
+            buttonIndex = index;
+            
             stages[index].StartStage();
             buttons[index].SetState(StageButton.State.Current);
+            stepStageSystem.SwitchStage(stages[index].name.Split(" ")[1]);
             SwitchSubStageButton(true, index);
         }
 

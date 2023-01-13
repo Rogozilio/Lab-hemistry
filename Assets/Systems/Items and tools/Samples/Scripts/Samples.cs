@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine; 
@@ -10,9 +11,9 @@ namespace VirtualLab
 
 public class Samples : MonoBehaviour
 {
-	[SerializeField] List<Sample> samples; 
-    
+	[SerializeField] List<Sample> samples;
 
+	public List<Sample> value => samples;
 
 	//  Lab data  --------------------------------------------------- 
 	public void InitLabData (AppData appData) 

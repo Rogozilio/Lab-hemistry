@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene1Sample5 : MiniTestTube
+    public class MiniTestTubeScene1Sample5 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS1E5
         {
@@ -35,8 +35,14 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Empty, TypeLiquid.Pb_NO3_2, Operator.More, 0,
                 StateMiniTestTubeS1E5.Pb_NO3_2, () =>
                 {
-                    CheckTwoMiniTestTubeWithPbNO3_2();
+                    ChangeOtherTestTube(StateMiniTestTubeS1E5.NotActive);
                     ChangeColorLiquid(clearColor);
+                });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 6,
+                () =>
+                {
+                    _stepStageSystem.NextStep();
+                    _state = GetKIOrK2CrO4();
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.More, 0,
                 () => { ChangeColorLiquid(clearColor); });
@@ -45,28 +51,46 @@ namespace Mini_test_tube
                 StateMiniTestTubeS1E5.Pb_NO3_2_KI,
                 () =>
                 {
-                    CheckKIAndK2CrO4();
                     ChangeColorLiquid(new Color32(203, 124, 0, 157), stepKI--);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2_KI, TypeLiquid.KI, Operator.More, 0,
-                () => { ChangeColorLiquid(new Color32(203, 124, 0, 157), stepKI--); });
+                () =>
+                {
+                    ChangeColorLiquid(new Color32(203, 124, 0, 157), stepKI--);
+                    if (stepKI == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        ChangeOtherTestTube(StateMiniTestTubeS1E5.Empty);
+                        stepKI = 2;
+                    }
+                });
             byte stepK2Cro4 = 2;
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.K2CrO4, Operator.More, 0,
                 StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4,
                 () =>
                 {
-                    CheckKIAndK2CrO4();
                     ChangeColorLiquid(new Color32(145, 145, 0, 157), stepK2Cro4--);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4, TypeLiquid.K2CrO4, Operator.More, 0,
-                () => { ChangeColorLiquid(new Color32(145, 145, 0, 157), stepK2Cro4--); });
+                () => 
+                { 
+                    ChangeColorLiquid(new Color32(145, 145, 0, 157), stepK2Cro4--);
+                    if (stepK2Cro4 == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        ChangeOtherTestTube(StateMiniTestTubeS1E5.K2CrO4);
+                        stepK2Cro4 = 2;
+                    }
+                });
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Empty, TypeLiquid.K2CrO4, Operator.More, 0,
                 StateMiniTestTubeS1E5.K2CrO4, () =>
                 {
-                    CheckFirstK2CrO4();
+                    ChangeOtherTestTube(StateMiniTestTubeS1E5.NotActive);
                     ChangeColorLiquid(new Color32(94, 71, 0, 69));
                 });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.K2CrO4, TypeLiquid.K2CrO4, Operator.Equally, 6,
+                () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.K2CrO4, TypeLiquid.K2CrO4, Operator.More, 0,
                 () => { ChangeColorLiquid(new Color32(94, 71, 0, 69)); });
             byte stepAgNO3 = 3;
@@ -74,7 +98,15 @@ namespace Mini_test_tube
                 StateMiniTestTubeS1E5.K2CrO4_AgNO3,
                 () => { ChangeColorLiquid(new Color32(102, 10, 6, 142), stepAgNO3--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.K2CrO4_AgNO3, TypeLiquid.AgNO3, Operator.More, 0,
-                () => { ChangeColorLiquid(new Color32(102, 10, 6, 142), stepAgNO3--); });
+                () =>
+                {
+                    ChangeColorLiquid(new Color32(102, 10, 6, 142), stepAgNO3--);
+                    if (stepAgNO3 == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        stepAgNO3 = 3;
+                    }
+                });
         }
 
         public override void SetStateMiniTestTube(int index)
@@ -88,68 +120,37 @@ namespace Mini_test_tube
 
             _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
         }
-
-        private void CheckTwoMiniTestTubeWithPbNO3_2()
-        {
-            var countPbNO3_3 = 0;
-            MiniTestTubeScene1Sample5 last = null;
-            var miniTestTubes = FindObjectsOfType<MiniTestTubeScene1Sample5>();
-
-            foreach (var miniTestTube in miniTestTubes)
-            {
-                if (miniTestTube.GetState is StateMiniTestTubeS1E5.Pb_NO3_2 or StateMiniTestTubeS1E5.Pb_NO3_2_KI
-                    or StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4)
-                    countPbNO3_3++;
-                else
-                {
-                    last = miniTestTube;
-                }
-            }
-
-            if (countPbNO3_3 != 2) return;
-
-            last.SetStateMiniTestTube((int)StateMiniTestTubeS1E5.K2CrO4);
-        }
-
-        private void CheckFirstK2CrO4()
+        
+        private void ChangeOtherTestTube(StateMiniTestTubeS1E5 newState)
         {
             var miniTestTubes = FindObjectsOfType<MiniTestTubeScene1Sample5>();
 
             foreach (var miniTestTube in miniTestTubes)
             {
-                if (miniTestTube.GetState == StateMiniTestTubeS1E5.Empty)
-                {
-                    miniTestTube.SetStateMiniTestTube((int)StateMiniTestTubeS1E5.Pb_NO3_2);
-                }
+                if (miniTestTube == this) continue;
+                if(miniTestTube.GetState != StateMiniTestTubeS1E5.Pb_NO3_2_KI && 
+                   miniTestTube.GetState != StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4)
+                    miniTestTube.SetStateMiniTestTube((int)newState);
             }
         }
 
-        private void CheckKIAndK2CrO4()
+        private StateMiniTestTubeS1E5 GetKIOrK2CrO4()
         {
             var miniTestTubes = FindObjectsOfType<MiniTestTubeScene1Sample5>();
-            MiniTestTubeScene1Sample5 Pb_NoO3_2 = null;
-            var isKI = false;
-            var isk2CrO4 = false;
-            
+
             foreach (var miniTestTube in miniTestTubes)
             {
-                if (miniTestTube.GetState == StateMiniTestTubeS1E5.Pb_NO3_2)
-                {
-                    Pb_NoO3_2 = miniTestTube;
-                }
-
                 if (miniTestTube.GetState == StateMiniTestTubeS1E5.Pb_NO3_2_KI)
-                {
-                    isKI = true;
-                }
-                if (miniTestTube.GetState == StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4)
-                {
-                    isk2CrO4 = true;
-                }
+                    return StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4;
             }
 
-            if(isKI) Pb_NoO3_2?.SetStateMiniTestTube((int)StateMiniTestTubeS1E5.Pb_NO3_2_K2CrO4);
-            if(isk2CrO4) Pb_NoO3_2?.SetStateMiniTestTube((int)StateMiniTestTubeS1E5.Pb_NO3_2_KI);
+            return StateMiniTestTubeS1E5.Pb_NO3_2_KI;
+        }
+
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS1E5.Empty;
         }
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 
-public class MiniTestTubeScene1Sample1_2 : MiniTestTube
+public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
 {
     [Serializable]
     public enum StateMiniTestTubeS1E1_2
@@ -27,6 +27,8 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
     public GameObject BurnedLiquid;
 
     private StateMiniTestTubeS1E1_2 _state;
+
+    private Color _originColorSediment;
 
     private Renderer _rendererSediment;
     private Renderer _rendererBurnLiquid;
@@ -49,9 +51,11 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
     private void Awake()
     {
         base.Awake();
-
+        
+        liquidFlowScript.SetUniqueActionInEnd = () => { _stepStageSystem.NextStep(); };
         _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS1E1_2>();
         _rendererSediment = Sediment.GetComponent<Renderer>();
+        _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
         _rendererBurnLiquid = BurnedLiquid.GetComponent<Renderer>();
         _levelBurnLiquid = BurnedLiquid.GetComponent<LevelLiquid>();
 
@@ -60,6 +64,12 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
             StateMiniTestTubeS1E1_2.CuSO4, () =>
             {
                 ChangeColorLiquid(new Color32(12, 58, 50, 80));
+            });
+        _actionAddLiquid.AddAction(
+            StateMiniTestTubeS1E1_2.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 8,
+             () =>
+            {
+                _stepStageSystem.NextStep();
             });
         byte stepNaOH = 4;
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4, TypeLiquid.NaOH, Operator.More, 8,
@@ -75,18 +85,24 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
             {
                 Sediment.level = _levelLiquid.level / 2f;
                 ChangeColorLiquid(_rendererSediment,new Color32(2, 25, 51, 255), stepNaOH--);
+                if (stepNaOH == 0)
+                {
+                    _stepStageSystem.NextStep();
+                    stepNaOH = 4;
+                }
             });
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half, TypeLiquid.NaOH,
             Operator.More, 0,
             StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH, () => { _countNaOH++;});
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH, TypeLiquid.NaOH,
-            Operator.MoreEquals, 0, () => { _countNaOH++;});
+            Operator.MoreEquals, 0, () => { _countNaOH++; if(_countNaOH == 15) _stepStageSystem.NextStep();});
         byte stepH2SO4 = 15;
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half, TypeLiquid.H2SO4,
             Operator.More, 0,
             StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_H2SO4, () =>
             {
                 _countH2SO4++;
+                ChangeOtherTestTube(StateMiniTestTubeS1E1_2.NotActive);
                 ChangeColorLiquid(new Color(0.53f, 0.65f, 0.86f, 0.04f), stepH2SO4--);
             });
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_H2SO4, TypeLiquid.H2SO4,
@@ -94,6 +110,12 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
             {
                 _countH2SO4++;
                 ChangeColorLiquid(new Color(0.53f, 0.65f, 0.86f, 0.04f), stepH2SO4--);
+                if (stepH2SO4 == 0)
+                {
+                    ChangeOtherTestTube(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH);
+                    _stepStageSystem.NextStep();
+                    stepH2SO4 = 15;
+                }
             });
     }
 
@@ -123,6 +145,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
         }
 
         _state = StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire;
+        _stepStageSystem.NextStep();
 
         rendererLiquid.material.SetColor("_LiquidColor"
             , _rendererBurnLiquid.material.GetColor("_LiquidColor"));
@@ -133,5 +156,29 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube
     public void StartBurnLiquid()
     {
         StartCoroutine(BurnLiquid());
+    }
+    
+    private void ChangeOtherTestTube(StateMiniTestTubeS1E1_2 newState)
+    {
+        var miniTestTubes = FindObjectsOfType<MiniTestTubeScene1Sample1_2>();
+
+        foreach (var miniTestTube in miniTestTubes)
+        {
+            if (miniTestTube == this) continue;
+            miniTestTube.SetStateMiniTestTube((int)newState); 
+            return;
+        }
+    }
+
+    public void Restart()
+    {
+        RestartBase();
+        _countNaOH = 0;
+        _countH2SO4 = 0;
+        Sediment.level = 0;
+        _levelBurnLiquid.level = 0;
+        _state = StateMiniTestTubeS1E1_2.Empty;
+        Sediment.gameObject.SetActive(true);
+        _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
     }
 }

@@ -49,7 +49,7 @@ namespace Mini_test_tube
             base.Awake();
 
             _rendererSediment = Sediment.GetComponent<Renderer>();
-            liquidFlowScript.actionInEnd += () => { QuarterLastTestTube(); };
+            liquidFlowScript.SetUniqueActionInEnd = QuarterLastTestTube;
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E1>();
 

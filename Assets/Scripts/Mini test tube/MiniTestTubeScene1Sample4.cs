@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene1Sample4 : MiniTestTube
+    public class MiniTestTubeScene1Sample4 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS1E4
         {
@@ -21,6 +21,7 @@ namespace Mini_test_tube
         private ActionAddLiquid<StateMiniTestTubeS1E4> _actionAddLiquid;
         private StateMiniTestTubeS1E4 _state;
         private Coroutine _effervescenceLiquid;
+        private Vector3 _originPositionBubble;
         private float _heightEffervescence;
         private float _multiply = 1;
 
@@ -34,24 +35,38 @@ namespace Mini_test_tube
         {
             base.Awake();
 
+            _originPositionBubble = Bubbles.gameObject.transform.localPosition;
+            
             var newColor = new Color32(172, 198, 219, 30);
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS1E4>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Empty, TypeLiquid.NH4CI, Operator.More, 0,
                 StateMiniTestTubeS1E4.NH4CI,
-                () => ChangeColorLiquid(newColor));
+                () =>
+                {
+                    ChangeColorLiquid(newColor);
+                    ChangeOtherTestTube(StateMiniTestTubeS1E4.NotActive);
+                });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.Equally, 8,
+                () => _stepStageSystem.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.More, 0,
                 () => ChangeColorLiquid(newColor));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NaOH, Operator.More, 0,
                 StateMiniTestTubeS1E4.NH4CI_NaOH);
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI_NaOH, TypeLiquid.NaOH, Operator.Equally, 16,
+                () => _stepStageSystem.NextStep());
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Empty, TypeLiquid.Na2CO3, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3,
                 () => ChangeColorLiquid(newColor));
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.Equally, 10,
+                () => _stepStageSystem.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.More, 0,
                 () => ChangeColorLiquid(newColor));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.HCI, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3_HCI);
+            _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3_HCI, TypeLiquid.HCI, Operator.Equally, 14,
+                () => _stepStageSystem.NextStep());
         }
 
         public override void SetStateMiniTestTube(int index)
@@ -85,6 +100,7 @@ namespace Mini_test_tube
 
             var time = 0f;
             var bubblesVelocityOverLifetime = Bubbles.velocityOverLifetime;
+          
             while (time < 0.3f)
             {
                 var localPositionBubble = Bubbles.gameObject.transform.localPosition;
@@ -105,6 +121,7 @@ namespace Mini_test_tube
             _state = StateMiniTestTubeS1E4.NH4CI_NaOH_fire;
 
             var bubblesMain = Bubbles.main;
+            var originStartLifetimeMultiplier = bubblesMain.startLifetimeMultiplier;
             while (bubblesMain.startLifetimeMultiplier > 0.01f)
             {
                 var localPositionBubble = Bubbles.gameObject.transform.localPosition;
@@ -120,8 +137,21 @@ namespace Mini_test_tube
                 bubblesMain.startLifetimeMultiplier -= Time.fixedDeltaTime;
                 yield return new WaitForFixedUpdate();
             }
-
+            bubblesMain.startLifetimeMultiplier = originStartLifetimeMultiplier;
             Bubbles.Stop();
+            _stepStageSystem.NextStep();
+        }
+        
+        private void ChangeOtherTestTube(StateMiniTestTubeS1E4 newState)
+        {
+            var miniTestTubes = FindObjectsOfType<MiniTestTubeScene1Sample4>();
+
+            foreach (var miniTestTube in miniTestTubes)
+            {
+                if (miniTestTube == this) continue;
+                miniTestTube.SetStateMiniTestTube((int)newState); 
+                return;
+            }
         }
 
         private IEnumerator EffervescenceLiquid()
@@ -147,6 +177,18 @@ namespace Mini_test_tube
 
             _effervescenceLiquid = null;
             Bubbles.Stop();
+        }
+
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS1E4.Empty;
+            _multiply = 1;
+            _countLiquid = 0;
+            _heightEffervescence = 0;
+            Bubbles.Stop();
+            SweatyGlass.SetActive(false);
+            Bubbles.gameObject.transform.localPosition = _originPositionBubble;
         }
     }
 }

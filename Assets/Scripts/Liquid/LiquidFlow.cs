@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum StateFlowLiquid
 {
@@ -17,19 +18,32 @@ public class LiquidFlow : MonoBehaviour
     private Color _colorSediment;
     private LevelLiquid _liquid;
     private LevelLiquid _sediment;
-
+    
     public StateFlowLiquid stateFlowLiquid;
-    public Action actionInEnd;
+    public UnityAction actionInEnd;
     public float flowSpeed = 1f;
     public float step;
     public float stepSediment;
     public float howMach;
 
+    public UnityAction SetUniqueActionInEnd
+    {
+        set
+        {
+            actionInEnd += value;
+            if (actionInEnd.GetInvocationList().Length <= 1) return;
+            for (var i = 0; i < actionInEnd.GetInvocationList().Length - 1; i++)
+            {
+                if (actionInEnd.GetInvocationList()[i].Method == value.Method) actionInEnd -= value;
+            }
+        }
+    }
+
     public Color SetColor
     {
         set => _colorLiquid = value;
     }
-    
+
     public Color SetColorSediment
     {
         set => _colorSediment = value;
@@ -44,6 +58,7 @@ public class LiquidFlow : MonoBehaviour
     {
         set => _liquid = value;
     }
+
     public LevelLiquid SetSediment
     {
         set => _sediment = value;
@@ -65,9 +80,9 @@ public class LiquidFlow : MonoBehaviour
         {
             levelLiquid.level -= (step < howMach) ? step : howMach;
             if (sediment) sediment.level -= stepSediment;
-            
+
             PourInLiquid();
-            
+
             howMach -= step;
         }
         else
@@ -78,14 +93,14 @@ public class LiquidFlow : MonoBehaviour
 
     private void PourInLiquid()
     {
-        if(!_liquid.gameObject.activeSelf)
+        if (!_liquid.gameObject.activeSelf)
             _liquid.gameObject.SetActive(true);
 
         _liquid.level += (step < howMach) ? step : howMach;
 
         _liquid.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorLiquid);
-        
-        if(!_sediment) return;
+
+        if (!_sediment) return;
 
         _sediment.level += stepSediment;
         _sediment.GetComponent<Renderer>().material.SetColor("_LiquidColor", _colorSediment);
@@ -109,7 +124,7 @@ public class LiquidFlow : MonoBehaviour
                 if (transform.localScale.z <= 0)
                 {
                     stateFlowLiquid = StateFlowLiquid.NotPour;
-                    
+
                     actionInEnd?.Invoke();
                     gameObject.SetActive(false);
                 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Splinter : MonoBehaviour
+public class Splinter : MonoBehaviour, IRestart
 {
     public enum StateFireSplinter
     {
@@ -30,7 +30,7 @@ public class Splinter : MonoBehaviour
 
     private void Update()
     {
-        fire.transform.rotation = Quaternion.LookRotation(Vector3.up);
+        if(fire.isPlaying) fire.transform.rotation = Quaternion.LookRotation(Vector3.up);
 
         if (_stateFireSplinter == StateFireSplinter.Fire)
         {
@@ -104,5 +104,12 @@ public class Splinter : MonoBehaviour
         StartCoroutine(PutOutFireSplinter());
         smoke.transform.rotation = Quaternion.LookRotation(Vector3.up);
         smoke.Play();
+    }
+
+    public void Restart()
+    {
+        _stateFireSplinter = StateFireSplinter.NotFire;
+        fire.Stop();
+        smoke.Stop();
     }
 }
