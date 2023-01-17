@@ -102,7 +102,7 @@ public class Forceps : MonoBehaviour, IRestart
             {
                 axisInput = AxisInput.Y,
                 axis = Axis.Y,
-                edge = new Vector2(-0.115f, 100f)
+                edge = new Vector2(-0.115f, 0.07f)
             });
         }
 
@@ -133,7 +133,7 @@ public class Forceps : MonoBehaviour, IRestart
         _stepStageSystem.NextStep();
 
         var linearValue = GetComponent<LinearMove>().linearValue;
-        linearValue.edge = new Vector2(0, 100);
+        linearValue.edge = new Vector2(0, 0.17f);
 
         StartCoroutine(_rotateToLeftForceps.StartAsync(() =>
         {
