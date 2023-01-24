@@ -46,10 +46,10 @@ public class PictureView : MonoBehaviour
     //  Loading data  ----------------------------------------------- 
     public void OnPicturesLoaded (AppData data) 
     {
-        foreach (PictureData pictureData in data.infoPanel.pictureView.pictures) 
-        {
-            CreateButton(pictureData); 
-        }
+        // foreach (PictureData pictureData in data.infoPanel.pictureView.pictures) 
+        // {
+        //     CreateButton(pictureData); 
+        // }
     }
 
     void CreateButton (PictureData pictureData) 

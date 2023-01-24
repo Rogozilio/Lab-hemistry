@@ -28,6 +28,7 @@ namespace Cursor
             else
             {
                 Instance = this;
+                UseArrow();
             }
         }
         
@@ -84,7 +85,7 @@ namespace Cursor
                     if (!_isLoadActive) yield break;
                     
                     UnityEngine.Cursor.SetCursor(Instance.load[i], new Vector2(10, 10), CursorMode.Auto);
-                    yield return new WaitForFixedUpdate();
+                    yield return new WaitForSeconds(0.1f);
                 }
             }
         }
