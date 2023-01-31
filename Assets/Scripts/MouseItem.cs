@@ -38,7 +38,14 @@ public class MouseItem : MonoBehaviour
     public void ShowOutline()
     {
         _isReadyToAction = true;
-        
+
+        if (!enabled)
+        {
+            CursorSkin.Instance.UseNotInteractive();
+            _outline.enabled = true;
+            return;
+        }
+
         if(!IsActive && GetType() == typeof(ClickMouseItem) && _stateItem.State != StateItems.Interacts)
             CursorSkin.Instance.UseClick();
 

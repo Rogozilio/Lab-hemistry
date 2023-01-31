@@ -7,6 +7,7 @@ namespace Cursor
     public sealed class CursorSkin : MonoBehaviour
     {
         public Texture2D Arrow;
+        public Texture2D NotInteractive;
         public Texture2D Horizontal;
         public Texture2D Vertical;
         public Texture2D Click;
@@ -36,6 +37,12 @@ namespace Cursor
         {
             _isLoadActive = false;
             UnityEngine.Cursor.SetCursor(Instance.Arrow, Vector2.zero, CursorMode.Auto);
+        }
+        
+        public void UseNotInteractive()
+        {
+            _isLoadActive = false;
+            UnityEngine.Cursor.SetCursor(Instance.NotInteractive, Vector2.zero, CursorMode.Auto);
         }
 
         public void UseHorizontal()

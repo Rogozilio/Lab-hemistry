@@ -35,13 +35,13 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     public Vector3 SetPositionTooltip
     {
         set => _positionTooltip = Camera.main.WorldToScreenPoint(value);
-    } 
+    }
 
     public Dictionary<int, string> Tooltips
     {
         get
         {
-            if(_tooltips == null || _tooltips.Count == 0)
+            if (_tooltips == null || _tooltips.Count == 0)
                 WriteTooltipsFromPath();
             return _tooltips;
         }
@@ -72,8 +72,8 @@ public class TooltipScreenSpaceUI : MonoBehaviour
         {
             StopCoroutine(_coroutineShowOrHideTooltip);
         }
-        
-        _coroutineShowOrHideTooltip = StartCoroutine(CoroutineShowOrHideTooltip());
+
+        _coroutineShowOrHideTooltip = StartCoroutine(CoroutineShowAndHideTooltip());
         SetText(text);
     }
 
@@ -82,9 +82,8 @@ public class TooltipScreenSpaceUI : MonoBehaviour
         if (_coroutineShowOrHideTooltip != null)
         {
             StopCoroutine(_coroutineShowOrHideTooltip);
+            ChangeAlphaTooltip(0);
         }
-            
-        _coroutineShowOrHideTooltip = StartCoroutine(CoroutineShowOrHideTooltip(false));
     }
 
     private void SwitchActiveTooltip(bool value)
@@ -93,21 +92,20 @@ public class TooltipScreenSpaceUI : MonoBehaviour
         {
             transform.GetChild(i).gameObject.SetActive(value);
         }
+
         tailRect.gameObject.SetActive(value);
     }
 
-    private IEnumerator CoroutineShowOrHideTooltip(bool isShow = true)
+    private IEnumerator CoroutineShowAndHideTooltip()
     {
         Color32 color = _imageBackground.color;
         byte alpha = color.a;
-        byte edge = (byte)(isShow ? 255 : 0);
+        byte edge = 255;
 
-        if (isShow)
-        {
-            SwitchActiveTooltip(true);
-            ChangeAlphaTooltip(0);
-            yield return new WaitForSeconds(0.5f);
-        }
+
+        SwitchActiveTooltip(true);
+        ChangeAlphaTooltip(0);
+        yield return new WaitForSeconds(0.5f);
 
         while (alpha != edge)
         {
@@ -117,10 +115,19 @@ public class TooltipScreenSpaceUI : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        if (!isShow)
+        yield return new WaitForSeconds(1f);
+
+        edge = 0;
+        
+        while (alpha != edge)
         {
-            SwitchActiveTooltip(false);
+            alpha = (alpha < edge) ? (byte)(alpha + 85) : (byte)(alpha - 85);
+            alpha = Math.Clamp(alpha, (byte)0, (byte)255);
+            ChangeAlphaTooltip(alpha);
+            yield return new WaitForFixedUpdate();
         }
+       
+        SwitchActiveTooltip(false);
     }
 
     private void ChangeAlphaTooltip(byte value)
@@ -163,32 +170,33 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     private void BackgroundAnchorPosition()
     {
         _anchoredPosition = _positionTooltip + new Vector2(-20, tailRect.sizeDelta.y - 1f);
-        
+
         TailAnchorPosition();
 
         var maxHeightBackground = canvasRect.rect.height - backgroundRect.rect.height - _heightHeader;
 
         _anchoredPosition.x = Math.Clamp(_anchoredPosition.x, 0, canvasRect.rect.width - backgroundRect.rect.width);
         _anchoredPosition.y = Math.Clamp(_anchoredPosition.y, tailRect.sizeDelta.y - 1f, maxHeightBackground);
-        
+
         //flip background
-        if (_anchoredPosition.y + backgroundRect.rect.height + _heightHeader >= canvasRect.rect.height) 
+        if (_anchoredPosition.y + backgroundRect.rect.height + _heightHeader >= canvasRect.rect.height)
         {
             _anchoredPosition.y = maxHeightBackground - 67f;
         }
+
         _rect.anchoredPosition = _anchoredPosition;
     }
-    
+
     private void TailAnchorPosition()
     {
-         _anchoredPositionTail = _positionTooltip;
+        _anchoredPositionTail = _positionTooltip;
 
-         _anchoredPositionTail.x = Math.Clamp(_anchoredPositionTail.x, tailRect.sizeDelta.x,
+        _anchoredPositionTail.x = Math.Clamp(_anchoredPositionTail.x, tailRect.sizeDelta.x,
             canvasRect.rect.width - tailRect.rect.width);
-         _anchoredPositionTail.y = Math.Clamp(_anchoredPositionTail.y, 0,
-             canvasRect.rect.height - _heightHeader - backgroundRect.sizeDelta.y - tailRect.rect.height  + 1f);
+        _anchoredPositionTail.y = Math.Clamp(_anchoredPositionTail.y, 0,
+            canvasRect.rect.height - _heightHeader - backgroundRect.sizeDelta.y - tailRect.rect.height + 1f);
 
-         tailRect.anchoredPosition = _anchoredPositionTail;
+        tailRect.anchoredPosition = _anchoredPositionTail;
     }
 
     private void FlipTail()
