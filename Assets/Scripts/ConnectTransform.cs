@@ -111,6 +111,8 @@ public class ConnectTransform : MonoBehaviour
     
     private Quaternion _prevOriginCT;
     private Quaternion _prevOriginTC;
+
+    public bool IsEnable => enabled;
     
     private void OnEnable()
     {

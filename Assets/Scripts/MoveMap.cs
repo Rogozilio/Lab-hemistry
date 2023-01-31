@@ -85,7 +85,8 @@ public class MoveMap : MonoBehaviour
                 _stateItem?.ChangeState(datas[index].nextState, datas[index].linearMoveValue);
                 break;
             case StateItems.LinearRotate:
-                _stateItem?.ChangeState(datas[index].nextState, datas[index].linearRotateValue, datas[index].offsetPosition);
+                _stateItem?.ChangeState(datas[index].nextState, datas[index].linearRotateValue,
+                    datas[index].offsetPosition);
                 break;
             default:
                 _stateItem?.ChangeState(datas[index].nextState);

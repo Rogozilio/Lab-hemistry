@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4548341062013125313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4548341062013125319}
+  - component: {fileID: 4548341062013125312}
+  m_Layer: 0
+  m_Name: Effect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4548341062013125319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4548341062013125313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4548341062013125312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4548341062013125313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f2f986ed2c0e143a5098fe27dfcf37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typeEffects: 0100000002000000030000000400000005000000060000000700000008000000
+  effects:
+  - {fileID: 4881531279431069000, guid: 9b9fd0ab820853548b4079f78d7da468, type: 3}
+  - {fileID: 4863600761940767772, guid: 6899d6c5111dd2146a8f086d7abb53c8, type: 3}
+  - {fileID: 2192250349532167242, guid: 8c5e0c875f29e3b408681f7d241870ba, type: 3}
+  - {fileID: 1124357855394425591, guid: bd266d7556ec5b8458c8a5b3c7533987, type: 3}
+  - {fileID: 6949638014283775129, guid: dd2850701e043c549832d5f22435f7ca, type: 3}
+  - {fileID: 2800397118727019785, guid: c6aac0de0b3705043a9f36ec06ad1576, type: 3}
+  - {fileID: 139081331425897574, guid: d1f82b13ea8123445a19ee6b99cf119b, type: 3}
+  - {fileID: 3772841275481840284, guid: 617cf1536049c5f4091872bfa339d7f6, type: 3}
+  effect: {fileID: 0}
+  liquidInVessel: {fileID: 0}
+  typeEffect: 0
+  repeatEffect: 0
+  _oldMaterialsParentLiquid: []
