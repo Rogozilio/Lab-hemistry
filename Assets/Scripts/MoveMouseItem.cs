@@ -34,6 +34,8 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public UnityEvent OnMouseDown;
     [HideInInspector] public UnityEvent OnMouseUp;
 
+    [HideInInspector] public OutlineMap outlineMap;
+    
     private Rigidbody _rigidbody;
 
     private Vector3 _hitWall;
@@ -153,14 +155,17 @@ public class MoveMouseItem : MouseItem
                 && _hitWall != Vector3.zero)
             {
                 CursorSkin.Instance.UseHold();
+                outlineMap.Show(transform.position);
                 MoveItem(_hitWall);
             }
+            else if(StateItem.State == StateItems.Interacts)
+                outlineMap.Clear();
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             if (StateItem.State is StateItems.Interacts or StateItems.Idle || !IsActive) return;
-
+            outlineMap.Clear();
             if (OnMouseUp.GetPersistentEventCount() > 0)
             {
                 OnMouseUp.Invoke();

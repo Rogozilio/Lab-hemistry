@@ -62,12 +62,12 @@ public class MousePointerObject : MonoBehaviour
             if (hit.collider.TryGetComponent(out MouseItem mouseItem) && !_item ||
                 (mouseItem && !_item.IsActive))
             {
-                //if (!mouseItem.isActiveAndEnabled) continue;
-
                 if (Vector3.Distance(_camera.transform.position, mouseItem.transform.position) < minDistance)
                 {
                     if (!Equals(_item, mouseItem))
-                        _item?.HideOutline();
+                    {
+                        _item?.HideOutline(false);
+                    }
 
                     minDistance = Vector3.Distance(_camera.transform.position, mouseItem.transform.position);
                     _item = mouseItem;

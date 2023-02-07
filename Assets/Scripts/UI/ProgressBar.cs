@@ -3,26 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ProgressBar : MonoBehaviour
 {
     public TextMeshProUGUI textMeshPro;
-
-    private Button _buttonRestart;
+    
+    private Coroutine _coroutineProgressBar;
 
     public float SetProgressBar
     {
         set
         {
-            if (value != 1f)
-                StartCoroutine(AnimationProgressBar(value));
-            else
-            {
-                _buttonRestart.enabled = true;
-                StartCoroutine(AnimationProgressBar(value));
-            }
-
+            if(_coroutineProgressBar != null) StopCoroutine(_coroutineProgressBar);
+           
+            _coroutineProgressBar = StartCoroutine(AnimationProgressBar(value));
         }
     }
 
@@ -31,7 +27,6 @@ public class ProgressBar : MonoBehaviour
     private void Awake()
     {
         _progressBar = GetComponent<Image>();
-        _buttonRestart = transform.parent.GetComponent<Button>();
     }
 
     private IEnumerator AnimationProgressBar(float value)
@@ -44,7 +39,7 @@ public class ProgressBar : MonoBehaviour
         while (steps > 0)
         {
             _progressBar.fillAmount += delta / 100f;
-            var progress = Math.Floor(_progressBar.fillAmount * 100);
+            var progress = Mathf.Floor(_progressBar.fillAmount * 100);
             textMeshPro.text = progress + "%";
 
             if (progress == 100)
@@ -54,5 +49,14 @@ public class ProgressBar : MonoBehaviour
             steps--;
         }
     }
-    
+
+    public void ShowRestartButton()
+    {
+        textMeshPro.text = "Перезапустить";
+    }
+
+    public void HideRestartButton()
+    {
+        textMeshPro.text = Mathf.Floor(_progressBar.fillAmount * 100) + "%";
+    }
 }

@@ -47,11 +47,8 @@ public class InfoPanelAnimation : MonoBehaviour
 	//  Input  ------------------------------------------------------ 
 	void DoInput () 
 	{
-		OpenOnTab(); 
-		OpenOnShiftTab(); 
-		OpenOnF1(); 
-		CloseOnEsc(); 
-	}
+		OpenOnTab();
+    }
 
 	void OpenOnTab () 
 	{
@@ -59,55 +56,11 @@ public class InfoPanelAnimation : MonoBehaviour
         {
             switch (state) 
             {
-                case State.Invisible: 
-                case State.Disappearing: 
-                    SetState(State.Appearing); 
-                    break; 
-            }
-        }
-	}
-
-	void OpenOnShiftTab () 
-	{
-		if (
-			Input.GetKeyDown(KeyCode.Tab) 
-			&& 
-			!( Input.GetKey(KeyCode.LeftShift) || 
-			   Input.GetKey(KeyCode.RightShift) ) 
-		) {
-            switch (state) 
-            {
-                case State.Invisible: 
-                case State.Disappearing: 
-                    SetState(State.Appearing); 
-                    break; 
-            }
-        }
-	}
-
-	void OpenOnF1 () 
-	{
-		if (Input.GetKeyDown(KeyCode.F1)) 
-        {
-            switch (state) 
-            {
-                case State.Invisible: 
-                case State.Disappearing: 
-                    SetState(State.Appearing); 
-                    break; 
-            }
-        }
-	}
-
-	void CloseOnEsc () 
-	{
-		if (Input.GetKeyDown(KeyCode.Escape)) 
-        {
-            switch (state) 
-            {
                 case State.Visible: 
-                case State.Appearing: 
                     SetState(State.Disappearing); 
+                    break; 
+                case State.Invisible: 
+                    SetState(State.Appearing); 
                     break; 
             }
         }

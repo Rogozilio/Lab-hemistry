@@ -47,6 +47,76 @@ public class LinearRotate : LinearInput
         base.OnEnable();
         UpdateOriginInput();
 
+        RefreshBeginValue();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + _originDir);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + _transformDir);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + _aroundAxis);
+    }
+
+    private void Update()
+    {
+        Rotate(GetInputValue());
+
+        UpdateOriginInput();
+    }
+
+    public void LaunchRotate(float speed)
+    {
+        StartCoroutine(RotateAround(speed));
+    }
+
+    private void Rotate(float speed)
+    {
+        _nextRotate[_index] = Mathf.Clamp(speed, -10f, 10f);
+
+        if (_nextRotate[_index] == 0) return;
+
+        switch (axis)
+        {
+            case Axis.localX:
+                _transformDir = transform.up;
+                GetNextRotateClampEdge();
+                break;
+            case Axis.localY:
+                _transformDir = transform.forward;
+                GetNextRotateClampEdge();
+                break;
+            case Axis.localZ:
+                _transformDir = transform.right;
+                GetNextRotateClampEdge();
+                break;
+            default:
+                GetNextRotateClampEdge();
+                var axis = new Vector3 { [_index] = 1f };
+                _transformDir = (Quaternion.AngleAxis(_nextRotate[_index], axis) * _transformDir).normalized;
+                break;
+        }
+
+        transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], _space);
+
+        var dir = _newPivot - transform.position;
+        dir = Quaternion.Euler(_space == Space.World ? _nextRotate : -_nextRotate) * dir;
+        transform.position = _newPivot - dir;
+    }
+    private IEnumerator RotateAround(float speed)
+    {
+        RefreshBeginValue();
+        while (_stateItem.State == StateItems.Interacts)
+        {
+            Rotate(speed);
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    private void RefreshBeginValue()
+    {
         _newPivot = transform.position + offsetPosition;
         _index = (axis < Axis.localX) ? (int)axis : (int)axis - 3;
         _space = axis > Axis.Z ? Space.Self : Space.World;
@@ -80,52 +150,6 @@ public class LinearRotate : LinearInput
                 _aroundAxis = transform.forward;
                 break;
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + _originDir);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + _transformDir);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + _aroundAxis);
-    }
-
-    private void Update()
-    {
-        _nextRotate[_index] = Mathf.Clamp(GetInputValue(), -10f, 10f);
-
-        if (_nextRotate[_index] == 0) return;
-
-        switch (axis)
-        {
-            case Axis.localX:
-                _transformDir = transform.up;
-                GetNextRotateClampEdge();
-                break;
-            case Axis.localY:
-                _transformDir = transform.forward;
-                GetNextRotateClampEdge();
-                break;
-            case Axis.localZ:
-                _transformDir = transform.right;
-                GetNextRotateClampEdge();
-                break;
-            default:
-                GetNextRotateClampEdge();
-                var axis = new Vector3 { [_index] = 1f };
-                _transformDir = (Quaternion.AngleAxis(_nextRotate[_index], axis) * _transformDir).normalized;
-                break;
-        }
-
-        transform.Rotate(_nextRotate[0], _nextRotate[1], _nextRotate[2], _space);
-
-        var dir = _newPivot - transform.position;
-        dir = Quaternion.Euler(_space == Space.World ? _nextRotate : -_nextRotate) * dir;
-        transform.position = _newPivot - dir;
-
-        UpdateOriginInput();
     }
 
     private void GetNextRotateClampEdge()

@@ -29,10 +29,10 @@ public class TabKeyInput : MonoBehaviour
 	void SwitchToNextTab_OnTab () 
 	{
 		if (
-			Input.GetKeyDown(KeyCode.Tab) 
+			Input.GetKeyDown(KeyCode.RightArrow) 
 			&& 
-			!( Input.GetKey(KeyCode.LeftShift) || 
-			   Input.GetKey(KeyCode.RightShift) )
+			( Input.GetKey(KeyCode.LeftControl) || 
+			   Input.GetKey(KeyCode.RightControl) )
 		) {
 			tabSystem.SwitchToNextTab(); 
 		}
@@ -41,10 +41,10 @@ public class TabKeyInput : MonoBehaviour
 	void SwitchToPreviousTab_OnShiftTab () 
 	{
 		if (
-			Input.GetKeyDown(KeyCode.Tab) 
+			Input.GetKeyDown(KeyCode.LeftArrow) 
 			&& 
-			( Input.GetKey(KeyCode.LeftShift) || 
-			  Input.GetKey(KeyCode.RightShift) )
+			( Input.GetKey(KeyCode.LeftControl) || 
+			   Input.GetKey(KeyCode.RightControl) )
 		) {
 			tabSystem.SwitchToPreviousTab(); 
 		}

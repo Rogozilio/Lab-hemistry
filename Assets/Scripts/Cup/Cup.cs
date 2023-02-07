@@ -45,6 +45,20 @@ public class Cup : MonoBehaviour, IRestart
         _waterOriginScale = Water.transform.localScale;
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.name != "glass_stick_low.001") return;
+        
+        if (_stateCup == StateCup.WithMagnesiumAndWater)
+        {
+            StirAll(other.transform);
+        }
+        else
+        {
+            other.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
+        }
+    }
+
     public void AddWaterDrop()
     {
         _countWaterDrop++;
@@ -59,7 +73,7 @@ public class Cup : MonoBehaviour, IRestart
             _stateCup = StateCup.WithMagnesiumAndWater;
             _stepStageSystem.NextStep();
         }
-            
+
 
         if (_countWaterDrop > 10)
         {
@@ -94,7 +108,7 @@ public class Cup : MonoBehaviour, IRestart
         {
             _prevPosition = glassStick.position;
 
-            var color =_rendererMagnesiumChild.material.GetColor("_LiquidColor");
+            var color = _rendererMagnesiumChild.material.GetColor("_LiquidColor");
             color -= new Color(0, 0, 0, 0.01f);
             if (color.a > 0)
                 _rendererMagnesiumChild.material.SetColor("_LiquidColor", color);

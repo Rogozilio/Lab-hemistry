@@ -1,9 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(MoveMouseItem))]
 public class MoveMouseItemEditor : Editor
 {
+    private SerializedProperty _onMouseDown;
+    private SerializedProperty _onMouseUp;
+    private SerializedProperty _outlineMapOffset;
+    private SerializedProperty _outlineMapItem;
+
+    private void OnEnable()
+    {
+        _onMouseDown = serializedObject.FindProperty("OnMouseDown");
+        _onMouseUp = serializedObject.FindProperty("OnMouseUp");
+        _outlineMapItem = serializedObject.FindProperty("outlineMap").FindPropertyRelative("outlineMapItem");
+        _outlineMapOffset = serializedObject.FindProperty("outlineMap").FindPropertyRelative("offsetPoint");
+    }
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -42,7 +58,7 @@ public class MoveMouseItemEditor : Editor
         {
             var width = 15f;
             var space = 20f;
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Space(space);
             GUILayout.Label("Face axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
@@ -56,7 +72,7 @@ public class MoveMouseItemEditor : Editor
             moveMouseItem.IsInverse = EditorGUILayout.Toggle(moveMouseItem.IsInverse, GUILayout.Width(width));
             GUILayout.Label("Inverse");
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Space(space);
             GUILayout.Label("Lock axis", GUILayout.Width(EditorGUIUtility.labelWidth - space));
@@ -71,8 +87,105 @@ public class MoveMouseItemEditor : Editor
 
         GUILayout.Space(10f);
         serializedObject.Update();
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("OnMouseDown"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("OnMouseUp"));
+        EditorGUILayout.PropertyField(_onMouseDown);
+        EditorGUILayout.PropertyField(_onMouseUp);
+        GUILayout.Space(10f);
+
+        EditorGUILayout.PropertyField(_outlineMapOffset);
+        for (var i = 0; i < _outlineMapItem.arraySize; i++)
+        {
+            var item = _outlineMapItem.GetArrayElementAtIndex(i);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(item.FindPropertyRelative("value"), GUIContent.none);
+            if (GUILayout.Button("X", GUILayout.Width(20f)))
+            {
+                _outlineMapItem.DeleteArrayElementAtIndex(i);
+                break;
+            }
+
+            if (GUILayout.Button("Add Condition", GUILayout.Width(120f)))
+            {
+                item.FindPropertyRelative("conditions").arraySize++;
+                break;
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+            var conditions = item.FindPropertyRelative("conditions");
+
+            for (var j = 0; j < conditions.arraySize; j++)
+            {
+                var condition = conditions.GetArrayElementAtIndex(j);
+                var target = condition.FindPropertyRelative("target");
+                var component = condition.FindPropertyRelative("component");
+                var nameProperty = condition.FindPropertyRelative("nameProperty");
+                var indexComponent = condition.FindPropertyRelative("indexComponent");
+                var indexProperty = condition.FindPropertyRelative("indexProperty");
+                var sign = condition.FindPropertyRelative("sign");
+                var requiredValue = condition.FindPropertyRelative("requiredValue");
+                    
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(18f);
+                EditorGUILayout.PropertyField(target, GUIContent.none);
+
+                if (target.objectReferenceValue != null)
+                {
+                    var GO = (GameObject)target.objectReferenceValue;
+
+                    indexComponent.intValue = EditorGUILayout.Popup(indexComponent.intValue, GetNamesFromComponents(GO.GetComponents<Component>()));
+                    component.objectReferenceValue = GO.GetComponents<Component>()[indexComponent.intValue];
+
+                    if (component.objectReferenceValue != null)
+                    {
+                        var properties = component.objectReferenceValue.GetType()
+                            .GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                        var namesProperty = GetNamesFromProperty(properties);
+                        indexProperty.intValue = EditorGUILayout.Popup(indexProperty.intValue, namesProperty);
+                        nameProperty.stringValue = namesProperty[indexProperty.intValue];
+                        
+                        EditorGUILayout.PropertyField(sign, GUIContent.none, GUILayout.Width(40f));
+                        EditorGUILayout.PropertyField(requiredValue, GUIContent.none);
+                    }
+                }
+                
+                if (GUILayout.Button("X", GUILayout.Width(20f)))
+                {
+                    conditions.DeleteArrayElementAtIndex(j);
+                    break;
+                }
+
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+
+        if (GUILayout.Button("Add Outline Item"))
+        {
+            _outlineMapItem.arraySize++;
+        }
+
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private string[] GetNamesFromComponents(Component[] array)
+    {
+        var names = new List<string>();
+        for (int i = 0; i < array.Length; i++)
+        {
+            names.Add(i + " " + array[i].GetType().Name);
+        }
+        return names.ToArray();
+    }
+    
+    private string[] GetNamesFromProperty(PropertyInfo[] array)
+    {
+        var names = new List<string>();
+        foreach (var value in array)
+        {
+            names.Add(value.Name);
+        }
+        return names.ToArray();
     }
 }

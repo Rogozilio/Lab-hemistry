@@ -17,11 +17,13 @@ namespace Cursor
 
         private bool _isLoadActive;
         private Coroutine _coroutineUseLoad;
+        private CanvasGroup _mainCanvasGroup;
 
         public static CursorSkin Instance { get; private set; }
 
         private void Awake()
         {
+            _mainCanvasGroup = FindObjectOfType<CanvasGroup>();
             if (Instance != null && Instance != this)
             {
                 Destroy(this);
@@ -78,18 +80,26 @@ namespace Cursor
         public void UseLoad()
         {
             _isLoadActive = true;
-            if(_coroutineUseLoad != null)
+            if (_coroutineUseLoad != null)
+            {
+                _mainCanvasGroup.interactable = true;
                 StopCoroutine(_coroutineUseLoad);
+            }
             _coroutineUseLoad = StartCoroutine(AnimateCursorLoad());
         }
 
         private IEnumerator AnimateCursorLoad()
         {
+            _mainCanvasGroup.interactable = false;
             while (true)
             {
                 for (var i = 0; i < load.Length; i++)
                 {
-                    if (!_isLoadActive) yield break;
+                    if (!_isLoadActive)
+                    {
+                        _mainCanvasGroup.interactable = true;
+                        yield break;
+                    }
                     
                     UnityEngine.Cursor.SetCursor(Instance.load[i], new Vector2(10, 10), CursorMode.Auto);
                     yield return new WaitForSeconds(0.1f);

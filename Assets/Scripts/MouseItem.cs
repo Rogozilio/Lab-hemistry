@@ -57,7 +57,7 @@ public class MouseItem : MonoBehaviour
             CursorSkin.Instance.UseSelect();
     }
 
-    public void HideOutline()
+    public void HideOutline(bool isChangeCursor = true)
     {
         _isReadyToAction = false;
         
@@ -66,8 +66,8 @@ public class MouseItem : MonoBehaviour
         _outline.enabled = false;
         
         if(IsActive) return;
-            
-        if(_stateItem.State != StateItems.Interacts)
+        
+        if(_stateItem.State != StateItems.Interacts && isChangeCursor)
             CursorSkin.Instance.UseArrow();
     }
 }
