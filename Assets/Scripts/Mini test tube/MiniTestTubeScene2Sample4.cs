@@ -22,7 +22,7 @@ namespace Mini_test_tube
 
         public StateMiniTestTubeS2E4 GetState => _state;
         public int getCountLiquid => _countLiquid;
-        public bool isOnlyForNH4Cl => IsOnlyForNH4Cl(); 
+        public bool isOnlyForNH4Cl => IsOnlyForNH4Cl();
 
         public void Awake()
         {
@@ -34,33 +34,30 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E4>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.Empty, TypeLiquid.MgCI2, Operator.More, 0,
-                StateMiniTestTubeS2E4.MgCl2, () =>
-                {
-                    ChangeColorLiquid(waterColor);
-                });
+                StateMiniTestTubeS2E4.MgCl2, () => { ChangeColorLiquid(waterColor); });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2, TypeLiquid.MgCI2, Operator.Equally, 10,
+                () => { _stepStageSystem.NextStep(); });
 
             byte stepNH4OH = 4;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2, TypeLiquid.NH4OH, Operator.More, 0,
-                StateMiniTestTubeS2E4.MgCl2_NH4OH, () =>
-                {
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(),sedimentColor, stepNH4OH--);
-                });
+                StateMiniTestTubeS2E4.MgCl2_NH4OH,
+                () => { ChangeColorLiquid(sediment.GetComponent<Renderer>(), sedimentColor, stepNH4OH--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2_NH4OH, TypeLiquid.NH4OH, Operator.More, 0,
                 () =>
                 {
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(),sedimentColor, stepNH4OH--);
+                    ChangeColorLiquid(sediment.GetComponent<Renderer>(), sedimentColor, stepNH4OH--);
+                    if(stepNH4OH == 0) _stepStageSystem.NextStep();
                 });
-            
+
             byte stepNH4Cl = 4;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2_NH4OH, TypeLiquid.NH4CI, Operator.More, 0,
-                StateMiniTestTubeS2E4.MgCl2_NH4OH_NH4Cl, () =>
-                {
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(),waterColor, stepNH4Cl--);
-                });
+                StateMiniTestTubeS2E4.MgCl2_NH4OH_NH4Cl,
+                () => { ChangeColorLiquid(sediment.GetComponent<Renderer>(), waterColor, stepNH4Cl--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2_NH4OH_NH4Cl, TypeLiquid.NH4CI, Operator.More, 0,
                 () =>
                 {
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(),waterColor, stepNH4Cl--);
+                    ChangeColorLiquid(sediment.GetComponent<Renderer>(), waterColor, stepNH4Cl--);
+                    if(stepNH4Cl == 0) _stepStageSystem.NextStep();
                 });
         }
 

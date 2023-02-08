@@ -9,8 +9,13 @@ namespace Mini_test_tube
         {
             Empty,
             NH4OH,
-            [InspectorName("NH4OH+phenolphthalein")] NH4OH_phenolphthalein,
-            [InspectorName("NH4OH+phenolphthalein+NH4Cl")] NH4OH_phenolphthalein_NH4Cl
+
+            [InspectorName("NH4OH+phenolphthalein")]
+            NH4OH_phenolphthalein,
+
+            [InspectorName("NH4OH+phenolphthalein+NH4Cl")]
+            NH4OH_phenolphthalein_NH4Cl,
+            NotActive
         }
 
         public LevelLiquid sediment;
@@ -25,7 +30,6 @@ namespace Mini_test_tube
         public StateMiniTestTubeS2E6 GetState => _state;
         public int getCountLiquid => _countLiquid;
         public int getCountPowder => _countPowder;
-        public bool isOnlyForNH4Cl => IsOnlyForNH4Cl();
 
         public void Awake()
         {
@@ -39,18 +43,18 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E6>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.Empty, TypeLiquid.NH4OH, Operator.More, 0,
-                StateMiniTestTubeS2E6.NH4OH, () =>
-                {
-                    ChangeColorLiquid(colorNH4OH);
-                });
+                StateMiniTestTubeS2E6.NH4OH, () => { ChangeColorLiquid(colorNH4OH); });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.NH4OH, Operator.Equally, 6,
+                () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.Phenolphthalein, Operator.More, 0,
                 StateMiniTestTubeS2E6.NH4OH_phenolphthalein, () =>
                 {
+                    _stepStageSystem.NextStep();
                     ChangeColorLiquid(colorPhenolphthalein);
                 });
 
             _actionAddPowder = new ActionAddPowder<StateMiniTestTubeS2E6>();
-            
+
             _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein, TypePowder.NH4CI, Operator.More,
                 0, StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, () =>
                 {
@@ -59,7 +63,10 @@ namespace Mini_test_tube
                     _rendererSediment.material.SetFloat("_SedimentMultiply", 4f);
                     ChangeColorLiquid(_rendererSediment, new Color32(236, 93, 188, 150));
                 });
-            _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, TypePowder.NH4CI, Operator.More,
+            _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, TypePowder.NH4CI,
+                Operator.Equally, 2, () => { _stepStageSystem.NextStep(); });
+            _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, TypePowder.NH4CI,
+                Operator.More,
                 0, () =>
                 {
                     _levelLiquid.level += _step;
@@ -73,36 +80,30 @@ namespace Mini_test_tube
 
             _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
         }
-        
+
         public override void AddPowder(PowderDrop powder)
         {
             base.AddPowder(powder);
 
             _actionAddPowder.Launch(ref _state, powder.typePowder, _countPowder);
         }
-        
+
         public override void Stir(Transform stick)
         {
             base.Stir(stick);
 
-            if(!_isStir) return;
+            if (!_isStir) return;
             var stepSediment = (byte)(_rendererSediment.material.GetColor("_LiquidColor").a * 255 * 4);
             ChangeColorLiquid(_colorResult, stepSediment);
-            
             ChangeColorLiquid(_rendererSediment, _colorResult, stepSediment);
-        }
-
-        private bool IsOnlyForNH4Cl()
-        {
-            var testTubes = FindObjectsOfType<MiniTestTubeScene2Sample6>();
-
-            foreach (var testTube in testTubes)
+            if (stepSediment == 4)
             {
-                if (testTube.GetState == StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl)
-                    return testTube.GetState == _state;
+                _countPowder = 3;
+                _stepStageSystem.NextStep();
+                _state = StateMiniTestTubeS2E6.NotActive;
+                stick.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
+                stick.GetComponent<MoveMap>().StartToMove(3);
             }
-
-            return true;
         }
     }
 }

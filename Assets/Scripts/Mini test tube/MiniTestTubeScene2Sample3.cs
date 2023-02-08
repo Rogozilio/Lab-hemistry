@@ -31,33 +31,28 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E3>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.Empty, TypeLiquid.K2CrO4, Operator.More, 0,
-                StateMiniTestTubeS2E3.K2CrO4, () =>
-                {
-                    ChangeColorLiquid(yellowColor);
-                });
+                StateMiniTestTubeS2E3.K2CrO4, () => { ChangeColorLiquid(yellowColor); });
+            _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4, TypeLiquid.K2CrO4, Operator.Equally, 3,
+                () => { _stepStageSystem.NextStep(); });
 
             byte stepH2SO4 = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4, TypeLiquid.H2SO4, Operator.More, 0,
-                StateMiniTestTubeS2E3.K2CrO4_H2SO4, () =>
-                {
-                    ChangeColorLiquid(orangeColor, stepH2SO4--);
-                });
+                StateMiniTestTubeS2E3.K2CrO4_H2SO4, () => { ChangeColorLiquid(orangeColor, stepH2SO4--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4_H2SO4, TypeLiquid.H2SO4, Operator.More, 0,
                 () =>
                 {
                     ChangeColorLiquid(orangeColor, stepH2SO4--);
+                    if(stepH2SO4 == 0) _stepStageSystem.NextStep();
                 });
-            
+
             byte stepNaOH = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4_H2SO4, TypeLiquid.NaOH, Operator.More, 0,
-                StateMiniTestTubeS2E3.K2CrO4_H2SO4_NaOH, () =>
-                {
-                    ChangeColorLiquid(yellowColor, stepNaOH--);
-                });
+                StateMiniTestTubeS2E3.K2CrO4_H2SO4_NaOH, () => { ChangeColorLiquid(yellowColor, stepNaOH--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4_H2SO4_NaOH, TypeLiquid.NaOH, Operator.More, 0,
                 () =>
                 {
                     ChangeColorLiquid(yellowColor, stepNaOH--);
+                    if(stepNaOH == 0) _stepStageSystem.NextStep();
                 });
         }
 

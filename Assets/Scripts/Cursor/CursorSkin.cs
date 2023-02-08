@@ -14,16 +14,27 @@ namespace Cursor
         public Texture2D Select;
         public Texture2D Hold;
         public Texture2D[] load;
+        public Texture2D[] clock;
 
+        private bool _isUseClock;
         private bool _isLoadActive;
         private Coroutine _coroutineUseLoad;
         private CanvasGroup _mainCanvasGroup;
+        
+        public bool isUseClock
+        {
+            set
+            {
+                _isUseClock = value;
+                UseArrow();
+            }
+        }
 
         public static CursorSkin Instance { get; private set; }
 
         private void Awake()
         {
-            _mainCanvasGroup = FindObjectOfType<CanvasGroup>();
+            _mainCanvasGroup = FindObjectOfType<Canvas>().GetComponent<CanvasGroup>();
             if (Instance != null && Instance != this)
             {
                 Destroy(this);
@@ -37,14 +48,20 @@ namespace Cursor
         
         public void UseArrow()
         {
-            _isLoadActive = false;
-            UnityEngine.Cursor.SetCursor(Instance.Arrow, Vector2.zero, CursorMode.Auto);
+            _isLoadActive = _isUseClock;
+            if (_isUseClock)
+            {
+                if (_coroutineUseLoad != null) StopCoroutine(_coroutineUseLoad);
+                _coroutineUseLoad = StartCoroutine(AnimateCursor(clock, 0.05f));
+            }
+            else
+                UnityEngine.Cursor.SetCursor(Instance.Arrow, Vector2.zero, CursorMode.Auto);
         }
         
         public void UseNotInteractive()
         {
             _isLoadActive = false;
-            UnityEngine.Cursor.SetCursor(Instance.NotInteractive, Vector2.zero, CursorMode.Auto);
+            UnityEngine.Cursor.SetCursor(Instance.NotInteractive, new Vector2(10, 10), CursorMode.Auto);
         }
 
         public void UseHorizontal()
@@ -85,15 +102,15 @@ namespace Cursor
                 _mainCanvasGroup.interactable = true;
                 StopCoroutine(_coroutineUseLoad);
             }
-            _coroutineUseLoad = StartCoroutine(AnimateCursorLoad());
+            _coroutineUseLoad = StartCoroutine(AnimateCursor(load));
         }
 
-        private IEnumerator AnimateCursorLoad()
+        private IEnumerator AnimateCursor(Texture2D[] data, float deltaTime = 0.1f)
         {
             _mainCanvasGroup.interactable = false;
             while (true)
             {
-                for (var i = 0; i < load.Length; i++)
+                for (var i = 0; i < data.Length; i++)
                 {
                     if (!_isLoadActive)
                     {
@@ -101,8 +118,8 @@ namespace Cursor
                         yield break;
                     }
                     
-                    UnityEngine.Cursor.SetCursor(Instance.load[i], new Vector2(10, 10), CursorMode.Auto);
-                    yield return new WaitForSeconds(0.1f);
+                    UnityEngine.Cursor.SetCursor(data[i], new Vector2(10, 10), CursorMode.Auto);
+                    yield return new WaitForSeconds(deltaTime);
                 }
             }
         }

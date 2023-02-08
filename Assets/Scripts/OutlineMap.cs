@@ -103,6 +103,6 @@ public class OutlineMap
     {
         if (!outline.enabled) outline.enabled = true;
         var distance = Vector3.Distance(position, outline.transform.position);
-        outline.OutlineWidth = /*distance > 0.3f ? 0f :*/ Math.Clamp(1 / distance, 0, 12f);
+        outline.OutlineWidth = Math.Clamp(1 / distance, 0, 12f);
     }
 }

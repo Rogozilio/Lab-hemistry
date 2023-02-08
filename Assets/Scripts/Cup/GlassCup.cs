@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,6 +44,8 @@ public class GlassCup : MonoBehaviour, IRestart
 
     private IEnumerator TimerForReleaseCO2()
     {
+        CursorSkin.Instance.isUseClock = true;
+        
         var timer = 0f;
         while (timer < timeReleaseCO2)
         {
@@ -56,6 +59,8 @@ public class GlassCup : MonoBehaviour, IRestart
         _stateGlassCup = StateGlassCup.Marble_HCI_CO2;
         Cap.GetComponent<ClickMouseItem>().enabled = true;
         _stepStageSystem.NextStep();
+        
+        CursorSkin.Instance.isUseClock = false;
     }
 
     private IEnumerator ShowBottomSmoke()

@@ -7,6 +7,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using VirtualLab.ApplicationData;
 
 public class TooltipScreenSpaceUI : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     private readonly float _heightHeader = 48f;
 
     private Dictionary<int, string> _tooltips;
+    private List<string> _allLines;
 
     public Vector3 SetPositionTooltip
     {
@@ -50,12 +52,15 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     private void Awake()
     {
         _rect = GetComponent<RectTransform>();
+        _allLines = new List<string>();
         _imageBackground = backgroundRect.GetComponent<Image>();
         _imageBackgroundOutline = backgroundRect.GetChild(0).GetComponent<Image>();
         _imageTail = tailRect.GetComponent<Image>();
         _imageTailOutline = tailRect.GetChild(0).GetComponent<Image>();
 
         SetText(textMeshPro.text);
+        
+        new StringLoader(CreateAllList).Start("Tooltips.txt");
 
         WriteTooltipsFromPath();
     }
@@ -84,6 +89,11 @@ public class TooltipScreenSpaceUI : MonoBehaviour
             StopCoroutine(_coroutineShowOrHideTooltip);
             ChangeAlphaTooltip(0);
         }
+    }
+    
+    private void CreateAllList(string data)
+    {
+        _allLines = data.Split('\n').ToList();
     }
 
     private void SwitchActiveTooltip(bool value)
@@ -153,16 +163,12 @@ public class TooltipScreenSpaceUI : MonoBehaviour
 
     private void WriteTooltipsFromPath()
     {
-        string path = Application.streamingAssetsPath + "/Tooltips.txt";
-
-        var allLines = File.ReadAllLines(path).ToList();
-
         _tooltips ??= new Dictionary<int, string>();
 
-        for (var i = 0; i < allLines.Count; i++)
+        for (var i = 0; i < _allLines.Count; i++)
         {
-            var key = int.Parse(allLines[i].Split('[')[1].Split(']')[0]);
-            var value = allLines[i].Split('<')[1].Split('>')[0];
+            var key = int.Parse(_allLines[i].Split('[')[1].Split(']')[0]);
+            var value = _allLines[i].Split('<')[1].Split('>')[0];
             _tooltips.Add(key, value);
         }
     }

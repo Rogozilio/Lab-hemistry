@@ -17,14 +17,14 @@ namespace Mini_test_tube
             [InspectorName("mixtur/4+FeCl3")] FeCl3x4_NH4CNS_H2O,
             [InspectorName("mixtur/4+NH4SCN")] FeCl3_NH4CNSx4_H2O,
             [InspectorName("mixtur/4+NH4CL")] FeCl3_NH4CNS_H2O_NH4CI,
+            ForFlowLiquid,
             NotActive
         }
 
         public LevelLiquid Sediment;
 
         private Renderer _rendererSediment;
-
-        private byte _indexSort = 0;
+        
         private byte _countFeCl3 = 0;
         private byte _countNH4CNS = 0;
 
@@ -36,31 +36,33 @@ namespace Mini_test_tube
         public StateMiniTestTubeS2E1 GetState => _state;
 
         public int countLiquid => _countLiquid;
-        public byte IndexSort => _indexSort;
-        public bool IsIndexSortFeCl3 => CheckSortIndex((int)TypeLiquid.FeCl3);
-        public bool IsIndexSortNH4CNS => CheckSortIndex((int)TypeLiquid.NH4CNS);
-        public bool IsIndexSortNH4CL => CheckSortIndex(3);
         public byte countFeCL3 => _countFeCl3;
         public byte countNH4CNS => _countNH4CNS;
         public byte countPowder => (byte)_countPowder;
+
 
         public void Awake()
         {
             base.Awake();
 
             _rendererSediment = Sediment.GetComponent<Renderer>();
-            liquidFlowScript.SetUniqueActionInEnd = QuarterLastTestTube;
+            liquidFlowScript.SetUniqueActionInEnd = LastFlowLiquidChangeStateTestTube;
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E1>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.Empty, TypeLiquid.FeCl3, Operator.More, 0,
                 StateMiniTestTubeS2E1.FeCl3, () =>
                 {
-                    NotActiveRestTestTube();
+                    _stepStageSystem.NextStep();
+                    ChangeStateRestTestTube(StateMiniTestTubeS2E1.NotActive);
                     ChangeColorLiquid(new Color32(87, 77, 13, 103));
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3, TypeLiquid.NH4CNS, Operator.More, 0,
-                StateMiniTestTubeS2E1.FeCl3_NH4CNS, () => { ChangeColorLiquid(new Color32(10, 0, 0, 230)); });
+                StateMiniTestTubeS2E1.FeCl3_NH4CNS, () =>
+                {
+                    _stepStageSystem.NextStep();
+                    ChangeColorLiquid(new Color32(10, 0, 0, 230));
+                });
             byte stepH2O = 18;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS, TypeLiquid.H2O, Operator.More, 0,
                 StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O,
@@ -69,47 +71,48 @@ namespace Mini_test_tube
                 () => { ChangeColorLiquid(new Color32(30, 0, 0, 80), stepH2O--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O, TypeLiquid.H2O, Operator.MoreEquals, 36,
                 StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_half,
-                () => { ChangeColorLiquid(new Color32(30, 0, 0, 80), stepH2O--); });
-            byte stepFeCI3 = 4;
-            _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter, TypeLiquid.FeCl3, Operator.More,
-                0,
-                StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O, () =>
-                {
-                    _countFeCl3++;
-                    _indexSort = (byte)TypeLiquid.FeCl3;
-                    ChangeColorLiquid(new Color32(10, 0, 0, 90), stepFeCI3--);
-                });
-            _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O, TypeLiquid.FeCl3, Operator.More, 0,
                 () =>
                 {
+                    _stepStageSystem.NextStep();
+                    ChangeStateRestTestTube(StateMiniTestTubeS2E1.ForFlowLiquid);
+                    ChangeColorLiquid(new Color32(30, 0, 0, 80), stepH2O--);
+                });
+            byte stepFeCI3 = 4;
+            _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O, TypeLiquid.FeCl3, Operator.More,
+                0, () =>
+                {
                     _countFeCl3++;
+                    ChangeStateWithState(StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O,
+                        StateMiniTestTubeS2E1.NotActive);
                     ChangeColorLiquid(new Color32(10, 0, 0, 90), stepFeCI3--);
+                    if (stepFeCI3 == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        ChangeStateWithState(StateMiniTestTubeS2E1.NotActive,
+                                                    StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O);
+                    }
                 });
             byte stepNH4CNS = 4;
-            _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter, TypeLiquid.NH4CNS, Operator.More,
-                0,
-                StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O, () =>
-                {
-                    _countNH4CNS++;
-                    _indexSort = (byte)TypeLiquid.NH4CNS;
-                    ChangeColorLiquid(new Color32(7, 0, 0, 90), stepNH4CNS--);
-                });
+        
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O, TypeLiquid.NH4CNS, Operator.More, 0,
                 () =>
                 {
                     _countNH4CNS++;
+                    ChangeStateWithState(StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O, StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI);
                     ChangeColorLiquid(new Color32(7, 0, 0, 90), stepNH4CNS--);
+                    if(stepNH4CNS == 0) _stepStageSystem.NextStep();
                 });
 
             _actionAddPowder = new ActionAddPowder<StateMiniTestTubeS2E1>();
             
-            _actionAddPowder.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter, TypePowder.NH4CI, Operator.More,
-                0, StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI, () =>
+            _actionAddPowder.AddAction(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI, TypePowder.NH4CI, Operator.More,
+                0, () =>
                 {
-                    _indexSort = 3;
                     _levelLiquid.level += _step;
                     Sediment.level += _step;
+                    _stepStageSystem.NextStep();
                     _rendererSediment.material.SetFloat("_SedimentMultiply", 4f);
+                    ChangeStateWithState(StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI, StateMiniTestTubeS2E1.NotActive);
                     ChangeColorLiquid(_rendererSediment, new Color32(176, 56, 31, 150));
                 });
         }
@@ -128,6 +131,15 @@ namespace Mini_test_tube
             ChangeColorLiquid(new Color32(30, 3, 0, 80), stepSediment);
             
             ChangeColorLiquid(_rendererSediment, new Color32(176, 56, 31, 0), stepSediment);
+
+            if (stepSediment == 0)
+            {
+                _countPowder = 0;
+                _stepStageSystem.NextStep();
+                _state = StateMiniTestTubeS2E1.NotActive;
+                stick.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
+                stick.GetComponent<MoveMap>().StartToMove(3);
+            }
         }
 
         private void FixedUpdate()
@@ -147,56 +159,51 @@ namespace Mini_test_tube
             base.AddPowder(powder);
 
             _actionAddPowder.Launch(ref _state, powder.typePowder, _countPowder);
+            _countLiquid++;
         }
 
-        private void NotActiveRestTestTube()
+        private void ChangeStateRestTestTube(StateMiniTestTubeS2E1 newState)
         {
             var objects = FindObjectsOfType<MiniTestTubeScene2Sample1>();
             foreach (var obj in objects)
             {
                 if (obj == this) continue;
 
-                obj._state = StateMiniTestTubeS2E1.NotActive;
+                obj._state = newState;
             }
         }
 
-        private void QuarterLastTestTube()
+        private void ChangeStateWithState(StateMiniTestTubeS2E1 oldState, StateMiniTestTubeS2E1 newState)
         {
-            var count = 0;
-            var index = 0;
-            var objects = FindObjectsOfType<MiniTestTubeScene2Sample1>();
-            for (var i = 0; i < objects.Length; i++)
-            {
-                if (objects[i]._state == StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter)
-                {
-                    count++;
-                }
-                else
-                {
-                    index = i;
-                }
-            }
-
-            if (count == objects.Length - 1)
-                objects[index]._state = StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter;
-        }
-
-        private bool CheckSortIndex(int index)
-        {
-            if (_state < StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter ||
-                _state > StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI) return false;
-            if (_indexSort == index) return true;
-
             var objects = FindObjectsOfType<MiniTestTubeScene2Sample1>();
             foreach (var obj in objects)
             {
-                if (obj.IndexSort == index)
+                if (obj == this || obj._state != oldState) continue;
+
+                obj._state = newState;
+            }
+        }
+
+        private void LastFlowLiquidChangeStateTestTube()
+        {
+            _stepStageSystem.NextStep();
+            var count = 0;
+            var objects = FindObjectsOfType<MiniTestTubeScene2Sample1>();
+            foreach (var t in objects)
+            {
+                if (t._state == StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_quarter)
                 {
-                    return false;
+                    count++;
                 }
             }
 
-            return _indexSort == 0;
+            if (count != objects.Length - 1) return;
+            
+            foreach (var obj in objects)
+            {
+                obj._state = StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O;
+                obj._countLiquid = 0;
+            }
         }
     }
 }

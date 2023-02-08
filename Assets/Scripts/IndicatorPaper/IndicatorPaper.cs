@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 
 public class IndicatorPaper : MonoBehaviour, IRestart
@@ -47,6 +48,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
 
     private IEnumerator VisibleResult()
     {
+        CursorSkin.Instance.isUseClock = true;
         _stepStageSystem.NextStep();
         PaperResult.SetActive(true);
         var renderFrontWater = PaperWater.GetComponent<Renderer>();
@@ -68,6 +70,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
         _state = StatePaperIndicator.Result;
         GetComponent<MoveMouseItem>()?.BackToRespawnOrBackToMouse();
         _stepStageSystem.NextStep();
+        CursorSkin.Instance.isUseClock = false;
     }
 
     public void Restart()

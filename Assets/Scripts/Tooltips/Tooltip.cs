@@ -17,7 +17,7 @@ public class Tooltip : MonoBehaviour
         _tooltipUI = FindObjectOfType<TooltipScreenSpaceUI>();
         TryGetComponent(out _state);
     }
-
+    
     private void OnMouseEnter()
     {
         if(Input.GetMouseButton(0)) return;

@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
+using VirtualLab.ApplicationData;
 
 public class StepStageSystem : MonoBehaviour
 {
@@ -18,16 +20,19 @@ public class StepStageSystem : MonoBehaviour
     public ProgressBar progressBar;
     public RectTransform displaySteps;
 
-    private List<StepStage> _stepStageList;
+    private List<string> _allLines;
+
+        private List<StepStage> _stepStageList;
     private TextMeshProUGUI _textMeshPro;
     private int _currentIndexStepStage;
 
     private void Awake()
     {
+        _allLines = new List<string>();
         _stepStageList = new List<StepStage>();
         _textMeshPro = GetComponent<TextMeshProUGUI>();
 
-        WriteStepStageListFromPath();
+        new StringLoader(CreateAllList).Start("Steps.txt");
     }
 
     private void Update()
@@ -36,20 +41,22 @@ public class StepStageSystem : MonoBehaviour
         displaySteps.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
     }
 
+    private void CreateAllList(string data)
+    {
+        _allLines = data.Split('\n').ToList();
+        WriteStepStageListFromPath();
+    }
+    
     private void WriteStepStageListFromPath()
     {
-        string path = Application.streamingAssetsPath + "/Steps.txt";
-
-        var allLines = File.ReadAllLines(path).ToList();
-
         var newStepStage = new StepStage();
-        for (var i = 0; i < allLines.Count; i++)
+        for (var i = 0; i < _allLines.Count; i++)
         {
-            if (allLines[i].Contains('$'))
+            if (_allLines[i].Contains('$'))
             {
-                newStepStage.StageName = allLines[i].Split('[')[1].Split(']')[0];
+                newStepStage.StageName = _allLines[i].Split('[')[1].Split(']')[0];
             }
-            else if (allLines[i] == "#")
+            else if (_allLines[i].Contains('#'))
             {
                 _stepStageList.Add(newStepStage);
                 newStepStage = new StepStage();
@@ -57,7 +64,7 @@ public class StepStageSystem : MonoBehaviour
             else
             {
                 newStepStage.Steps ??= new List<string>();
-                newStepStage.Steps.Add(allLines[i]);
+                newStepStage.Steps.Add(_allLines[i]);
             }
         }
     }

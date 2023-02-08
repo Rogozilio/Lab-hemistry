@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cursor;
 using UnityEngine;
 
 public class P_tube : MonoBehaviour
@@ -15,7 +16,11 @@ public class P_tube : MonoBehaviour
 
     private Renderer _gradientTube;
     private StatePTube _state;
+    
+    private StepStageSystem _stepStageSystem;
 
+    private MoveMouseItem _moveMouseItem;
+    
     private Coroutine _coroutineWithIceWater;
     private Coroutine _coroutineBalance;
     private Coroutine _coroutineWithHotWater;
@@ -54,6 +59,8 @@ public class P_tube : MonoBehaviour
     void Awake()
     {
         _gradientTube = GetComponent<Renderer>();
+        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _moveMouseItem = transform.parent.GetComponent<MoveMouseItem>();
     }
 
     public void StartReactionInIceWater()
@@ -72,7 +79,12 @@ public class P_tube : MonoBehaviour
 
     private IEnumerator ReactionInIceWater()
     {
+        _stepStageSystem.NextStep();
+        
         _state = StatePTube.frozen;
+
+        CursorSkin.Instance.isUseClock = true;
+        _moveMouseItem.enabled = false;
 
         while (_edgeLeftCenter < 0.35f)
         {
@@ -95,11 +107,20 @@ public class P_tube : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+        
+        CursorSkin.Instance.isUseClock = false;
+        _moveMouseItem.enabled = true;
+        _stepStageSystem.NextStep();
     }
     
     private IEnumerator ReactionInHotWater()
     {
+        _stepStageSystem.NextStep();
+        
         _state = StatePTube.warmed;
+        
+        CursorSkin.Instance.isUseClock = true;
+        _moveMouseItem.enabled = false;
 
         _colorRight = new Color32(123, 62, 15 ,83);
 
@@ -114,5 +135,8 @@ public class P_tube : MonoBehaviour
             
             yield return new WaitForFixedUpdate();
         }
+        
+        CursorSkin.Instance.isUseClock = false;
+        _stepStageSystem.NextStep();
     }
 }
