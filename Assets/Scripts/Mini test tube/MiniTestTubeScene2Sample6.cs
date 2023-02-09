@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene2Sample6 : MiniTestTube
+    public class MiniTestTubeScene2Sample6 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS2E6
         {
@@ -26,6 +26,7 @@ namespace Mini_test_tube
         private StateMiniTestTubeS2E6 _state;
         private Renderer _rendererSediment;
         private readonly Color _colorResult = new Color32(104, 13, 47, 60);
+        private Color _originColorSediment;
 
         public StateMiniTestTubeS2E6 GetState => _state;
         public int getCountLiquid => _countLiquid;
@@ -39,6 +40,7 @@ namespace Mini_test_tube
             var colorPhenolphthalein = new Color32(87, 0, 33, 60);
 
             _rendererSediment = sediment.GetComponent<Renderer>();
+            _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E6>();
 
@@ -104,6 +106,15 @@ namespace Mini_test_tube
                 stick.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
                 stick.GetComponent<MoveMap>().StartToMove(3);
             }
+        }
+
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS2E6.Empty;
+            sediment.level = 0;
+            sediment.gameObject.SetActive(true);
+            _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
         }
     }
 }

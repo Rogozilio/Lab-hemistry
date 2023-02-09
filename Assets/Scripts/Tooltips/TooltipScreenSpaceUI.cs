@@ -44,7 +44,7 @@ public class TooltipScreenSpaceUI : MonoBehaviour
         get
         {
             if (_tooltips == null || _tooltips.Count == 0)
-                WriteTooltipsFromPath();
+                new StringLoader(CreateAllList).Start("Tooltips.txt");
             return _tooltips;
         }
     }
@@ -61,8 +61,6 @@ public class TooltipScreenSpaceUI : MonoBehaviour
         SetText(textMeshPro.text);
         
         new StringLoader(CreateAllList).Start("Tooltips.txt");
-
-        WriteTooltipsFromPath();
     }
 
     private void Update()
@@ -94,6 +92,7 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     private void CreateAllList(string data)
     {
         _allLines = data.Split('\n').ToList();
+        WriteTooltipsFromPath(); 
     }
 
     private void SwitchActiveTooltip(bool value)

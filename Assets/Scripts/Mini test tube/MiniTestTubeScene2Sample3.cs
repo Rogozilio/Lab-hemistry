@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene2Sample3 : MiniTestTube
+    public class MiniTestTubeScene2Sample3 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS2E3
         {
@@ -42,7 +42,11 @@ namespace Mini_test_tube
                 () =>
                 {
                     ChangeColorLiquid(orangeColor, stepH2SO4--);
-                    if(stepH2SO4 == 0) _stepStageSystem.NextStep();
+                    if (stepH2SO4 == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        stepH2SO4 = 3;
+                    }
                 });
 
             byte stepNaOH = 3;
@@ -52,7 +56,11 @@ namespace Mini_test_tube
                 () =>
                 {
                     ChangeColorLiquid(yellowColor, stepNaOH--);
-                    if(stepNaOH == 0) _stepStageSystem.NextStep();
+                    if (stepNaOH == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        stepNaOH = 3;
+                    }
                 });
         }
 
@@ -61,6 +69,12 @@ namespace Mini_test_tube
             base.AddLiquid(liquid);
 
             _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+        }
+
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS2E3.Empty;
         }
     }
 }

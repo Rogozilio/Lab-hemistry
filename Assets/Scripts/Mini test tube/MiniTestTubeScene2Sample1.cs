@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene2Sample1 : MiniTestTube
+    public class MiniTestTubeScene2Sample1 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS2E1
         {
@@ -32,6 +32,7 @@ namespace Mini_test_tube
         private ActionAddPowder<StateMiniTestTubeS2E1> _actionAddPowder;
 
         private StateMiniTestTubeS2E1 _state;
+        private Color _originColorSediment;
 
         public StateMiniTestTubeS2E1 GetState => _state;
 
@@ -46,6 +47,7 @@ namespace Mini_test_tube
             base.Awake();
 
             _rendererSediment = Sediment.GetComponent<Renderer>();
+            _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
             liquidFlowScript.SetUniqueActionInEnd = LastFlowLiquidChangeStateTestTube;
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E1>();
@@ -90,6 +92,7 @@ namespace Mini_test_tube
                         _stepStageSystem.NextStep();
                         ChangeStateWithState(StateMiniTestTubeS2E1.NotActive,
                                                     StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O);
+                        stepFeCI3 = 4;
                     }
                 });
             byte stepNH4CNS = 4;
@@ -100,7 +103,11 @@ namespace Mini_test_tube
                     _countNH4CNS++;
                     ChangeStateWithState(StateMiniTestTubeS2E1.FeCl3_NH4CNSx4_H2O, StateMiniTestTubeS2E1.FeCl3_NH4CNS_H2O_NH4CI);
                     ChangeColorLiquid(new Color32(7, 0, 0, 90), stepNH4CNS--);
-                    if(stepNH4CNS == 0) _stepStageSystem.NextStep();
+                    if (stepNH4CNS == 0)
+                    {
+                        _stepStageSystem.NextStep();
+                        stepNH4CNS = 4;
+                    }
                 });
 
             _actionAddPowder = new ActionAddPowder<StateMiniTestTubeS2E1>();
@@ -204,6 +211,16 @@ namespace Mini_test_tube
                 obj._state = StateMiniTestTubeS2E1.FeCl3x4_NH4CNS_H2O;
                 obj._countLiquid = 0;
             }
+        }
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS2E1.Empty;
+            Sediment.level = 0;
+            _countFeCl3 = 0;
+            _countNH4CNS = 0;
+            Sediment.gameObject.SetActive(true);
+            _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
         }
     }
 }

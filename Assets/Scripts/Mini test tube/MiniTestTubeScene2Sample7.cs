@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Mini_test_tube
 {
-    public class MiniTestTubeScene2Sample7 : MiniTestTube
+    public class MiniTestTubeScene2Sample7 : MiniTestTube, IRestart
     {
         public enum StateMiniTestTubeS2E7
         {
@@ -23,7 +23,9 @@ namespace Mini_test_tube
 
         private StateMiniTestTubeS2E7 _state;
 
+        private Renderer _rendererSediment;
         private readonly Color _waterColor = new Color32(63, 63, 63, 72);
+        private Color _originColorSediment;
 
         public StateMiniTestTubeS2E7 GetState => _state;
         public int getCountLiquid => _countLiquid;
@@ -37,6 +39,9 @@ namespace Mini_test_tube
         {
             base.Awake();
 
+            _rendererSediment = sediment.GetComponent<Renderer>();
+            _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
+            
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E7>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.Empty, TypeLiquid.MnSO4, Operator.More, 0,
@@ -53,25 +58,31 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4, TypeLiquid._NH4_2S, Operator.More, 0,
                 StateMiniTestTubeS2E7.MnSO4_NH4_2S, () =>
                 {
-                    sediment.GetComponent<Renderer>().material.SetFloat("_SedimentMultiply", 4);
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSediment, step_NH4_2S--);
+                    _rendererSediment.material.SetFloat("_SedimentMultiply", 4);
+                    sediment.level = levelLiquid.level * 0.9f;
+                    ChangeColorLiquid(_rendererSediment, colorSediment, step_NH4_2S--);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4_NH4_2S, TypeLiquid._NH4_2S, Operator.More, 0, () =>
             {
-                ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSediment, step_NH4_2S--);
-                if (step_NH4_2S == 0) _stepStageSystem.NextStep();
+                ChangeColorLiquid(_rendererSediment, colorSediment, step_NH4_2S--);
+                if (step_NH4_2S == 0)
+                {
+                    _stepStageSystem.NextStep();
+                    step_NH4_2S = 3;
+                }
             });
             byte step_HCI = 6;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4_NH4_2S, TypeLiquid.HCI, Operator.More, 0,
                 StateMiniTestTubeS2E7.MnSO4_NH4_2S_HCl,
-                () => { ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSedimentInvisible, step_HCI--); });
+                () => { ChangeColorLiquid(_rendererSediment, colorSedimentInvisible, step_HCI--); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4_NH4_2S_HCl, TypeLiquid.HCI, Operator.More, 0, () =>
             {
-                ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSedimentInvisible, step_HCI--);
+                ChangeColorLiquid(_rendererSediment, colorSedimentInvisible, step_HCI--);
                 if (step_HCI == 0)
                 {
                     _stepStageSystem.NextStep();
                     SwitchStateNextMiniTestTube(StateMiniTestTubeS2E7.SbCl3);
+                    step_HCI = 6;
                 }
             });
 
@@ -83,14 +94,18 @@ namespace Mini_test_tube
                 StateMiniTestTubeS2E7.SbCl3_Na2S, () =>
                 {
                     sediment.level = levelLiquid.level * 0.8f;
-                    sediment.GetComponent<Renderer>().material.SetFloat("_SedimentMultiply", 3);
-                    ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSediment2, stepNa2S--);
+                    _rendererSediment.material.SetFloat("_SedimentMultiply", 3);
+                    ChangeColorLiquid(_rendererSediment, colorSediment2, stepNa2S--);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.SbCl3_Na2S, TypeLiquid.Na2S, Operator.More, 0, () =>
             {
                 sediment.level = levelLiquid.level * 0.8f;
-                ChangeColorLiquid(sediment.GetComponent<Renderer>(), colorSediment2, stepNa2S--);
-                if (stepNa2S == 0) _stepStageSystem.NextStep();
+                ChangeColorLiquid(_rendererSediment, colorSediment2, stepNa2S--);
+                if (stepNa2S == 0)
+                {
+                    _stepStageSystem.NextStep();
+                    stepNa2S = 3;
+                }
             });
             byte step2_HCI = 6;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.SbCl3_Na2S, TypeLiquid.HCI, Operator.More, 0,
@@ -103,7 +118,11 @@ namespace Mini_test_tube
             {
                 sediment.level = levelLiquid.level * 0.8f;
                 ChangeColorLiquid(colorSediment2, step2_HCI--);
-                if (step2_HCI == 0) _stepStageSystem.NextStep();
+                if (step2_HCI == 0)
+                {
+                    _stepStageSystem.NextStep();
+                    step2_HCI = 6;
+                }
             });
         }
 
@@ -124,6 +143,14 @@ namespace Mini_test_tube
                 miniTestTube.SetState = state;
                 miniTestTube.ChangeColorLiquid(_waterColor);
             }
+        }
+
+        public void Restart()
+        {
+            RestartBase();
+            _state = StateMiniTestTubeS2E7.Empty;
+            sediment.gameObject.SetActive(true);
+            _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
         }
     }
 }

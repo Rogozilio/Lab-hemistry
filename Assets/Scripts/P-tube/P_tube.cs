@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cursor;
 using UnityEngine;
 
-public class P_tube : MonoBehaviour
+public class P_tube : MonoBehaviour, IRestart
 {
     public enum StatePTube
     {
@@ -16,14 +16,20 @@ public class P_tube : MonoBehaviour
 
     private Renderer _gradientTube;
     private StatePTube _state;
-    
+
     private StepStageSystem _stepStageSystem;
 
     private MoveMouseItem _moveMouseItem;
-    
+
     private Coroutine _coroutineWithIceWater;
     private Coroutine _coroutineBalance;
     private Coroutine _coroutineWithHotWater;
+
+    private float _originEdgeLeftCenter;
+    private float _originEdgeCenterRight;
+    private float _originSmoothLeftCenter;
+    private float _originSmoothCenterRight;
+    private Color _originColorRight;
 
     private float _edgeLeftCenter
     {
@@ -51,6 +57,7 @@ public class P_tube : MonoBehaviour
 
     private Color _colorRight
     {
+        get => _gradientTube.material.GetColor("_ColorRight");
         set => _gradientTube.material.SetColor("_ColorRight", value);
     }
 
@@ -61,6 +68,12 @@ public class P_tube : MonoBehaviour
         _gradientTube = GetComponent<Renderer>();
         _stepStageSystem = FindObjectOfType<StepStageSystem>();
         _moveMouseItem = transform.parent.GetComponent<MoveMouseItem>();
+
+        _originEdgeLeftCenter = _edgeLeftCenter;
+        _originEdgeCenterRight = _edgeCenterRight;
+        _originSmoothLeftCenter = _smoothLeftCenter;
+        _originSmoothCenterRight = _smoothCenterRight;
+        _originColorRight = _colorRight;
     }
 
     public void StartReactionInIceWater()
@@ -80,7 +93,7 @@ public class P_tube : MonoBehaviour
     private IEnumerator ReactionInIceWater()
     {
         _stepStageSystem.NextStep();
-        
+
         _state = StatePTube.frozen;
 
         CursorSkin.Instance.isUseClock = true;
@@ -107,22 +120,22 @@ public class P_tube : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
-        
+
         CursorSkin.Instance.isUseClock = false;
         _moveMouseItem.enabled = true;
         _stepStageSystem.NextStep();
     }
-    
+
     private IEnumerator ReactionInHotWater()
     {
         _stepStageSystem.NextStep();
-        
+
         _state = StatePTube.warmed;
-        
+
         CursorSkin.Instance.isUseClock = true;
         _moveMouseItem.enabled = false;
 
-        _colorRight = new Color32(123, 62, 15 ,83);
+        _colorRight = new Color32(123, 62, 15, 83);
 
         while (_edgeLeftCenter > 0)
         {
@@ -132,11 +145,23 @@ public class P_tube : MonoBehaviour
             {
                 _edgeLeftCenter = Mathf.Clamp(_edgeLeftCenter - step, 0f, 1f);
             }
-            
+
             yield return new WaitForFixedUpdate();
         }
-        
+
         CursorSkin.Instance.isUseClock = false;
         _stepStageSystem.NextStep();
+    }
+
+    public void Restart()
+    {
+        _stepStageSystem.RestartStage();
+        _state = StatePTube.balance;
+        _edgeLeftCenter = _originEdgeLeftCenter;
+        _edgeCenterRight = _originEdgeCenterRight;
+        _smoothLeftCenter = _originSmoothLeftCenter;
+        _smoothCenterRight = _originSmoothCenterRight;
+        _colorRight = _originColorRight;
+        _moveMouseItem.enabled = true;
     }
 }
