@@ -15,7 +15,7 @@ public class PictureViewLoader : Operation<PictureViewData>
 		: base(onCompleted, onError) {} 
 
 
-
+	
 	//  Operation  -------------------------------------------------- 
 	public void Start () 
 	{

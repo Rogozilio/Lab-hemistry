@@ -20116,18 +20116,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 604651918}
-        m_TargetAssemblyTypeName: VirtualLab.PictureView, Assembly-CSharp
-        m_MethodName: OnPicturesLoaded
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &591906493
 GameObject:
   m_ObjectHideFlags: 0
@@ -20798,17 +20786,6 @@ LightProbeGroup:
   - {x: 2.3027568, y: -0.20078684, z: 0.53381336}
   - {x: 2.3027568, y: -1.5954713, z: 0.53381336}
   m_Dering: 1
---- !u!114 &604651918 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4590374796668412034, guid: 544b45ac69fdb9148905e866e2ed3729, type: 3}
-  m_PrefabInstance: {fileID: 3073692669957178357}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45c598321454b9643a00a1a162613234, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &604651919 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7354495814039326235, guid: 40b172784f9bf494497a448d6f0d641f, type: 3}
@@ -40853,6 +40830,11 @@ Transform:
 --- !u!1 &1041224579 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8935429541856334154, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
+  m_PrefabInstance: {fileID: 3073692670100058515}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1041224580 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8935429541856334157, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
   m_PrefabInstance: {fileID: 3073692670100058515}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1041754099 stripped
@@ -81658,6 +81640,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Message dialog
       objectReference: {fileID: 0}
+    - target: {fileID: 3680775854921259327, guid: afaecdf4f181ca947a2536dbd0990c47, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: afaecdf4f181ca947a2536dbd0990c47, type: 3}
 --- !u!4 &1873529176147671617
@@ -83753,8 +83739,12 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 2086540288}
+    m_TransformParent: {fileID: 3073692671051002262}
     m_Modifications:
+    - target: {fileID: 2057376300983928755, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3969051612705062575, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
       propertyPath: nextPageButton
       value: 
@@ -84491,6 +84481,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3073692671051002262}
     m_Modifications:
+    - target: {fileID: 2057376300983928755, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3969051612705062575, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
       propertyPath: nextPageButton
       value: 
@@ -84637,7 +84631,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8935429543454108894, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 776
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8935429543454108894, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
       propertyPath: m_SizeDelta.y
@@ -85621,6 +85615,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3073692671051002262}
     m_Modifications:
+    - target: {fileID: 2057376300983928755, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3969051612705062575, guid: f4f50a6e02fa4eb4d986242df6d8334d, type: 3}
       propertyPath: nextPageButton
       value: 
@@ -85797,6 +85795,7 @@ RectTransform:
   m_Children:
   - {fileID: 604651928}
   - {fileID: 2086540288}
+  - {fileID: 1041224580}
   m_Father: {fileID: 3073692670960836323}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

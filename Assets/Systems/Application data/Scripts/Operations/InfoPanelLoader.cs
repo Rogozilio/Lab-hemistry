@@ -54,16 +54,16 @@ public class InfoPanelLoader : Operation<InfoPanelData>
 
 
 
-	//  Picture view  ----------------------------------------------- 
+	// Picture view  ----------------------------------------------- 
 	PictureViewData pictureView; 
-
+	
 	bool pictureViewLoaded => pictureView != null; 
-
+	
 	void LoadPictureView () 
 	{
 		new PictureViewLoader(OnPicViewLoaded, GoBackWithError).Start(); 
 	}
-
+	
 	void OnPicViewLoaded (PictureViewData pictureView) 
 	{
 		this.pictureView = pictureView; 
@@ -72,7 +72,7 @@ public class InfoPanelLoader : Operation<InfoPanelData>
 
 
 
-	//  Info panel  ------------------------------------------------- 
+	// Info panel  ------------------------------------------------- 
 	void CreateInfoPanel () 
 	{
 		InfoPanelData infoPanel = new InfoPanelData(tabDataList, pictureView); 
