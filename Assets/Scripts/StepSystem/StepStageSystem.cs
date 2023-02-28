@@ -6,6 +6,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.TextCore.LowLevel;
 using VirtualLab.ApplicationData;
 
 public class StepStageSystem : MonoBehaviour
@@ -22,7 +23,7 @@ public class StepStageSystem : MonoBehaviour
 
     private List<string> _allLines;
 
-        private List<StepStage> _stepStageList;
+    private List<StepStage> _stepStageList;
     private TextMeshProUGUI _textMeshPro;
     private int _currentIndexStepStage;
 
@@ -46,16 +47,34 @@ public class StepStageSystem : MonoBehaviour
         _allLines = data.Split('\n').ToList();
         WriteStepStageListFromPath();
     }
-    
+
     private void WriteStepStageListFromPath()
     {
         var newStepStage = new StepStage();
+
+
         for (var i = 0; i < _allLines.Count; i++)
         {
+            var isBeginSub = true;
+            while (_allLines[i].Contains('_'))
+            {
+                var index = _allLines[i].IndexOf('_');
+                _allLines[i] = _allLines[i].Remove(index, 1)
+                    .Insert(index, isBeginSub ? "<size=70%>" : "<size=100%>");
+                isBeginSub = !isBeginSub;
+            }
+
+            
             if (_allLines[i].Contains('$'))
             {
                 newStepStage.StageName = _allLines[i].Split('[')[1].Split(']')[0];
             }
+            // else if (_allLines[i].Contains('_'))
+            // {
+            //     
+            //     newStepStage.Steps ??= new List<string>();
+            //     newStepStage.Steps.Add(_allLines[i]);
+            // }
             else if (_allLines[i].Contains('#'))
             {
                 _stepStageList.Add(newStepStage);
@@ -79,7 +98,7 @@ public class StepStageSystem : MonoBehaviour
 
     public void SwitchStage(string stageName)
     {
-        for(var i = 0; i < _stepStageList.Count; i++)
+        for (var i = 0; i < _stepStageList.Count; i++)
         {
             if (_stepStageList[i].StageName == stageName)
             {
