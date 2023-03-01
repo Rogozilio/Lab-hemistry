@@ -64,17 +64,10 @@ public class StepStageSystem : MonoBehaviour
                 isBeginSub = !isBeginSub;
             }
 
-            
             if (_allLines[i].Contains('$'))
             {
                 newStepStage.StageName = _allLines[i].Split('[')[1].Split(']')[0];
             }
-            // else if (_allLines[i].Contains('_'))
-            // {
-            //     
-            //     newStepStage.Steps ??= new List<string>();
-            //     newStepStage.Steps.Add(_allLines[i]);
-            // }
             else if (_allLines[i].Contains('#'))
             {
                 _stepStageList.Add(newStepStage);
