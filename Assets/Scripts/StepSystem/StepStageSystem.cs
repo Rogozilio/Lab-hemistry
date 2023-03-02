@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.TextCore.LowLevel;
 using VirtualLab.ApplicationData;
 
 public class StepStageSystem : MonoBehaviour
 {
-    public struct StepStage
+    private struct StepStage
     {
         public string StageName;
         public int IndexStep;

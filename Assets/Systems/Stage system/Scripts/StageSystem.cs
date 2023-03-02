@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +13,7 @@ namespace VirtualLab
 
         [SerializeField] RestartDialog restartDialog;
         [SerializeField] StepStageSystem stepStageSystem;
+        [SerializeField] StagesTitles stagesTitles;
 
         // connections 
         List<StageButton> buttons = new List<StageButton>();
@@ -33,8 +32,8 @@ namespace VirtualLab
 
         void Start()
         {
-            if (stages.Count != stageTitles.Count /*|| stages.Count != buttons.Count*/)
-                throw new UnityException("Different number of stage components");
+            // if (stages.Count != stageTitles.Count /*|| stages.Count != buttons.Count*/)
+            //     throw new UnityException("Different number of stage components");
 
             InitStageTitles();
             InitButtons();
@@ -167,7 +166,9 @@ namespace VirtualLab
             
             stages[index].StartStage();
             buttons[index].SetState(StageButton.State.Current);
-            stepStageSystem.SwitchStage(stages[index].name.Split(" ")[1]);
+            var stageName = stages[index].name.Split(" ")[1];
+            stepStageSystem.SwitchStage(stageName);
+            stagesTitles.ShowStageTitle(index);
             SwitchSubStageButton(true, index);
         }
 
@@ -185,20 +186,22 @@ namespace VirtualLab
 
         void InitStageTitles()
         {
-            stageTitles[0].SetActive(true);
-            titleIndex = 0;
-
-            for (int i = 1; i < stageTitles.Count; i++)
-            {
-                stageTitles[i].SetActive(false);
-            }
+            stagesTitles.ShowStageTitle(0);
+            // stageTitles[0].SetActive(true);
+            // titleIndex = 0;
+            //
+            // for (int i = 1; i < stageTitles.Count; i++)
+            // {
+            //     stageTitles[i].SetActive(false);
+            // }
         }
 
         void SetStageTitle(int index)
         {
-            CurrentStageTitle.SetActive(false);
+            //CurrentStageTitle.SetActive(false);
+            stagesTitles.ShowStageTitle(index);
             titleIndex = index;
-            CurrentStageTitle.SetActive(true);
+            //CurrentStageTitle.SetActive(true);
         }
 
 

@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Liquid
 {
     public class ActionAddLiquid<T>
     {
-        private struct ConditionActionAddLiquid
+        private partial struct ConditionActionAddLiquid
         {
             public T equalState;
             public TypeLiquid equalTypeLiquid;
             public Operator sign;
             public int countLiquid;
+            public Color32 colorDropLiquid;
             public T newState;
             public Action action;
+            public Action<Color32> actionWithColor;
         }
 
         private List<ConditionActionAddLiquid> _conditions;
@@ -48,37 +51,63 @@ namespace Liquid
             });
         }
         
-        public void Launch(ref T state, TypeLiquid typeLiquid, int countLiquid)
+        public void AddAction(T equalState, TypeLiquid equalTypeLiquid, Operator sign, int countLiquid, T newState, Action<Color32> action = null)
         {
-            foreach (var condition in _conditions)
+            _conditions.Add(new ConditionActionAddLiquid()
             {
-                if (Equals(state, condition.equalState) && typeLiquid == condition.equalTypeLiquid )
+                equalState = equalState,
+                equalTypeLiquid = equalTypeLiquid,
+                sign = sign,
+                countLiquid = countLiquid,
+                newState = newState,
+                actionWithColor = action
+            });
+        }
+        
+        public void AddAction(T nowState, TypeLiquid equalTypeLiquid, Operator sign, int countLiquid, Action<Color32> action = null)
+        {
+            _conditions.Add(new ConditionActionAddLiquid()
+            {
+                equalState = nowState,
+                equalTypeLiquid = equalTypeLiquid,
+                sign = sign,
+                countLiquid = countLiquid,
+                newState = nowState,
+                actionWithColor = action
+            });
+        }
+
+        public void Launch(ref T state, TypeLiquid typeLiquid, int countLiquid, Color32 dropColor = default)
+        {
+            for (int i = 0; i < _conditions.Count; i++)
+            {
+                if (Equals(state, _conditions[i].equalState) && typeLiquid == _conditions[i].equalTypeLiquid)
                 {
                     var isTrueCondition = false;
-                    
-                    switch (condition.sign)
+
+                    switch (_conditions[i].sign)
                     {
                         case Operator.Less:
-                            isTrueCondition = countLiquid < condition.countLiquid;
+                            isTrueCondition = countLiquid < _conditions[i].countLiquid;
                             break;
                         case Operator.LessEquals:
-                            isTrueCondition = countLiquid <= condition.countLiquid;
+                            isTrueCondition = countLiquid <= _conditions[i].countLiquid;
                             break;
                         case Operator.Equally:
-                            isTrueCondition = countLiquid == condition.countLiquid;
+                            isTrueCondition = countLiquid == _conditions[i].countLiquid;
                             break;
                         case Operator.MoreEquals:
-                            isTrueCondition = countLiquid >= condition.countLiquid;
+                            isTrueCondition = countLiquid >= _conditions[i].countLiquid;
                             break;
                         case Operator.More:
-                            isTrueCondition = countLiquid > condition.countLiquid;
+                            isTrueCondition = countLiquid > _conditions[i].countLiquid;
                             break;
                     }
 
                     if (!isTrueCondition) continue;
-
-                    state = condition.newState;
-                    condition.action?.Invoke();
+                    state = _conditions[i].newState;
+                    _conditions[i].action?.Invoke();
+                    _conditions[i].actionWithColor?.Invoke(dropColor);
                     return;
                 }
             }

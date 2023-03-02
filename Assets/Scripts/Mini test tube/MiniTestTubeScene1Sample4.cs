@@ -52,7 +52,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.More, 0,
                 () => ChangeColorLiquid(newColor));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NaOH, Operator.More, 0,
-                StateMiniTestTubeS1E4.NH4CI_NaOH);
+                StateMiniTestTubeS1E4.NH4CI_NaOH, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI_NaOH, TypeLiquid.NaOH, Operator.Equally, 16,
                 () => _stepStageSystem.NextStep());
 
@@ -64,7 +64,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.More, 0,
                 () => ChangeColorLiquid(newColor));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.HCI, Operator.More, 0,
-                StateMiniTestTubeS1E4.Na2CO3_HCI);
+                StateMiniTestTubeS1E4.Na2CO3_HCI, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3_HCI, TypeLiquid.HCI, Operator.Equally, 14,
                 () => _stepStageSystem.NextStep());
         }

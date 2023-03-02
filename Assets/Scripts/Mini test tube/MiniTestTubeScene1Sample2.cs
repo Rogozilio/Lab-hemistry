@@ -90,14 +90,14 @@ namespace Mini_test_tube
                         stepHCI = 4;
                     }
                 });
-
-            _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Empty, TypeLiquid.Bi_NO3_3,
-                Operator.More, 0, StateMiniTestTubeS1E2.Bi_NO3_3,
-                () => { ChangeColorLiquid(new Color32(172, 198, 219, 30)); });
+            
+            // _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Empty, TypeLiquid.Bi_NO3_3,
+            //     Operator.More, 0, StateMiniTestTubeS1E2.Bi_NO3_3,
+            //     () => { ChangeColorLiquid(rendererLiquid.material.GetColor("_LiquidColor")); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,
                 Operator.Equally, 6, () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,
-                Operator.More, 0, () => { ChangeColorLiquid(new Color32(172, 198, 219, 30)); });
+                Operator.More, 0, (colorWater) => { ChangeColorLiquid(colorWater); });
             byte stepNaOH_2 = 4;
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.NaOH,
                 Operator.More, 6, StateMiniTestTubeS1E2.Bi_NO3_3_NaOH,
@@ -144,7 +144,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
 
         private bool IsOnlyForState(StateMiniTestTubeS1E2 state)
