@@ -25,7 +25,7 @@ namespace Mini_test_tube
 
         private StateMiniTestTubeS2E5 _state;
         private Renderer _rendererSediment;
-        private readonly Color _colorResult = new Color32(58, 6, 0, 80);
+        private readonly Color _colorResult = new Color32(109, 12, 0, 80);
         private Color _originColorSediment;
 
         public StateMiniTestTubeS2E5 GetState => _state;
@@ -36,7 +36,7 @@ namespace Mini_test_tube
         {
             base.Awake();
 
-            var colorCH3COOH = new Color32(63, 63, 63, 72);
+            //var colorCH3COOH = new Color32(63, 63, 63, 72);
             var colorMethylOrange = new Color32(90, 3, 0, 70);
 
             _rendererSediment = sediment.GetComponent<Renderer>();
@@ -45,7 +45,7 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E5>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.Empty, TypeLiquid.CH3COOH, Operator.More, 0,
-                StateMiniTestTubeS2E5.CH3COOH, () => { ChangeColorLiquid(colorCH3COOH); });
+                StateMiniTestTubeS2E5.CH3COOH, (bottleColor) => { ChangeColorLiquid(bottleColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.CH3COOH, TypeLiquid.CH3COOH, Operator.Equally, 6,
                 () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.CH3COOH, TypeLiquid.methylOrange, Operator.More, 0,
@@ -80,7 +80,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
 
         public override void AddPowder(PowderDrop powder)

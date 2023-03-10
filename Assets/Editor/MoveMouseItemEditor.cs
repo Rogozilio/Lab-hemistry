@@ -50,6 +50,10 @@ public class MoveMouseItemEditor : Editor
 
         GUILayout.Space(10f);
         GUILayout.BeginHorizontal();
+        GUILayout.Label("Is Rotate To Camera (Awake)", GUILayout.Width(EditorGUIUtility.labelWidth));
+        moveMouseItem.IsRotateToCameraOnAwake = EditorGUILayout.Toggle(moveMouseItem.IsRotateToCameraOnAwake);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Is Rotate To Camera", GUILayout.Width(EditorGUIUtility.labelWidth));
         moveMouseItem.IsRotateToCamera = EditorGUILayout.Toggle(moveMouseItem.IsRotateToCamera);
         GUILayout.EndHorizontal();

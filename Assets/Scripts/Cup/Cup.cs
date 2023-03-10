@@ -73,13 +73,12 @@ public class Cup : MonoBehaviour, IRestart
             _stateCup = StateCup.WithMagnesiumAndWater;
             _stepStageSystem.NextStep();
         }
-
-
+        
         if (_countWaterDrop > 10)
         {
             var color = _rendererWater.material.GetColor("_BaseColor");
             _rendererWater.material
-                .SetColor("_BaseColor", color + new Color(0.06f, -0.24f, -0.12f, 0f));
+                .SetColor("_BaseColor", color + new Color(0.05f, -0.28f, -0.116f, 0.185f));
         }
 
         if (_countWaterDrop == 13)
@@ -107,11 +106,11 @@ public class Cup : MonoBehaviour, IRestart
         if (Vector3.Distance(_prevPosition, glassStick.position) > 0.01f)
         {
             _prevPosition = glassStick.position;
-
-            var color = _rendererMagnesiumChild.material.GetColor("_LiquidColor");
-            color -= new Color(0, 0, 0, 0.01f);
-            if (color.a > 0)
-                _rendererMagnesiumChild.material.SetColor("_LiquidColor", color);
+            
+            if (Magnesium.transform.localScale.x > 0)
+            {
+                Magnesium.transform.localScale -= new Vector3(0.02f, 0.02f, 0.02f);
+            }
             else
             {
                 PieceMagnesium.SetActive(false);

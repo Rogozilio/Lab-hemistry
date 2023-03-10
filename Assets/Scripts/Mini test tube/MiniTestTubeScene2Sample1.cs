@@ -135,7 +135,7 @@ namespace Mini_test_tube
 
             if(!_isStir) return;
             var stepSediment = (byte)(_rendererSediment.material.GetColor("_LiquidColor").a * 255 * 4);
-            ChangeColorLiquid(new Color32(30, 3, 0, 80), stepSediment);
+            ChangeColorLiquid(new Color32(94, 16, 0, 80), stepSediment);
             
             ChangeColorLiquid(_rendererSediment, new Color32(176, 56, 31, 0), stepSediment);
 
@@ -193,7 +193,6 @@ namespace Mini_test_tube
 
         private void LastFlowLiquidChangeStateTestTube()
         {
-            _stepStageSystem.NextStep();
             var count = 0;
             var objects = FindObjectsOfType<MiniTestTubeScene2Sample1>();
             foreach (var t in objects)

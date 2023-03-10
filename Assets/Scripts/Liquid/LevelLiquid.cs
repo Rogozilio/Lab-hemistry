@@ -20,6 +20,7 @@ public class LevelLiquid : MonoBehaviour
     public OriginLevelLiquid originLevelLiquid = OriginLevelLiquid.Center;
     public Vector3 originOffset;
     [Range(0, 1)] public float level = 0.5f;
+    [Range(0, 1)] public float density = 0f;
 
     public float size => level;
 
@@ -27,7 +28,7 @@ public class LevelLiquid : MonoBehaviour
     {
         _rendererTube = GetComponent<Renderer>();
         _isHasSediment = _rendererTube.material.HasProperty("_IsWorldPosition");
-        
+
         switch (originLevelLiquid)
         {
             case OriginLevelLiquid.Center:
@@ -39,7 +40,7 @@ public class LevelLiquid : MonoBehaviour
         }
 
         _originPlane = Plane.transform.localPosition + originOffset;
-        
+
     }
 
     // Update is called once per frame
@@ -55,14 +56,17 @@ public class LevelLiquid : MonoBehaviour
         var x = Vector3.Dot(transform.parent.transform.up, Vector3.forward) * _size.x * signX;
         var y = Vector3.Dot(transform.parent.transform.right, -Vector3.right) * _size.y * signY;
         var z = Vector3.Dot(transform.parent.transform.forward, Vector3.up) * _size.z;
-        
+
         var center = new Vector3(x, y, z);
 
         var offset = _isHasSediment ? new Vector3(0, 0, _size.z) * level : center * level;
-        
+
         Plane.localPosition = _originPlane + offset;
         Plane.rotation = Quaternion.LookRotation(Vector3.forward);
         
+        _rendererTube.material.SetVector("_LocalUp", transform.forward.normalized);
+        _rendererTube.material.SetFloat("_Density", density);
+
         if (_isHasSediment)
         {
             _rendererTube.material.SetVector("_PlanePos",
@@ -72,6 +76,6 @@ public class LevelLiquid : MonoBehaviour
         {
             _rendererTube.material.SetVector("_PlanePos", Plane.position);
         }
-        
     }
+    
 }

@@ -164,10 +164,19 @@ public class TooltipScreenSpaceUI : MonoBehaviour
     {
         _tooltips ??= new Dictionary<int, string>();
 
-        for (var i = 0; i < _allLines.Count; i++)
+        foreach (var line in _allLines)
         {
-            var key = int.Parse(_allLines[i].Split('[')[1].Split(']')[0]);
-            var value = _allLines[i].Split('<')[1].Split('>')[0];
+            var key = int.Parse(line.Split('[')[1].Split(']')[0]);
+            var value = line.Split('<')[1].Split('>')[0];
+            
+            var isBeginSub = true;
+            while (value.Contains('_'))
+            {
+                var index = value.IndexOf('_');
+                value = value.Remove(index, 1)
+                    .Insert(index, isBeginSub ? "<size=70%>" : "<size=100%>");
+                isBeginSub = !isBeginSub;
+            }
             _tooltips.Add(key, value);
         }
     }

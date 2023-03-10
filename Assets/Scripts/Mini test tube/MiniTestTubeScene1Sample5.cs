@@ -28,15 +28,15 @@ namespace Mini_test_tube
         {
             base.Awake();
 
-            var clearColor = new Color32(172, 198, 219, 30);
+            //var clearColor = new Color32(172, 198, 219, 30);
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS1E5>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Empty, TypeLiquid.Pb_NO3_2, Operator.More, 0,
-                StateMiniTestTubeS1E5.Pb_NO3_2, () =>
+                StateMiniTestTubeS1E5.Pb_NO3_2, (bottleLiquid) =>
                 {
                     ChangeOtherTestTube(StateMiniTestTubeS1E5.NotActive);
-                    ChangeColorLiquid(clearColor);
+                    ChangeColorLiquid(bottleLiquid);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 6,
                 () =>
@@ -45,7 +45,7 @@ namespace Mini_test_tube
                     _state = GetKIOrK2CrO4();
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.More, 0,
-                () => { ChangeColorLiquid(clearColor); });
+                (bottleLiquid) => { ChangeColorLiquid(bottleLiquid); });
             byte stepKI = 2;
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.KI, Operator.More, 0,
                 StateMiniTestTubeS1E5.Pb_NO3_2_KI,
@@ -118,7 +118,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
         
         private void ChangeOtherTestTube(StateMiniTestTubeS1E5 newState)

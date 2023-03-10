@@ -37,20 +37,20 @@ namespace Mini_test_tube
 
             _originPositionBubble = Bubbles.gameObject.transform.localPosition;
             
-            var newColor = new Color32(172, 198, 219, 30);
+            //var newColor = new Color32(172, 198, 219, 30);
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS1E4>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Empty, TypeLiquid.NH4CI, Operator.More, 0,
                 StateMiniTestTubeS1E4.NH4CI,
-                () =>
+                (colorWater) =>
                 {
-                    ChangeColorLiquid(newColor);
+                    ChangeColorLiquid(colorWater);
                     ChangeOtherTestTube(StateMiniTestTubeS1E4.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.Equally, 8,
                 () => _stepStageSystem.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.More, 0,
-                () => ChangeColorLiquid(newColor));
+                (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NaOH, Operator.More, 0,
                 StateMiniTestTubeS1E4.NH4CI_NaOH, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI_NaOH, TypeLiquid.NaOH, Operator.Equally, 16,
@@ -58,11 +58,11 @@ namespace Mini_test_tube
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Empty, TypeLiquid.Na2CO3, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3,
-                () => ChangeColorLiquid(newColor));
+                (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.Equally, 10,
                 () => _stepStageSystem.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.More, 0,
-                () => ChangeColorLiquid(newColor));
+                (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.HCI, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3_HCI, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3_HCI, TypeLiquid.HCI, Operator.Equally, 14,
@@ -78,7 +78,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
 
         public void StartBurnLiquid()
@@ -161,7 +161,7 @@ namespace Mini_test_tube
             var bubblesVelocityOverLifetime = Bubbles.velocityOverLifetime;
             while (_heightEffervescence > 0)
             {
-                _heightEffervescence -= Time.fixedDeltaTime / 6f;
+                _heightEffervescence -= Time.fixedDeltaTime / 9f;
 
                 var localPositionBubble = Bubbles.gameObject.transform.localPosition;
                 Bubbles.gameObject.transform.localPosition = new Vector3(localPositionBubble.x,

@@ -1,13 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cursor;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
-using VirtualLab.OutlineNS;
 
 public class MoveMouseItem : MouseItem
 {
@@ -22,7 +15,8 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public bool IsExtentsY;
     [HideInInspector] public bool IsExtentsZ;
 
-    [Space] [HideInInspector] public bool IsRotateToCamera;
+    [Space] [HideInInspector] public bool IsRotateToCameraOnAwake; 
+    [HideInInspector] public bool isRotateToCamera;
     [HideInInspector] public bool IsLockX;
     [HideInInspector] public bool IsLockY;
     [HideInInspector] public bool IsLockZ;
@@ -39,13 +33,17 @@ public class MoveMouseItem : MouseItem
     private Rigidbody _rigidbody;
 
     private Vector3 _hitWall;
-    private Vector3 _faceAxis;
+
     private Vector3 _targetStartPosition;
     private Quaternion _targetStartRotate;
     private MoveToPoint _moveToRespawn;
     private MoveToPoint _moveToMouse;
     private Coroutine _useCoroutine;
     private Collider _collider;
+    
+    public bool IsReturnToRespawn { get => returnToStartingPosition; set => returnToStartingPosition = value; }
+    public bool IsRotateToCamera { get => isRotateToCamera; set => isRotateToCamera = value; }
+    public bool IsUseEventOnMouse { get; set; } = true;
 
     public Vector3 SetHitWall
     {
@@ -83,6 +81,12 @@ public class MoveMouseItem : MouseItem
 
     public void BackToRespawn()
     {
+        if (!returnToStartingPosition)
+        {
+            StateItem.ChangeState(StateItems.Idle);
+            return;
+        }
+        
         StateItem.ChangeState(StateItems.BackToRespawn);
 
         StartCoroutine(_moveToRespawn.StartAsync(() => { StateItem.ChangeState(StateItems.Idle); }));
@@ -95,6 +99,9 @@ public class MoveMouseItem : MouseItem
 
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+        
+        if(IsRotateToCameraOnAwake)
+            transform.rotation = RotateToCamera();
     }
 
     private void OnEnable()
@@ -127,15 +134,8 @@ public class MoveMouseItem : MouseItem
 
             _targetStartPosition = transform.position + startPos;
             _targetStartRotate = transform.rotation * startRot;
-            _faceAxis = new Vector3
-            {
-                x = IsRight ? 1 : 0,
-                y = IsUp ? 1 : 0,
-                z = IsForward ? 1 : 0
-            };
-            _faceAxis = IsInverse ? _faceAxis * -1 : _faceAxis;
 
-            if (OnMouseDown.GetPersistentEventCount() > 0)
+            if (OnMouseDown.GetPersistentEventCount() > 0 && IsUseEventOnMouse)
             {
                 OnMouseDown.Invoke();
                 return;
@@ -166,7 +166,7 @@ public class MoveMouseItem : MouseItem
         {
             if (StateItem.State is StateItems.Interacts or StateItems.Idle || !IsActive) return;
             outlineMap.Clear();
-            if (OnMouseUp.GetPersistentEventCount() > 0)
+            if (OnMouseUp.GetPersistentEventCount() > 0 && IsUseEventOnMouse)
             {
                 OnMouseUp.Invoke();
                 return;
@@ -209,11 +209,18 @@ public class MoveMouseItem : MouseItem
 
     private Quaternion RotateToCamera()
     {
+        var faceAxis = new Vector3
+        {
+            x = IsRight ? 1 : 0,
+            y = IsUp ? 1 : 0,
+            z = IsForward ? 1 : 0
+        };
+        faceAxis = IsInverse ? faceAxis * -1 : faceAxis;
         var lookPos = Camera.main.transform.position - transform.position;
         lookPos.x = (IsLockX) ? 0 : lookPos.x;
         lookPos.y = (IsLockY) ? 0 : lookPos.y;
         lookPos.z = (IsLockZ) ? 0 : lookPos.z;
-        var q = Quaternion.LookRotation(lookPos) * Quaternion.FromToRotation(_faceAxis, Vector3.forward);
+        var q = Quaternion.LookRotation(lookPos) * Quaternion.FromToRotation(faceAxis, Vector3.forward);
         return q;
     }
 }

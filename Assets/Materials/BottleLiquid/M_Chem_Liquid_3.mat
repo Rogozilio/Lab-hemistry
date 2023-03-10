@@ -114,7 +114,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Colour: {r: 0.8207547, g: 0.70132387, b: 0.19744569, a: 0.5372549}
+    - _Colour: {r: 0.7075471, g: 0.6172924, b: 0.33041114, a: 0.39215687}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _LiquidColor: {r: 0.42326775, g: 0.47353154, b: 0.49693304, a: 0}

@@ -43,9 +43,9 @@ namespace Mini_test_tube
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_1.Empty, TypeLiquid.CrCl3, Operator.More, 0,
                 StateMiniTestTubeS1E3_1.CrCl3,
-                () =>
+                (bottleColor) =>
                 {
-                    ChangeColorLiquid(new Color32(0, 2, 31, 83));
+                    ChangeColorLiquid(bottleColor/*new Color32(0, 2, 31, 83)*/);
                     ChangeOtherTestTube(StateMiniTestTubeS1E3_1.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_1.CrCl3, TypeLiquid.CrCl3, Operator.Equally, 10,
@@ -77,14 +77,14 @@ namespace Mini_test_tube
                 () =>
                 {
                     _countNaOH++;
-                    ChangeColorLiquid(new Color32(3,8,3,100));
+                    ChangeColorLiquid(new Color32(2,4,2,130));
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0f), stepNaOHhalf--);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_1.CrCl3_NaOH_half_NaOH, TypeLiquid.NaOH, Operator.More, 0,
                 () =>
                 {
                     _countNaOH++;
-                    ChangeColorLiquid(new Color32(3,8,3,100));
+                    ChangeColorLiquid(new Color32(2,4,2,130));
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0f), stepNaOHhalf--);
                     if (stepNaOHhalf == 0)
                     {
@@ -98,7 +98,7 @@ namespace Mini_test_tube
                 () =>
                 {
                     _countHCI++;
-                    ChangeColorLiquid(new Color32(5, 6, 19, 100));
+                    ChangeColorLiquid(new Color32(2, 3, 10, 130));
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0f), stepHCI--);
                     ChangeOtherTestTube(StateMiniTestTubeS1E3_1.NotActive);
                 });
@@ -106,7 +106,7 @@ namespace Mini_test_tube
                 () =>
                 {
                     _countHCI++;
-                    ChangeColorLiquid(new Color32(5, 6, 19, 100));
+                    ChangeColorLiquid(new Color32(2, 3, 10, 130));
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0), stepHCI--);
                     if (stepHCI == 0)
                     {
@@ -143,7 +143,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
 
         public void Restart()

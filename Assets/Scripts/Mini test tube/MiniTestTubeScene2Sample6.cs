@@ -25,7 +25,7 @@ namespace Mini_test_tube
 
         private StateMiniTestTubeS2E6 _state;
         private Renderer _rendererSediment;
-        private readonly Color _colorResult = new Color32(104, 13, 47, 60);
+        private readonly Color _colorResult = new Color32(91, 25, 50, 60);
         private Color _originColorSediment;
 
         public StateMiniTestTubeS2E6 GetState => _state;
@@ -36,7 +36,7 @@ namespace Mini_test_tube
         {
             base.Awake();
 
-            var colorNH4OH = new Color32(63, 63, 63, 72);
+            //var colorNH4OH = new Color32(63, 63, 63, 72);
             var colorPhenolphthalein = new Color32(87, 0, 33, 60);
 
             _rendererSediment = sediment.GetComponent<Renderer>();
@@ -45,7 +45,7 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS2E6>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.Empty, TypeLiquid.NH4OH, Operator.More, 0,
-                StateMiniTestTubeS2E6.NH4OH, () => { ChangeColorLiquid(colorNH4OH); });
+                StateMiniTestTubeS2E6.NH4OH, (bottleColor) => { ChangeColorLiquid(bottleColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.NH4OH, Operator.Equally, 6,
                 () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.Phenolphthalein, Operator.More, 0,
@@ -80,7 +80,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
 
         public override void AddPowder(PowderDrop powder)

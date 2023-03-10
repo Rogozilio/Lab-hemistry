@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Cursor;
 using UnityEngine;
 
@@ -57,7 +56,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
         var renderBackResult = PaperResult.transform.GetChild(0).GetComponent<Renderer>();
         var newColor = new Color(0, 0, 0, Time.fixedDeltaTime / 5f);
         
-        while (renderFrontResult.material.color.a < 0.8f)
+        while (renderFrontResult.material.color.a < 1f)
         {
             renderFrontWater.material.color -= newColor;
             renderBackWater.material.color -= newColor;
@@ -82,5 +81,9 @@ public class IndicatorPaper : MonoBehaviour, IRestart
         PaperWater.transform.GetChild(0).GetComponent<Renderer>().material.color = _originColorWater;
         PaperResult.GetComponent<Renderer>().material.color = _originColorResult;
         PaperResult.transform.GetChild(0).GetComponent<Renderer>().material.color = _originColorResult;
+        GetComponent<MoveMouseItem>().IsUseEventOnMouse = true;
+        GetComponent<MoveMouseItem>().IsRotateToCamera = true;
+        GetComponent<MoveMouseItem>().enabled = false;
+        GetComponent<MoveMap>().StartToMove(0);
     }
 }

@@ -25,6 +25,7 @@ public class LiquidFlow : MonoBehaviour
     public float step;
     public float stepSediment;
     public float howMach;
+    private StepStageSystem _stepStageSystem;
 
     public UnityAction SetUniqueActionInEnd
     {
@@ -62,6 +63,12 @@ public class LiquidFlow : MonoBehaviour
     public LevelLiquid SetSediment
     {
         set => _sediment = value;
+    }
+
+    private void Awake()
+    {
+        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        actionInEnd += () => { _stepStageSystem.NextStep(); };
     }
 
     public void SetPositionStart(Vector3 start)
@@ -124,7 +131,7 @@ public class LiquidFlow : MonoBehaviour
                 if (transform.localScale.z <= 0)
                 {
                     stateFlowLiquid = StateFlowLiquid.NotPour;
-
+                  
                     actionInEnd?.Invoke();
                     gameObject.SetActive(false);
                 }

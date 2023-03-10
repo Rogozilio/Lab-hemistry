@@ -91,9 +91,6 @@ namespace Mini_test_tube
                     }
                 });
             
-            // _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Empty, TypeLiquid.Bi_NO3_3,
-            //     Operator.More, 0, StateMiniTestTubeS1E2.Bi_NO3_3,
-            //     () => { ChangeColorLiquid(rendererLiquid.material.GetColor("_LiquidColor")); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,
                 Operator.Equally, 6, () => { _stepStageSystem.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,

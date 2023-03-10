@@ -43,9 +43,9 @@ namespace Mini_test_tube
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.Empty, TypeLiquid.Al2_SO4_3, Operator.More, 0,
                 StateMiniTestTubeS1E3_2.AI2SO43,
-                () =>
+                (colorWater) =>
                 {
-                    ChangeColorLiquid(new Color32(172, 198, 219, 30));
+                    ChangeColorLiquid(colorWater);
                     ChangeOtherTestTube(StateMiniTestTubeS1E3_2.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43, TypeLiquid.Al2_SO4_3, Operator.Equally, 10,
@@ -57,7 +57,7 @@ namespace Mini_test_tube
                     Sediment.level = levelLiquid.level / 1.5f;
                     _rendererSediment.material.SetFloat("_SedimentMultiply", 2);
                     _rendererSediment.material.SetFloat("_IsWorldPosition", 1);
-                    ChangeColorLiquid(_rendererSediment, new Color(1, 1, 1, 0.9f));
+                    ChangeColorLiquid(_rendererSediment, new Color32(191, 172, 138, 230));
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43_NaOH, TypeLiquid.NaOH, Operator.Equally, 12,
                 () => { Sediment.level = levelLiquid.level / 1.1f; _stepStageSystem.NextStep(); });
@@ -135,7 +135,7 @@ namespace Mini_test_tube
         {
             base.AddLiquid(liquid);
 
-            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid);
+            _actionAddLiquid.Launch(ref _state, liquid.typeLiquid, _countLiquid, liquid.GetColor);
         }
         
         public void Restart()

@@ -13,6 +13,7 @@ Material:
   m_InvalidKeywords:
   - RETRACT_BACKFACES
   - VERTEX_COLOR
+  - _ENUM_A
   - _INVERSE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -111,9 +112,11 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Density: -2.24
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _ENUM: 0
     - _EdgeWidth: 0.537
     - _EnvironmentReflections: 1
     - _Fill: 0
@@ -135,6 +138,7 @@ Material:
     - _Ruffle: 10
     - _SedimentMultiply: 1
     - _SidmentMultiply: 1
+    - _Smooth: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -151,6 +155,7 @@ Material:
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
+    - _asd: -0.1
     - _inverse: 1
     - _retractBackfaces: 1
     - _vertexColor: 1
@@ -170,6 +175,8 @@ Material:
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelColor: {r: 0.03773582, g: 0.0072979648, b: 0.0072979648, a: 0}
     - _LiquidColor: {r: 0.5403342, g: 0.4802971, b: 0.23347774, a: 0}
+    - _LocalPos: {r: 0, g: 0, b: 0, a: 0}
+    - _LocalUp: {r: 0, g: 0, b: 0, a: 0}
     - _PlaneNormal: {r: 0, g: 1, b: 0, a: 0}
     - _PlanePos: {r: 0, g: 0, b: 0, a: 0}
     - _PlanePosition: {r: 0, g: 0, b: 0, a: 1}

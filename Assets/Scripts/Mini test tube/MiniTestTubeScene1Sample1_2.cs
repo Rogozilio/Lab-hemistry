@@ -52,7 +52,6 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
     {
         base.Awake();
         
-        liquidFlowScript.SetUniqueActionInEnd = () => { _stepStageSystem.NextStep(); };
         _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS1E1_2>();
         _rendererSediment = Sediment.GetComponent<Renderer>();
         _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
@@ -103,13 +102,13 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
             {
                 _countH2SO4++;
                 ChangeOtherTestTube(StateMiniTestTubeS1E1_2.NotActive);
-                ChangeColorLiquid(new Color(0.53f, 0.65f, 0.86f, 0.04f), stepH2SO4--);
+                ChangeColorLiquid(new Color32(74, 129, 226, 10), stepH2SO4--);
             });
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_H2SO4, TypeLiquid.H2SO4,
             Operator.MoreEquals, 0, () =>
             {
                 _countH2SO4++;
-                ChangeColorLiquid(new Color(0.53f, 0.65f, 0.86f, 0.04f), stepH2SO4--);
+                ChangeColorLiquid(new Color32(74, 129, 226, 10), stepH2SO4--);
                 if (stepH2SO4 == 0)
                 {
                     ChangeOtherTestTube(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH);

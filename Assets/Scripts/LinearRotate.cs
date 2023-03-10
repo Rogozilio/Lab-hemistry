@@ -60,7 +60,7 @@ public class LinearRotate : LinearInput
         Gizmos.DrawLine(transform.position, transform.position + _aroundAxis);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Rotate(GetInputValue());
 
