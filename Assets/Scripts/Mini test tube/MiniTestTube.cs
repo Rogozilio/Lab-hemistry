@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Liquid;
 using UnityEngine;
 
@@ -94,6 +95,47 @@ namespace Mini_test_tube
             }
 
             renderLiquid.material.SetColor("_LiquidColor", liquidColor + stepColor);
+        }
+        
+        public void StartSmoothlyChangeColor(Color32 newColor, float time, Action actionEnd = default)
+        {
+            StartCoroutine(SmoothlyChangeColor(_rendererLiquid, newColor, time, actionEnd));
+        }
+        
+        public void StartSmoothlyChangeColor(Renderer renderLiquid, Color32 newColor, float time, Action actionEnd = default)
+        {
+            StartCoroutine(SmoothlyChangeColor(renderLiquid, newColor, time, actionEnd));
+        }
+
+        private IEnumerator SmoothlyChangeColor(Renderer renderLiquid, Color32 newColor, float time, Action actionEnd = default)
+        {
+            while (time > 0)
+            {
+                var step = (byte)(time / Time.fixedDeltaTime);
+                ChangeColorLiquid(renderLiquid,newColor, step);
+                yield return new WaitForFixedUpdate();
+                time -= Time.fixedDeltaTime;
+            }
+            
+            actionEnd?.Invoke();
+        }
+
+        public void StartSmoothlyAction(float time, Action<float> action, Action actionEnd = default)
+        {
+            StartCoroutine(SmoothlyAction(time, action, actionEnd));
+        }
+
+        private IEnumerator SmoothlyAction(float time, Action<float> action, Action actionEnd = default)
+        {
+            var max = time;
+            while (time > 0)
+            {
+                action?.Invoke(1f - time/max);
+                yield return new WaitForFixedUpdate();
+                time -= Time.fixedDeltaTime;
+            }
+            
+            actionEnd?.Invoke();
         }
 
         protected virtual void PourOutLiquid(float step, float howMach, LevelLiquid sediment = null)

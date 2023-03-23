@@ -32,7 +32,12 @@ public enum TypeLiquid
     [InspectorName("(NH4)2S")]_NH4_2S,
     SbCl3,
     Na2S,
-    [InspectorName("Al2(SO4)3")]Al2_SO4_3
+    [InspectorName("Al2(SO4)3")]Al2_SO4_3,
+    [InspectorName("Hg(NO3)2")]Hg_NO3_2,
+    [InspectorName("K4[Fe(CN)6]")]K4_Fe_CN_6_,
+    KMnO4,
+    NaCl,
+    Na2S2O3
 }
 public class LiquidDrop : MonoBehaviour
 {

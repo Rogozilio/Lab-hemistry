@@ -1,17 +1,16 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 
 public class LinearRotate : LinearInput
 {
     public Axis axis = Axis.Y;
-
-    //[MinMaxSlider(0, 360)]
+    
     public Vector2 edgeRotate;
 
     public Vector3 offsetPosition;
-
+    public StateUpdate stateUpdate;
+    
     private int _index;
     private Space _space;
     private Vector3 _newPivot;
@@ -62,6 +61,17 @@ public class LinearRotate : LinearInput
 
     private void FixedUpdate()
     {
+        if(stateUpdate != StateUpdate.FixedUpdate) return;
+        
+        Rotate(GetInputValue());
+
+        UpdateOriginInput();
+    }
+
+    private void Update()
+    {
+        if(stateUpdate != StateUpdate.Update) return;
+        
         Rotate(GetInputValue());
 
         UpdateOriginInput();

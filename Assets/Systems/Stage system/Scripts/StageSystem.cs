@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 
@@ -14,6 +15,8 @@ namespace VirtualLab
         [SerializeField] RestartDialog restartDialog;
         [SerializeField] StepStageSystem stepStageSystem;
         [SerializeField] StagesTitles stagesTitles;
+
+        [SerializeField] private UnityEvent switchStage;
 
         // connections 
         List<StageButton> buttons = new List<StageButton>();
@@ -140,6 +143,7 @@ namespace VirtualLab
             // }
 
             _SetStage(index);
+            switchStage?.Invoke();
         }
 
         void _SetStage(int index)

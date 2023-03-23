@@ -103,11 +103,13 @@ Material:
     - Vector1_F51841FD: 16.9
     - _Alpha: 1
     - _AlphaClip: 0
+    - _AngelOffset: 4.42
     - _Blend: 0
     - _BumpScale: 1
     - _BumpStrenght: 1
     - _BumpStrenghtInner: 1
     - _CastShadows: 0
+    - _CellDensity: 104
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -128,6 +130,7 @@ Material:
     - _GlossyReflections: 0
     - _IsWorldPosition: 0
     - _Metallic: 0.632
+    - _NoiseScale: 500
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
