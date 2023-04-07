@@ -34,11 +34,12 @@ public class MoveToPoint
                 _toPoint.Position + new Vector3(0, _rigidbody.position.y - _collider.bounds.min.y, 0))
             : Vector3.Distance(_transform.position, _toPoint.Position);
 
-    private float _angle => Quaternion.Angle(_transform.rotation, _toPoint.Rotation);
+    private float _angle => Quaternion.Angle(_isLocalRotate ? _transform.localRotation : _transform.rotation, _toPoint.Rotation);
     private bool _isMoveNext => _distance > 0.001f || _angle > 0.001f;
 
     private Vector3 _speedTRS;
     private bool _isMoveRigidbody;
+    private bool _isLocalRotate;
 
     private Rigidbody _rigidbody;
     private Collider _collider;
@@ -64,6 +65,12 @@ public class MoveToPoint
     public void SetTargetRotation(Quaternion newRotation)
     {
         _toPoint.Rotation = newRotation;
+    }
+
+    public void SetTargetLocalRotation(Quaternion newLocalRotation)
+    {
+        _isLocalRotate = true;
+        _toPoint.Rotation = newLocalRotation;
     }
 
     public void SetTargetScale(Vector3 newScale)
@@ -107,9 +114,12 @@ public class MoveToPoint
 
     private void MoveInRotation()
     {
-        var newRotation =
-            Quaternion.RotateTowards(_transform.rotation, _toPoint.Rotation,
-                _angle * _speedTRS[1] * Time.fixedDeltaTime);
+        var newRotation = Quaternion.identity;
+
+        newRotation = Quaternion.RotateTowards(
+            _isLocalRotate ? _transform.localRotation : _transform.rotation,
+            _toPoint.Rotation, _angle * _speedTRS[1] * Time.fixedDeltaTime);
+
 
         if (_isMoveRigidbody)
         {
@@ -117,7 +127,10 @@ public class MoveToPoint
         }
         else
         {
-            _transform.rotation = newRotation;
+            if (_isLocalRotate)
+                _transform.localRotation = newRotation;
+            else
+                _transform.rotation = newRotation;
         }
     }
 
@@ -140,7 +153,7 @@ public class MoveToPoint
         while (_isMoveNext)
         {
             MoveTo();
-            
+
             yield return new WaitForFixedUpdate();
         }
 

@@ -37,7 +37,8 @@ public enum TypeLiquid
     [InspectorName("K4[Fe(CN)6]")]K4_Fe_CN_6_,
     KMnO4,
     NaCl,
-    Na2S2O3
+    Na2S2O3,
+    [InspectorName("K3[Fe(CN)6]")]K3_Fe_CN_6_,
 }
 public class LiquidDrop : MonoBehaviour
 {

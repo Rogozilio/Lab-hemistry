@@ -84,7 +84,7 @@ namespace Mini_test_tube
             ChangeColorLiquid(_rendererLiquid, newColor, step);
         }
         
-        protected virtual void ChangeColorLiquid(Renderer renderLiquid, Color newColor, byte step = 1)
+        protected virtual void ChangeColorLiquid(Renderer renderLiquid, Color newColor, int step = 1)
         {
             var liquidColor = renderLiquid.material.GetColor("_LiquidColor");
             var stepColor = new Color();
@@ -111,7 +111,7 @@ namespace Mini_test_tube
         {
             while (time > 0)
             {
-                var step = (byte)(time / Time.fixedDeltaTime);
+                var step = (int)(time / Time.fixedDeltaTime);
                 ChangeColorLiquid(renderLiquid,newColor, step);
                 yield return new WaitForFixedUpdate();
                 time -= Time.fixedDeltaTime;

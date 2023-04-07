@@ -50,7 +50,8 @@ public class MousePointerObject : MonoBehaviour
     private void MoveObjectToPlane(RaycastHit[] hits)
     {
         var isHitMouseItem = false;
-        var minDistance = 100f;
+        //var minDistance = 100f;
+        var priorityOutline = 0;
 
         foreach (var hit in hits)
         {
@@ -62,14 +63,16 @@ public class MousePointerObject : MonoBehaviour
             if (hit.collider.TryGetComponent(out MouseItem mouseItem) && !_item ||
                 (mouseItem && !_item.IsActive))
             {
-                if (Vector3.Distance(_camera.transform.position, mouseItem.transform.position) < minDistance)
+                if (/*Vector3.Distance(_camera.transform.position, mouseItem.transform.position) < minDistance 
+                    && */mouseItem.priorityOutline >= priorityOutline)
                 {
                     if (!Equals(_item, mouseItem))
                     {
                         _item?.HideOutline(false);
                     }
-
-                    minDistance = Vector3.Distance(_camera.transform.position, mouseItem.transform.position);
+                   
+                    //minDistance = Vector3.Distance(_camera.transform.position, mouseItem.transform.position);
+                    priorityOutline = mouseItem.priorityOutline;
                     _item = mouseItem;
                 }
 

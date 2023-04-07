@@ -152,7 +152,6 @@ public class Forceps : MonoBehaviour, IRestart
         _leftHalfForceps.GetChild(0).gameObject.SetActive(false);
         _rightHalfForceps.GetChild(0).gameObject.SetActive(false);
         takeObject.transform.GetChild(2).gameObject.SetActive(false);
-        //takeObject.transform.GetChild(3).gameObject.SetActive(false);
     }
 
     public void EnableLayerWhite()
@@ -160,7 +159,6 @@ public class Forceps : MonoBehaviour, IRestart
         _leftHalfForceps.GetChild(0).gameObject.SetActive(true);
         _rightHalfForceps.GetChild(0).gameObject.SetActive(true);
         takeObject.transform.GetChild(2).gameObject.SetActive(true);
-        //takeObject.transform.GetChild(3).gameObject.SetActive(true);
     }
 
     public void EnablePieceMagnesium()

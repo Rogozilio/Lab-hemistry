@@ -20,13 +20,12 @@ public class PlayerMotion : MonoBehaviour
 	[SerializeField] InputActions inputActions; 
 	[SerializeField] MotionEngine motionEngine; 
 	[Space] 
-	[SerializeField] int startPoint = 1; 
+	[SerializeField] int startPoint = 1;
 
-
-
-
-	void Awake () 
+	private CameraZoom _cameraZoom;
+	void Awake ()
 	{
+		_cameraZoom = FindObjectOfType<CameraZoom>();
 		InitNavigation(); 
 		InitMotionParts(); 
 		InitSystemParts(); 
@@ -114,11 +113,20 @@ public class PlayerMotion : MonoBehaviour
 
 	public void MoveToPoint(Transform target, int fov)
 	{
+		SetTarget(target);
+		StartMoveToPoint(fov);
+	}
+
+	public void SetTarget(Transform target)
+	{
 		ViewPoint viewPoint = navigation.MoveToPoint(1);
 		viewPoint.focusPoint = target.position;
 		inputReciever.moveToPoint.SetInput(viewPoint); 
-		
-		onMoveToPoint[1].Invoke(fov); 
+	}
+
+	public void StartMoveToPoint(int fov)
+	{
+		_cameraZoom.ZoomInPoint(fov);
 	}
 
 	public void Rotate (Orientation input) 

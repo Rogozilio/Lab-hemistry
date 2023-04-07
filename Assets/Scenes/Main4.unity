@@ -15417,20 +15417,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Arrow: {fileID: 2800000, guid: ac71f19d628e52141a01b9b112768407, type: 3}
   NotInteractive: {fileID: 2800000, guid: 0cf59af365d0b264ea1557026e1c3020, type: 3}
-  Horizontal: {fileID: 2800000, guid: 0c48971dafa8094479a5a58c855fa957, type: 3}
-  Vertical: {fileID: 2800000, guid: 826a4927f2881ea4aa5b42a259ddabd5, type: 3}
+  Horizontal: {fileID: 2800000, guid: 9d51c6aa90ead5c4993722c41f02b341, type: 3}
+  Vertical: {fileID: 2800000, guid: 2831101be1835fb439644fca7db2d8ce, type: 3}
   Click: {fileID: 2800000, guid: f393663866384804aa6d867637be52a6, type: 3}
   Select: {fileID: 2800000, guid: 32bec4ee8e052664da184f33802363de, type: 3}
   Hold: {fileID: 2800000, guid: 40478b1f01e3bf9488074967a62b2a37, type: 3}
   load:
-  - {fileID: 2800000, guid: 0648478700602e543aa39c014f984b89, type: 3}
-  - {fileID: 2800000, guid: 877702c53dd8b7a4ba682b850a2b79b8, type: 3}
-  - {fileID: 2800000, guid: cb5357e978e5e414bb8e038201c427ca, type: 3}
-  - {fileID: 2800000, guid: 34cf6a200586bb74b9b176f2c9c0de10, type: 3}
-  - {fileID: 2800000, guid: ce189273a9fa98441aee644443da5839, type: 3}
-  - {fileID: 2800000, guid: 448224ba7f32b984b865dbcd17dd2c2b, type: 3}
-  - {fileID: 2800000, guid: 36205edbb0c63ac439b76db7f47830d6, type: 3}
-  - {fileID: 2800000, guid: 30bed0d4625ff34468e08440e8ec2e84, type: 3}
+  - {fileID: 2800000, guid: e0fdf77aa1784d5419d5ff3daf67ae64, type: 3}
+  - {fileID: 2800000, guid: 016909c1daa3e6f4e9b92d3604fa3ee2, type: 3}
+  - {fileID: 2800000, guid: 6dc1fbb5b23bffc41bc6bc9e19e2bbd5, type: 3}
+  - {fileID: 2800000, guid: be13725fd63d37341b74a151d23f571e, type: 3}
+  - {fileID: 2800000, guid: daca9f8550bedc64da31019d7ec72eb5, type: 3}
+  - {fileID: 2800000, guid: b5b99a98d10049b48814d1b7222391ae, type: 3}
+  - {fileID: 2800000, guid: f370ce045e8ab974bb12ba1ee0a9cbcc, type: 3}
+  - {fileID: 2800000, guid: 71f4e40674082454fb6612d030592f1b, type: 3}
   clock:
   - {fileID: 2800000, guid: b2ae638f8981c5c499cdb6fe38a11f3f, type: 3}
   - {fileID: 2800000, guid: ebc9636049e36a14d85b3ad8dcde98a2, type: 3}
@@ -20907,8 +20907,8 @@ RectTransform:
   m_Father: {fileID: 828252795}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 36}
   m_Pivot: {x: 0, y: 1}
@@ -41211,9 +41211,9 @@ RectTransform:
   m_Father: {fileID: 828252795}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -36}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 36}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1736699596
@@ -52860,9 +52860,9 @@ RectTransform:
   m_Father: {fileID: 828252795}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -72}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &3073692669449719985

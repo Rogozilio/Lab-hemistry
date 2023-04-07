@@ -24,11 +24,11 @@ public class ConnectTransform : MonoBehaviour
 
         public Vector3 originPosition => _originPosition;
         public Vector3 prevPosition => _prevPosition;
-        
+
         public Quaternion originRotation => _originRotation;
         public Quaternion prevRotation => _prevRotation;
         public Quaternion prevLocalRotation => _prevLocalRotation;
-        
+
         public Vector3 prevUp => _prevUp;
         public Vector3 prevRight => _prevRight;
         public Vector3 prevForward => _prevForward;
@@ -108,12 +108,17 @@ public class ConnectTransform : MonoBehaviour
 
     private Vector3 _fromCurrentToTarget;
     private Vector3 _fromTargetToCurrent;
-    
+
     private Quaternion _prevOriginCT;
     private Quaternion _prevOriginTC;
 
     public bool IsEnable => enabled;
-    
+
+    public Transform SetTarget
+    {
+        set => target = value;
+    }
+
     private void OnEnable()
     {
         _currentObject = new TransformInfo(transform);
@@ -148,12 +153,52 @@ public class ConnectTransform : MonoBehaviour
     {
         if (_currentObject.prevState != _currentObject.stateItem.State)
         {
-            _targetObject.stateItem.ChangeState(_currentObject.stateItem.State);
+            if (_currentObject.stateItem.State == StateItems.LinearMove)
+            {
+                _targetObject.stateItem.ChangeState(_currentObject.stateItem.State, GetValueLinearMove(_currentObject));
+            }
+            else if (_currentObject.stateItem.State == StateItems.LinearRotate)
+            {
+                _targetObject.stateItem.ChangeState(_currentObject.stateItem.State, GetValueLinearRotate(_currentObject));
+            }
+            else
+                _targetObject.stateItem.ChangeState(_currentObject.stateItem.State);
         }
         else if (_targetObject.prevState != _targetObject.stateItem.State)
         {
-            _currentObject.stateItem.ChangeState(_targetObject.stateItem.State);
+            if (_targetObject.stateItem.State == StateItems.LinearMove)
+            {
+                _currentObject.stateItem.ChangeState(_targetObject.stateItem.State, GetValueLinearMove(_targetObject));
+            }
+            else if (_targetObject.stateItem.State == StateItems.LinearRotate)
+            {
+                _currentObject.stateItem.ChangeState(_targetObject.stateItem.State, GetValueLinearRotate(_targetObject));
+            }
+            else
+                _currentObject.stateItem.ChangeState(_targetObject.stateItem.State);
         }
+    }
+
+    private LinearValue GetValueLinearMove(TransformInfo transformInfo)
+    {
+        return new LinearValue()
+        {
+            axis = transformInfo.transform.GetComponent<LinearMove>().axis,
+            axisInput = transformInfo.transform.GetComponent<LinearMove>().axisInput,
+            edge = transformInfo.transform.GetComponent<LinearMove>().EdgeMove
+        };
+        ;
+    }
+
+    private LinearValue GetValueLinearRotate(TransformInfo transformInfo)
+    {
+        return new LinearValue()
+        {
+            axis = transformInfo.transform.GetComponent<LinearRotate>().axis,
+            axisInput = transformInfo.transform.GetComponent<LinearRotate>().axisInput,
+            edge = transformInfo.transform.GetComponent<LinearRotate>().edgeRotate
+        };
+        ;
     }
 
     private void MoveAndRotate(TransformInfo moving, TransformInfo stay, Vector3 dir)

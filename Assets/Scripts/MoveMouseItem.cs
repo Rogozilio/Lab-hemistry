@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 public class MoveMouseItem : MouseItem
 {
+    [SerializeField] private StateItems _state = StateItems.Drag;
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Quaternion startRot;
     [SerializeField] private Vector3 startScale;
@@ -15,7 +16,7 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public bool IsExtentsY;
     [HideInInspector] public bool IsExtentsZ;
 
-    [Space] [HideInInspector] public bool IsRotateToCameraOnAwake; 
+    [Space] [HideInInspector] public bool IsRotateToCameraOnAwake;
     [HideInInspector] public bool isRotateToCamera;
     [HideInInspector] public bool IsLockX;
     [HideInInspector] public bool IsLockY;
@@ -29,7 +30,9 @@ public class MoveMouseItem : MouseItem
     [HideInInspector] public UnityEvent OnMouseUp;
 
     [HideInInspector] public OutlineMap outlineMap;
-    
+
+    private LinearValue _linearValue;
+    private Vector3 _offsetLinearValue;
     private Rigidbody _rigidbody;
 
     private Vector3 _hitWall;
@@ -40,9 +43,26 @@ public class MoveMouseItem : MouseItem
     private MoveToPoint _moveToMouse;
     private Coroutine _useCoroutine;
     private Collider _collider;
-    
-    public bool IsReturnToRespawn { get => returnToStartingPosition; set => returnToStartingPosition = value; }
-    public bool IsRotateToCamera { get => isRotateToCamera; set => isRotateToCamera = value; }
+    private Quaternion _originStartRotation;
+
+    public Quaternion StartRotation
+    {
+        get => startRot;
+        set => startRot = value;
+    }
+
+    public bool IsReturnToRespawn
+    {
+        get => returnToStartingPosition;
+        set => returnToStartingPosition = value;
+    }
+
+    public bool IsRotateToCamera
+    {
+        get => isRotateToCamera;
+        set => isRotateToCamera = value;
+    }
+
     public bool IsUseEventOnMouse { get; set; } = true;
 
     public Vector3 SetHitWall
@@ -50,6 +70,36 @@ public class MoveMouseItem : MouseItem
         set => _hitWall = value;
     }
 
+    public void SetState(StateItems newState, LinearValue value = default, Vector3 offset = default)
+    {
+        _state = newState;
+        _linearValue = value;
+        _offsetLinearValue = offset;
+    }
+
+    public void ResetState()
+    {
+        _state = StateItems.Drag;
+        startRot = _originStartRotation;
+    }
+    
+    
+    public void ResetPointRespawnByTransform(Transform toTransform)
+    {
+        if (IsMoveRigidbody)
+        {
+            _moveToRespawn = new MoveToPoint(transform, toTransform.position,
+                toTransform.rotation, toTransform.localScale, _rigidbody);
+        }
+        else
+        {
+            _moveToRespawn = new MoveToPoint(transform, toTransform.position,
+                toTransform.rotation, toTransform.localScale);
+        }
+
+        _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
+    }
+    
     public void ResetPointRespawn()
     {
         if (IsMoveRigidbody)
@@ -86,7 +136,7 @@ public class MoveMouseItem : MouseItem
             StateItem.ChangeState(StateItems.Idle);
             return;
         }
-        
+
         StateItem.ChangeState(StateItems.BackToRespawn);
 
         StartCoroutine(_moveToRespawn.StartAsync(() => { StateItem.ChangeState(StateItems.Idle); }));
@@ -99,29 +149,28 @@ public class MoveMouseItem : MouseItem
 
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
-        
-        if(IsRotateToCameraOnAwake)
+
+        _originStartRotation = startRot;
+
+        if (IsRotateToCameraOnAwake)
             transform.rotation = RotateToCamera();
     }
 
     private void OnEnable()
     {
+        ResetPointRespawn();
+
         if (IsMoveRigidbody)
         {
-            _moveToRespawn = new MoveToPoint(transform, transform.position,
-                transform.rotation, transform.localScale, _rigidbody);
             _moveToMouse = new MoveToPoint(transform, default,
                 default, default, _rigidbody, _collider);
         }
         else
         {
-            _moveToRespawn = new MoveToPoint(transform, transform.position,
-                transform.rotation, transform.localScale);
             _moveToMouse = new MoveToPoint(transform);
         }
 
         _moveToMouse.SetSpeedTRS = new Vector3(15f, 15f, 15f);
-        _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
     }
 
     private void Update()
@@ -135,13 +184,14 @@ public class MoveMouseItem : MouseItem
             _targetStartPosition = transform.position + startPos;
             _targetStartRotate = transform.rotation * startRot;
 
+            StateItem.ChangeState(_state, _linearValue, _offsetLinearValue);
+
             if (OnMouseDown.GetPersistentEventCount() > 0 && IsUseEventOnMouse)
             {
                 OnMouseDown.Invoke();
-                return;
+                //return;
             }
 
-            StateItem.ChangeState(StateItems.Drag);
             if (_useCoroutine != null)
             {
                 StopCoroutine(_useCoroutine);
@@ -158,7 +208,7 @@ public class MoveMouseItem : MouseItem
                 outlineMap.Show(transform.position);
                 MoveItem(_hitWall);
             }
-            else if(StateItem.State == StateItems.Interacts)
+            else if (StateItem.State == StateItems.Interacts)
                 outlineMap.Clear();
         }
 
@@ -203,7 +253,7 @@ public class MoveMouseItem : MouseItem
 
         if (_moveToMouse.Distance < 0.15f)
         {
-            StateItem.ChangeState(StateItems.Drag);
+            StateItem.ChangeState(_state, _linearValue, _offsetLinearValue);
         }
     }
 

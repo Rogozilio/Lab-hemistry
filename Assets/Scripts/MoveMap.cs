@@ -54,10 +54,22 @@ public class MoveMap : MonoBehaviour
         _stateItem = GetComponent<StateItem>();
     }
 
+    public void SetTargetMove(int index, Transform target, bool isStart = false)
+    {
+        datas[index].move.target = target;
+        if(isStart) StartToMove(index);
+    }
+
     public void StartToMove0(Transform target)
     {
         datas[0].move.target = target;
         StartToMove(0);
+    }
+    
+    public void StartToMove1(Transform target)
+    {
+        datas[1].move.target = target;
+        StartToMove(1);
     }
 
     public void StartToMove(int index)

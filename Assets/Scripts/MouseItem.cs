@@ -8,6 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(Outline))]
 public class MouseItem : MonoBehaviour
 {
+    public int priorityOutline;
+    
     protected bool _isActive;
     protected bool _isReadyToAction;
     private StateItem _stateItem;

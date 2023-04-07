@@ -28,12 +28,12 @@ public class StateItem : MonoBehaviour
         
         //Parent
         if(transform.parent.TryGetComponent(out StateItem parentStateItem))
-            parentStateItem.SetState(state);
+            parentStateItem.SetState(state, linearValue, offset);
 
         //Child
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<StateItem>()?.SetState(state);
+            transform.GetChild(i).GetComponent<StateItem>()?.SetState(state, linearValue, offset);
         }
     }
 

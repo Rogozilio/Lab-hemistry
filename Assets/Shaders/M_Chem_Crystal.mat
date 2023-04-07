@@ -177,7 +177,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelColor: {r: 0.03773582, g: 0.0072979648, b: 0.0072979648, a: 0}
-    - _LiquidColor: {r: 0.16078432, g: 0.16862746, b: 0.7764706, a: 0}
+    - _LiquidColor: {r: 0.019607844, g: 0.101960786, b: 0.77254903, a: 0}
     - _LocalPos: {r: 0, g: 0, b: 0, a: 0}
     - _LocalUp: {r: 0, g: 0, b: 0, a: 0}
     - _PlaneNormal: {r: 0, g: 1, b: 0, a: 0}
