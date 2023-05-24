@@ -49,16 +49,16 @@ public class StagesTitles : MonoBehaviour
         }
     }
 
-    public void ShowStageTitle(int index)
-    {
-        var tagCSpace = "<cspace=-0.02em>";
-        var tagLineHeight = "<line-height=65%>";
-
-        foreach (var stage in _stagesTitles)
-        {
-            if (stage.index != index) continue;
-            TextMeshProUGUI.text = tagCSpace + tagLineHeight + "<b>" + stage.upName + "</b>\n" + stage.downName;
-            return;
-        }
-    }
+    // public void ShowStageTitle(int index)
+    // {
+    //     var tagCSpace = "<cspace=-0.02em>";
+    //     var tagLineHeight = "<line-height=65%>";
+    //
+    //     foreach (var stage in _stagesTitles)
+    //     {
+    //         if (stage.index != index) continue;
+    //         TextMeshProUGUI.text = tagCSpace + tagLineHeight + "<b>" + stage.upName + "</b>\n" + stage.downName;
+    //         return;
+    //     }
+    // }
 }

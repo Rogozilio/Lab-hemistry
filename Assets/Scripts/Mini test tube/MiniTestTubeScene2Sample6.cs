@@ -47,11 +47,11 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.Empty, TypeLiquid.NH4OH, Operator.More, 0,
                 StateMiniTestTubeS2E6.NH4OH, (bottleColor) => { ChangeColorLiquid(bottleColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.NH4OH, Operator.Equally, 6,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E6.NH4OH, TypeLiquid.Phenolphthalein, Operator.More, 0,
                 StateMiniTestTubeS2E6.NH4OH_phenolphthalein, () =>
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     ChangeColorLiquid(colorPhenolphthalein);
                 });
 
@@ -66,7 +66,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(236, 93, 188, 150));
                 });
             _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, TypePowder.NH4CI,
-                Operator.Equally, 2, () => { _stepStageSystem.NextStep(); });
+                Operator.Equally, 2, () => { _UIStagesControl.NextStep(); });
             _actionAddPowder.AddAction(StateMiniTestTubeS2E6.NH4OH_phenolphthalein_NH4Cl, TypePowder.NH4CI,
                 Operator.More,
                 0, () =>
@@ -101,7 +101,7 @@ namespace Mini_test_tube
             if (stepSediment == 4)
             {
                 _countPowder = 3;
-                _stepStageSystem.NextStep();
+                _UIStagesControl.NextStep();
                 _state = StateMiniTestTubeS2E6.NotActive;
                 stick.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
                 stick.GetComponent<MoveMap>().StartToMove(3);

@@ -19,7 +19,7 @@ public class Forceps : MonoBehaviour, IRestart
     private Transform _leftHalfForceps;
     private Transform _rightHalfForceps;
     private StateForceps _stateForceps;
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
     private StateItem _stateItem;
 
     private MoveToPoint _rotateToLeftForceps;
@@ -32,7 +32,7 @@ public class Forceps : MonoBehaviour, IRestart
 
     private void Awake()
     {
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _leftHalfForceps = transform.GetChild(0);
         _rightHalfForceps = transform.GetChild(1);
         _originRotateLeftHalfForceps = _leftHalfForceps.rotation;
@@ -108,7 +108,7 @@ public class Forceps : MonoBehaviour, IRestart
 
         _stateForceps = StateForceps.BurnedIn;
         light.enabled = false;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
     
     public void StartTakeInForceps(int stateForceps)
@@ -130,7 +130,7 @@ public class Forceps : MonoBehaviour, IRestart
         _rotateToRightForceps.SetTargetRotation(newRotateRightForceps);
 
         _stateItem.ChangeState(StateItems.Interacts);
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
 
         var linearValue = GetComponent<LinearMove>().linearValue;
         linearValue.edge = new Vector2(0, 0.17f);
@@ -175,7 +175,6 @@ public class Forceps : MonoBehaviour, IRestart
 
     public void Restart()
     {
-        _stepStageSystem.RestartStage();
         _stateForceps = StateForceps.Empty;
         takeObject.SetActive(false);
         pieceMagnesium.SetActive(false);

@@ -12,7 +12,7 @@ public class CupForWire : MonoBehaviour, IRestart
 
     public GameObject Water;
 
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
     private StateCupForWire _state;
     private Vector3 _originScale;
 
@@ -20,7 +20,7 @@ public class CupForWire : MonoBehaviour, IRestart
 
     private void Awake()
     {
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _originScale = Water.transform.localScale;
     }
 
@@ -37,7 +37,7 @@ public class CupForWire : MonoBehaviour, IRestart
         Water.transform.localScale = _originScale * 0.2f;
 
         _state = StateCupForWire.Full;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
 
         foreach (var wire in FindObjectsOfType<Wire.Wire>())
         {

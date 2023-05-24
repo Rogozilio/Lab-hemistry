@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using Liquid;
+﻿using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
 
@@ -58,7 +56,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(12, 58, 50, 80));
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E4.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 5,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             byte step_K4_Fe_CN_6_ = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E4.CuSO4, TypeLiquid.K4_Fe_CN_6_, Operator.More, 0,
                 StateMiniTestTubeS4E4.CuSO4_K4_Fe_CN_6_, () =>
@@ -73,14 +71,17 @@ namespace Mini_test_tube
                 _rendererSediment.material.SetFloat("_SedimentMultiply", 5f);
                 if (step_K4_Fe_CN_6_ == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    UpTestTube();
+                    CursorSkin.Instance.isUseClock = true;
+                    _UIStagesControl.NextStep();
                     _state = StateMiniTestTubeS4E4.CuSO4_K4_Fe_CN_6_smooth;
                     sediment.level = levelLiquid.level;
                     playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyChangeColor(new Color32(13, 3, 2, 200), 5f);
                     StartSmoothlyChangeColor(_rendererSediment, new Color32(5, 1, 1, 255), 5f, () =>
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
+                        CursorSkin.Instance.isUseClock = false;
                         _state = StateMiniTestTubeS4E4.NotActive;
                         SetStateOtherMiniTestTube(StateMiniTestTubeS4E4.FeCl3);
                     });
@@ -88,7 +89,7 @@ namespace Mini_test_tube
                 }
             });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E4.FeCl3, TypeLiquid.FeCl3, Operator.Equally, 6,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E4.FeCl3, TypeLiquid.FeCl3, Operator.More, 0, 
                 () => { ChangeColorLiquid(new Color32(87, 77, 13, 103)); });
             byte step_K4_Fe_CN_6_2 = 3;
@@ -105,14 +106,17 @@ namespace Mini_test_tube
                     _rendererSediment.material.SetFloat("_SedimentMultiply", 6f);
                     if (step_K4_Fe_CN_6_2 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        UpTestTube();
+                        CursorSkin.Instance.isUseClock = true;
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS4E4.FeCl3_K4_Fe_CN_6_smooth;
                         sediment.level = levelLiquid.level;
                         playerMotion.MoveToPoint(transform, 10);
                         StartSmoothlyChangeColor(_rendererSediment, new Color32(0, 1, 8, 255), 
                             5f, () =>
                         {
-                            _stepStageSystem.NextStep();
+                            CursorSkin.Instance.isUseClock = false;
+                            _UIStagesControl.NextStep();
                             _state = StateMiniTestTubeS4E4.NotActive;
                         });
                         step_K4_Fe_CN_6_2 = 3;

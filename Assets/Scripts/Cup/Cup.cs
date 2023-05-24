@@ -28,7 +28,7 @@ public class Cup : MonoBehaviour, IRestart
     private Color _originColorWater;
     private Color _originColorMagnesium;
 
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
 
     public StateCup GetStateCup => _stateCup;
     public int CountWaterDrop => _countWaterDrop;
@@ -39,7 +39,7 @@ public class Cup : MonoBehaviour, IRestart
     {
         _rendererWater = Water.GetComponent<Renderer>();
         _rendererMagnesiumChild = Magnesium.transform.GetChild(0).GetComponent<Renderer>();
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _originColorWater = _rendererWater.material.color;
         _originColorMagnesium = _rendererMagnesiumChild.material.GetColor("_LiquidColor");
         _waterOriginScale = Water.transform.localScale;
@@ -71,7 +71,7 @@ public class Cup : MonoBehaviour, IRestart
         if (_countWaterDrop == 10)
         {
             _stateCup = StateCup.WithMagnesiumAndWater;
-            _stepStageSystem.NextStep();
+            _uiStagesControl.NextStep();
         }
         
         if (_countWaterDrop > 10)
@@ -84,7 +84,7 @@ public class Cup : MonoBehaviour, IRestart
         if (_countWaterDrop == 13)
         {
             _stateCup = StateCup.Empty;
-            _stepStageSystem.NextStep();
+            _uiStagesControl.NextStep();
         }
     }
 
@@ -115,7 +115,7 @@ public class Cup : MonoBehaviour, IRestart
             {
                 PieceMagnesium.SetActive(false);
                 _stateCup = StateCup.Mix;
-                _stepStageSystem.NextStep();
+                _uiStagesControl.NextStep();
             }
         }
     }

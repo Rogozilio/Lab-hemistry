@@ -25,7 +25,7 @@ public class LiquidFlow : MonoBehaviour
     public float step;
     public float stepSediment;
     public float howMach;
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
 
     public UnityAction SetUniqueActionInEnd
     {
@@ -67,8 +67,8 @@ public class LiquidFlow : MonoBehaviour
 
     private void Awake()
     {
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
-        actionInEnd += () => { _stepStageSystem.NextStep(); };
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
+        actionInEnd += () => { _uiStagesControl.NextStep(); };
     }
 
     public void SetPositionStart(Vector3 start)

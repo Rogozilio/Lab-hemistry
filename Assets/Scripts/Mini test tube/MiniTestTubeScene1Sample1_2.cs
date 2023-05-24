@@ -68,7 +68,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
             StateMiniTestTubeS1E1_2.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 8,
              () =>
             {
-                _stepStageSystem.NextStep();
+                _UIStagesControl.NextStep();
             });
         byte stepNaOH = 4;
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4, TypeLiquid.NaOH, Operator.More, 8,
@@ -86,7 +86,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
                 ChangeColorLiquid(_rendererSediment,new Color32(2, 25, 51, 255), stepNaOH--);
                 if (stepNaOH == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     stepNaOH = 4;
                 }
             });
@@ -94,7 +94,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
             Operator.More, 0,
             StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH, () => { _countNaOH++;});
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH, TypeLiquid.NaOH,
-            Operator.MoreEquals, 0, () => { _countNaOH++; if(_countNaOH == 15) _stepStageSystem.NextStep();});
+            Operator.MoreEquals, 0, () => { _countNaOH++; if(_countNaOH == 15) _UIStagesControl.NextStep();});
         byte stepH2SO4 = 15;
         _actionAddLiquid.AddAction(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half, TypeLiquid.H2SO4,
             Operator.More, 0,
@@ -112,7 +112,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
                 if (stepH2SO4 == 0)
                 {
                     ChangeOtherTestTube(StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire_half_NaOH);
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     stepH2SO4 = 15;
                 }
             });
@@ -144,7 +144,7 @@ public class MiniTestTubeScene1Sample1_2 : MiniTestTube, IRestart
         }
 
         _state = StateMiniTestTubeS1E1_2.CuSO4_NaOH_Fire;
-        _stepStageSystem.NextStep();
+        _UIStagesControl.NextStep();
 
         rendererLiquid.material.SetColor("_LiquidColor"
             , _rendererBurnLiquid.material.GetColor("_LiquidColor"));

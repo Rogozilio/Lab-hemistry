@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Liquid;
+﻿using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
 
@@ -52,7 +51,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E2.Empty, TypeLiquid.CuSO4, Operator.More, 0,
                 StateMiniTestTubeS4E2.CuSO4, () => { ChangeColorLiquid(new Color32(12, 58, 50, 80)); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E2.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 6,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             var colorNH4OH = new Color32(0, 2, 56, 150);
             byte step_NH4OH = 2;
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E2.CuSO4, TypeLiquid.NH4OH, Operator.More, 0,
@@ -62,13 +61,16 @@ namespace Mini_test_tube
                 ChangeColorLiquid(colorNH4OH, step_NH4OH--);
                 if (step_NH4OH == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    UpTestTube();
+                    CursorSkin.Instance.isUseClock = true;
+                    _UIStagesControl.NextStep();
                     _state = StateMiniTestTubeS4E2.NH4OH_smooth;
-                    playerMotion.MoveToPoint(transform, 15);
+                    playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyChangeColor(_rendererSediment, new Color32(25, 107, 229, 103),
                         3f, () =>
                         {
-                            _stepStageSystem.NextStep();
+                            _UIStagesControl.NextStep();
+                            CursorSkin.Instance.isUseClock = false;
                             _state = StateMiniTestTubeS4E2.NH4OHx2;
                         });
                     step_NH4OH = 2;
@@ -82,14 +84,17 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(25, 107, 229, 63), step_NH4OHx2--);
                     if (step_NH4OHx2 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        UpTestTube();
+                        CursorSkin.Instance.isUseClock = true;
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS4E2.NH4OHx2_smooth;
-                        playerMotion.MoveToPoint(transform, 15);
+                        playerMotion.MoveToPoint(transform, 10);
                         StartSmoothlyChangeColor(new Color32(0, 2, 56, 190), 1f);
                         StartSmoothlyChangeColor(_rendererSediment, new Color32(25, 107, 229, 0), 
                             1f, () =>
                         {
-                            _stepStageSystem.NextStep();
+                            _UIStagesControl.NextStep();
+                            CursorSkin.Instance.isUseClock = false;
                             _state = StateMiniTestTubeS4E2.NotActive;
                         });
                         step_NH4OHx2 = 6;

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cursor
-{
+
     public sealed class CursorSkin : MonoBehaviour
     {
         public Texture2D Arrow;
@@ -124,4 +123,3 @@ namespace Cursor
             }
         }
     }
-}

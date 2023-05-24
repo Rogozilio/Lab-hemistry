@@ -1,5 +1,4 @@
-﻿using Cursor;
-using Granule;
+﻿using Granule;
 using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
@@ -54,7 +53,7 @@ namespace Mini_test_tube
                 () =>
                 {
                     FindObjectOfType<CupForGranule>().ActiveCupGranule(transform);
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                 });
 
             _actionAddGranule = new ActionAddGranule<StateMiniTestTubeS3E1>();
@@ -63,7 +62,7 @@ namespace Mini_test_tube
                 (granule) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     granule.FixedGranuleIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
@@ -76,14 +75,14 @@ namespace Mini_test_tube
                     {
                         CursorSkin.Instance.isUseClock = false;
                         _state = StateMiniTestTubeS3E1.H2SO4_Zn_corrosion;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                     });
                 });
             _actionAddGranule.AddAction(StateMiniTestTubeS3E1.H2SO4_Zn_corrosion_Cu, TypeGranule.Zn,
                 (granule) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(10f, (delta) =>
@@ -94,7 +93,7 @@ namespace Mini_test_tube
                     {
                         CursorSkin.Instance.isUseClock = false;
                         _state = StateMiniTestTubeS3E1.H2SO4_Zn_Cu_corrosion;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                     });
                 });
 
@@ -126,11 +125,6 @@ namespace Mini_test_tube
         {
             RestartBase();
             _state = StateMiniTestTubeS3E1.Empty;
-        }
-
-        private void UpTestTube()
-        {
-            _clickMouseItem.ExecuteMouseClickOnIndex(0);
         }
     }
 }

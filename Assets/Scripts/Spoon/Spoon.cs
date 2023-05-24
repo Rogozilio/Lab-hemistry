@@ -11,21 +11,21 @@ public class Spoon : MonoBehaviour, IRestart
 
     public GameObject fewPieceMarble;
 
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
     
     public bool IsEmpty
     {
         get => _isEmpty;
         set
         {
-            if(!value) _stepStageSystem.NextStep();
+            if(!value) _uiStagesControl.NextStep();
             _isEmpty = value;
         }
     }
 
     private void Awake()
     {
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _originLocalPositionPieceMarble = fewPieceMarble.transform.localPosition;
         _originLocalRotatePieceMarble = fewPieceMarble.transform.localRotation;
     }
@@ -34,12 +34,11 @@ public class Spoon : MonoBehaviour, IRestart
     {
         fewPieceMarble.transform.localPosition = _originLocalPositionPieceMarble;
         fewPieceMarble.transform.localRotation = _originLocalRotatePieceMarble;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
 
     public void Restart()
     {
-        _stepStageSystem.RestartStage();
         _isEmpty = true;
         fewPieceMarble.SetActive(false);
         fewPieceMarble.transform.localPosition = _originLocalPositionPieceMarble;

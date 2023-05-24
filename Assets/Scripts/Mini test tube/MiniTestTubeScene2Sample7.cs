@@ -24,7 +24,7 @@ namespace Mini_test_tube
         private StateMiniTestTubeS2E7 _state;
 
         private Renderer _rendererSediment;
-        private readonly Color _waterColor = new Color32(63, 63, 63, 72);
+        private readonly Color _waterColor = new Color32(199, 210, 231, 10);
         private Color _originColorSediment;
 
         public StateMiniTestTubeS2E7 GetState => _state;
@@ -51,9 +51,9 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_waterColor);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4, TypeLiquid.MnSO4, Operator.Equally, 3,
-                () => { _stepStageSystem.NextStep(); });
-            var colorSediment = new Color32(81, 72, 35, 200);
-            var colorSedimentInvisible = new Color32(81, 72, 35, 0);
+                () => { _UIStagesControl.NextStep(); });
+            var colorSediment = new Color32(101, 93, 1, 255);
+            var colorSedimentInvisible = new Color32(101, 93, 1, 0);
             byte step_NH4_2S = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.MnSO4, TypeLiquid._NH4_2S, Operator.More, 0,
                 StateMiniTestTubeS2E7.MnSO4_NH4_2S, () =>
@@ -67,7 +67,7 @@ namespace Mini_test_tube
                 ChangeColorLiquid(_rendererSediment, colorSediment, step_NH4_2S--);
                 if (step_NH4_2S == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     step_NH4_2S = 3;
                 }
             });
@@ -80,14 +80,14 @@ namespace Mini_test_tube
                 ChangeColorLiquid(_rendererSediment, colorSedimentInvisible, step_HCI--);
                 if (step_HCI == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     SwitchStateNextMiniTestTube(StateMiniTestTubeS2E7.SbCl3);
                     step_HCI = 6;
                 }
             });
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.SbCl3, TypeLiquid.SbCl3, Operator.Equally, 3,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             var colorSediment2 = new Color32(214, 47, 0, 255);
             byte stepNa2S = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E7.SbCl3, TypeLiquid.Na2S, Operator.More, 0,
@@ -103,7 +103,7 @@ namespace Mini_test_tube
                 ChangeColorLiquid(_rendererSediment, colorSediment2, stepNa2S--);
                 if (stepNa2S == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     stepNa2S = 3;
                 }
             });
@@ -120,7 +120,7 @@ namespace Mini_test_tube
                 ChangeColorLiquid(colorSediment2, step2_HCI--);
                 if (step2_HCI == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     step2_HCI = 6;
                 }
             });

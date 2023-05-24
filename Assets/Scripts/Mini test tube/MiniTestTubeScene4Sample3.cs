@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using Liquid;
+﻿using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
 
@@ -58,7 +56,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E3.Empty, TypeLiquid.K4_Fe_CN_6_, Operator.More, 0,
                 StateMiniTestTubeS4E3.K4_Fe_CN_6_, (bottleColor) => { ChangeColorLiquid(bottleColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E3.K4_Fe_CN_6_, TypeLiquid.K4_Fe_CN_6_, Operator.Equally, 5,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             byte step_NiCl2 = 6;
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E3.K4_Fe_CN_6_, TypeLiquid.NiCl2, Operator.More, 0,
                 StateMiniTestTubeS4E3.K4_Fe_CN_6_NiCl2, () =>
@@ -72,7 +70,9 @@ namespace Mini_test_tube
                 sediment.level = levelLiquid.level / step_NiCl2--;
                 if (step_NiCl2 == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    UpTestTube();
+                    CursorSkin.Instance.isUseClock = true;
+                    _UIStagesControl.NextStep();
                     _state = StateMiniTestTubeS4E3.K4_Fe_CN_6_NiCl2_smooth;
                     playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyChangeColor(new Color32(26, 85, 27, 192), 5f);
@@ -83,7 +83,8 @@ namespace Mini_test_tube
                         _rendererSediment.material.SetFloat("_SedimentMultiply", value);
                     }, () =>
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
+                        CursorSkin.Instance.isUseClock = false;
                         _state = StateMiniTestTubeS4E3.K4_Fe_CN_6_NiCl2_NH4OH;
                     });
                     step_NiCl2 = 6;
@@ -97,13 +98,16 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(63, 243, 76, 255), step_NH4OH--);
                     if (step_NH4OH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        UpTestTube();
+                        CursorSkin.Instance.isUseClock = true;
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS4E3.K4_Fe_CN_6_NiCl2_NH4OH_smooth;
                         playerMotion.MoveToPoint(transform, 10);
-                        StartSmoothlyChangeColor(_rendererCrystal, new Color32(41, 43, 198, 115), 
-                            3f, () =>
+                        StartSmoothlyChangeColor(_rendererCrystal, new Color32(41, 43, 198, 200), 
+                            8f, () =>
                         {
-                            _stepStageSystem.NextStep();
+                            CursorSkin.Instance.isUseClock = false;
+                            _UIStagesControl.NextStep();
                             _state = StateMiniTestTubeS4E3.NotActive;
                         });
                         step_NH4OH = 6;

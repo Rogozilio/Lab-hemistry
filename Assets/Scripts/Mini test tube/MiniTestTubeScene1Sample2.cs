@@ -47,7 +47,7 @@ namespace Mini_test_tube
                     ChangeOtherTestTube(StateMiniTestTubeS1E2.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.NiCl2, TypeLiquid.NiCl2,
-                Operator.Equally, 6, () => { _stepStageSystem.NextStep(); });
+                Operator.Equally, 6, () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.NiCl2, TypeLiquid.NiCl2,
                 Operator.More, 0, () => { ChangeColorLiquid(new Color32(26, 106, 59, 82)); });
             byte stepNaOH = 4;
@@ -64,7 +64,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(52, 255, 137, 200), stepNaOH--);
                     if (stepNaOH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOH = 4;
                     }
                 });
@@ -85,14 +85,14 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(26, 106, 59, 30), stepHCI--);
                     if (stepHCI == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         ChangeOtherTestTube(StateMiniTestTubeS1E2.Bi_NO3_3);
                         stepHCI = 4;
                     }
                 });
             
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,
-                Operator.Equally, 6, () => { _stepStageSystem.NextStep(); });
+                Operator.Equally, 6, () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E2.Bi_NO3_3, TypeLiquid.Bi_NO3_3,
                 Operator.More, 0, (colorWater) => { ChangeColorLiquid(colorWater); });
             byte stepNaOH_2 = 4;
@@ -111,7 +111,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(1, 1, 1, 1f), stepNaOH_2--);
                     if (stepNaOH_2 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOH_2 = 4;
                     }
                 });
@@ -126,7 +126,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0f), stepHNO3--);
                     if (stepHNO3 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepHNO3 = 4;
                     }
                 });

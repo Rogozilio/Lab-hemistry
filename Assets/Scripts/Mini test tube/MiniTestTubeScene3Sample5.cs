@@ -1,5 +1,4 @@
-﻿using Cursor;
-using Granule;
+﻿using Granule;
 using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
@@ -47,7 +46,7 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS3E5>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E5.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 20,
-                StateMiniTestTubeS3E5.CuSO4_steel, () => { _stepStageSystem.NextStep(); });
+                StateMiniTestTubeS3E5.CuSO4_steel, () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E5.Empty, TypeLiquid.CuSO4, Operator.More, 0,
                 StateMiniTestTubeS3E5.CuSO4, () => { ChangeColorLiquid(new Color32(12, 58, 50, 80)); });
 
@@ -67,13 +66,13 @@ namespace Mini_test_tube
                     countWireInTestTube = 0;
                     
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(10f, (delta) => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                     });
                 });
         }
@@ -94,11 +93,6 @@ namespace Mini_test_tube
         {
             RestartBase();
             _state = StateMiniTestTubeS3E5.Empty;
-        }
-
-        private void UpTestTube()
-        {
-            _clickMouseItem.ExecuteMouseClickOnIndex(0);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections;
-using Cursor;
 using UnityEngine;
 
 public class IndicatorPaper : MonoBehaviour, IRestart
@@ -15,7 +14,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
     public GameObject PaperResult;
 
     private MoveToPoint _moveToPoint;
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
     
     private Color _originColorWater;
     private Color _originColorResult;
@@ -28,7 +27,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
         _originColorWater = PaperWater.GetComponent<Renderer>().material.color;
         _originColorResult =  PaperResult.GetComponent<Renderer>().material.color;
 
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _moveToPoint = new MoveToPoint(transform.parent, default, default, new Vector3(1, 1, 0.3f));
         _moveToPoint.SetSpeedTRS = new Vector3(0f, 0f, 1f);
     }
@@ -37,7 +36,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
     {
         _state = StatePaperIndicator.Water;
         PaperWater.SetActive(true);
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
 
     public void StartVisibleResult()
@@ -48,7 +47,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
     private IEnumerator VisibleResult()
     {
         CursorSkin.Instance.isUseClock = true;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
         PaperResult.SetActive(true);
         var renderFrontWater = PaperWater.GetComponent<Renderer>();
         var renderBackWater = PaperWater.transform.GetChild(0).GetComponent<Renderer>();
@@ -68,7 +67,7 @@ public class IndicatorPaper : MonoBehaviour, IRestart
 
         _state = StatePaperIndicator.Result;
         GetComponent<MoveMouseItem>()?.BackToRespawnOrBackToMouse();
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
         CursorSkin.Instance.isUseClock = false;
     }
 

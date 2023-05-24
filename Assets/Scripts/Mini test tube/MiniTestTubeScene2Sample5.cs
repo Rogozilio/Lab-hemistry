@@ -47,11 +47,11 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.Empty, TypeLiquid.CH3COOH, Operator.More, 0,
                 StateMiniTestTubeS2E5.CH3COOH, (bottleColor) => { ChangeColorLiquid(bottleColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.CH3COOH, TypeLiquid.CH3COOH, Operator.Equally, 6,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E5.CH3COOH, TypeLiquid.methylOrange, Operator.More, 0,
                 StateMiniTestTubeS2E5.CH3COOH_methylOrange, () =>
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     ChangeColorLiquid(colorMethylOrange);
                 });
 
@@ -66,7 +66,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(176, 56, 31, 150));
                 });
             _actionAddPowder.AddAction(StateMiniTestTubeS2E5.CH3COOH_methylOrange_CH3COONa, TypePowder.CH3COONa,
-                Operator.Equally, 3, () => { _stepStageSystem.NextStep(); });
+                Operator.Equally, 3, () => { _UIStagesControl.NextStep(); });
             _actionAddPowder.AddAction(StateMiniTestTubeS2E5.CH3COOH_methylOrange_CH3COONa, TypePowder.CH3COONa,
                 Operator.More,
                 0, () =>
@@ -102,7 +102,7 @@ namespace Mini_test_tube
             if (stepSediment == 64)
             {
                 _countPowder = 4;
-                _stepStageSystem.NextStep();
+                _UIStagesControl.NextStep();
                 _state = StateMiniTestTubeS2E5.NotActive;
                 stick.GetComponent<StateItem>().ChangeState(StateItems.BackToMouse);
                 stick.GetComponent<MoveMap>().StartToMove(3);

@@ -49,7 +49,7 @@ namespace Mini_test_tube
                     ChangeOtherTestTube(StateMiniTestTubeS1E3_2.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43, TypeLiquid.Al2_SO4_3, Operator.Equally, 10,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43, TypeLiquid.NaOH, Operator.More, 10,
                 StateMiniTestTubeS1E3_2.AI2SO43_NaOH,
                 () =>
@@ -60,7 +60,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color32(191, 172, 138, 230));
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43_NaOH, TypeLiquid.NaOH, Operator.Equally, 12,
-                () => { Sediment.level = levelLiquid.level / 1.1f; _stepStageSystem.NextStep(); });
+                () => { Sediment.level = levelLiquid.level / 1.1f; _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_2.AI2SO43_NaOH, TypeLiquid.NaOH, Operator.More, 10,
                 () =>
                 {
@@ -82,7 +82,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0), stepNaOH--);
                     if (stepNaOH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOH = 2;
                     }
                 });
@@ -102,7 +102,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0), stepHCI--);
                     if (stepHCI == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         ChangeOtherTestTube(StateMiniTestTubeS1E3_2.AI2SO43_NaOH_half_NaOH);
                         stepHCI = 2;
                     }

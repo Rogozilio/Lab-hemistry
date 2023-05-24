@@ -53,8 +53,6 @@ public class UITooltip : MonoBehaviour
 		alphaDriver = new AlphaDriver(canvasGroup, animation); 
 	}
 
-
-
 	//  Showing and hiding  ----------------------------------------- 
 	public void Show (Vector2 screenPos) 
 	{

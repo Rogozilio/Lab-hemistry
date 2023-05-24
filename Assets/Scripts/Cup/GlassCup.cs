@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Cursor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,12 +15,11 @@ public class GlassCup : MonoBehaviour, IRestart
     }
 
     private StateGlassCup _stateGlassCup = StateGlassCup.Empty;
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
 
     private int _countLiquidHCI;
 
-    public float timeReleaseCO2;
-    public Slider sliderCO2;
+    private TimerTooltip _timerTooltip;
     public GameObject Cap;
     public GameObject fewPieceMarble;
     public GameObject powder;
@@ -39,28 +35,21 @@ public class GlassCup : MonoBehaviour, IRestart
 
     private void Awake()
     {
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
-    }
-
-    private IEnumerator TimerForReleaseCO2()
-    {
-        CursorSkin.Instance.isUseClock = true;
-        
-        var timer = 0f;
-        while (timer < timeReleaseCO2)
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
+        _timerTooltip = GetComponent<TimerTooltip>();
+        _timerTooltip.AddActionStart = () =>
         {
-            timer++;
-            sliderCO2.value = timer / timeReleaseCO2;
-            yield return new WaitForSeconds(1f);
-        }
-
-        sliderCO2.gameObject.SetActive(false);
-        bubble.SetActive(false);
-        _stateGlassCup = StateGlassCup.Marble_HCI_CO2;
-        Cap.GetComponent<ClickMouseItem>().enabled = true;
-        _stepStageSystem.NextStep();
+            CursorSkin.Instance.isUseClock = true;
+        };
+        _timerTooltip.AddActionEnd = () =>
+        {
+            bubble.SetActive(false);
+            _stateGlassCup = StateGlassCup.Marble_HCI_CO2;
+            Cap.GetComponent<ClickMouseItem>().enabled = true;
+            _uiStagesControl.NextStep();
         
-        CursorSkin.Instance.isUseClock = false;
+            CursorSkin.Instance.isUseClock = false;
+        };
     }
 
     private IEnumerator ShowBottomSmoke()
@@ -77,7 +66,7 @@ public class GlassCup : MonoBehaviour, IRestart
 
         if (_stateGlassCup == StateGlassCup.Marble_HCI_CO2)
         {
-            _stepStageSystem.NextStep();
+            _uiStagesControl.NextStep();
             _stateGlassCup = StateGlassCup.Smoke;
         }
     }
@@ -86,11 +75,10 @@ public class GlassCup : MonoBehaviour, IRestart
     {
         if (_stateGlassCup == StateGlassCup.Marble_HCI)
         {
-            _stepStageSystem.NextStep();
+            _uiStagesControl.NextStep();
             Cap.GetComponent<ClickMouseItem>().enabled = false;
-            sliderCO2.gameObject.SetActive(true);
             bubble.SetActive(true);
-            StartCoroutine(TimerForReleaseCO2());
+            _timerTooltip.StartTimerTooltip(transform, "Стакан", "заполнение углекислым газом");
         }
     }
 
@@ -104,7 +92,7 @@ public class GlassCup : MonoBehaviour, IRestart
         fewPieceMarble.SetActive(true);
         fewPieceMarble.transform.position = transform.position;
         fewPieceMarble.transform.rotation = transform.rotation;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
 
     public void AddLiquidHCI()
@@ -117,7 +105,7 @@ public class GlassCup : MonoBehaviour, IRestart
         powder.transform.localScale = 
             new Vector3(powder.transform.localScale.x, powder.transform.localScale.y, _countLiquidHCI * 0.1f);
         
-        if(countLiquidHCI == 10) _stepStageSystem.NextStep();
+        if(countLiquidHCI == 10) _uiStagesControl.NextStep();
     }
 
     public void StartShowBottomSmoke()

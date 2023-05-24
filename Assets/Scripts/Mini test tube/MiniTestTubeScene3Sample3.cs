@@ -1,5 +1,4 @@
-﻿using Cursor;
-using Granule;
+﻿using Granule;
 using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
@@ -69,18 +68,18 @@ namespace Mini_test_tube
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E3.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 3,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.Pb_NO3_2, TypeLiquid.KI, Operator.More, 0,
                 StateMiniTestTubeS3E3.Pb_NO3_2_KI, () =>
                 {
                     UpTestTube();
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     sediment.level = levelLiquid.level / 1.2f;
                     _playerMotion.MoveToPoint(transform, 10);
                     ChangeColorLiquid(_rendererSediment, new Color32(188, 160, 0, 55));
                     StartSmoothlyChangeColor(_rendererSediment, new Color32(188, 160, 0, 255), 5f, () =>
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E3.Pb_NO3_2_KI_smooth;
                         SetStateOtherMiniTestTube(StateMiniTestTubeS3E3.CH3COOH);
                     });
@@ -94,7 +93,7 @@ namespace Mini_test_tube
                         StateMiniTestTubeS3E3.CH3COOH_KI_Pb_corrosion);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH, TypeLiquid.CH3COOH, Operator.Equally, 10,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH, TypeLiquid.KI, Operator.More, 0,
                 StateMiniTestTubeS3E3.CH3COOH_KI, () => { });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI, TypeLiquid.KI, Operator.Equally, 12,
@@ -103,7 +102,7 @@ namespace Mini_test_tube
                     _state = CheckPbInOtherTestTube()
                         ? StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_
                         : StateMiniTestTubeS3E3.CH3COOH_KI_Pb;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                 });
             byte step_K3_Fe_CN_6_ = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_, TypeLiquid.K3_Fe_CN_6_, Operator.More, 0,
@@ -112,7 +111,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(229, 253, 42, 10), step_K3_Fe_CN_6_--);
                     if (step_K3_Fe_CN_6_ == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_PbZn;
                         step_K3_Fe_CN_6_ = 3;
                     }
@@ -124,7 +123,7 @@ namespace Mini_test_tube
                 StateMiniTestTubeS3E3.CH3COOH_KI_Pb_corrosion, (wire) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     wire.FixedWireIn(transform);
                     wire.PlayExistEffects();
                     UpTestTube();
@@ -132,7 +131,7 @@ namespace Mini_test_tube
                     StartSmoothlyAction(4f, (delta) => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         SetStateOtherMiniTestTube(StateMiniTestTubeS3E3.CH3COOH,
                             StateMiniTestTubeS3E3.Pb_NO3_2_KI_smooth);
                         StartSmoothlyChangeColor(new Color32(80, 72, 13, 100), 30f, () => {});
@@ -143,14 +142,14 @@ namespace Mini_test_tube
                 StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_PbZn_corrosion, (wire) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     wire.FixedWireIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(4f, delta => {}, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                     });
                 });
         }
@@ -173,11 +172,6 @@ namespace Mini_test_tube
             _state = StateMiniTestTubeS3E3.Empty;
             sediment.gameObject.SetActive(true);
             _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
-        }
-
-        private void UpTestTube()
-        {
-            _clickMouseItem.ExecuteMouseClickOnIndex(0);
         }
 
         private void SetStateOtherMiniTestTube(StateMiniTestTubeS3E3 state, params StateMiniTestTubeS3E3[] excepts)

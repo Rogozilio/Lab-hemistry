@@ -1,5 +1,4 @@
-﻿using Cursor;
-using Granule;
+﻿using Granule;
 using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
@@ -53,7 +52,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.Hg_NO3_2, TypeLiquid.Hg_NO3_2, Operator.Equally, 10,
                 StateMiniTestTubeS3E6.Hg_NO3_2_Al, () =>
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E6.H2O);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.Empty, TypeLiquid.Hg_NO3_2, Operator.More, 0,
@@ -63,7 +62,7 @@ namespace Mini_test_tube
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E6.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.H2O, TypeLiquid.H2O, Operator.Equally, 10
-                , StateMiniTestTubeS3E6.H20_Al, () => {_stepStageSystem.NextStep();});
+                , StateMiniTestTubeS3E6.H20_Al, () => {_UIStagesControl.NextStep();});
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.H2O, TypeLiquid.H2O, Operator.Equally, 1
                 , (bottleColor) => {ChangeColorLiquid(bottleColor);});
 
@@ -92,13 +91,13 @@ namespace Mini_test_tube
                     StartSmoothlyAction(30f, (delta) => { }, () =>
                     {
                         UpTestTube();
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         _playerMotion.MoveToPoint(transform, 10);
                         wire.StartWirePartEffect("0");
                         StartSmoothlyAction(5f, (delta) => {}, () =>
                         {
                             CursorSkin.Instance.isUseClock = false;
-                            _stepStageSystem.NextStep();
+                            _UIStagesControl.NextStep();
                             wire.isFormedAmalgam = true;
                             wire.SetMoveMouseItemEnable = true;
                             wire.SwitchOnLinearState();
@@ -113,13 +112,13 @@ namespace Mini_test_tube
                     wire.FixedWireIn(transform);
                     wire.PlayExistEffects();
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(8f, (delta) => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E6.NotActive;
                     });
                 });
@@ -143,11 +142,6 @@ namespace Mini_test_tube
             _state = StateMiniTestTubeS3E6.Empty;
         }
 
-        private void UpTestTube()
-        {
-            _clickMouseItem.ExecuteMouseClickOnIndex(0);
-        }
-        
         private void SetStateOtherMiniTestTube(StateMiniTestTubeS3E6 state, params StateMiniTestTubeS3E6[] excepts)
         {
             var tubes = FindObjectsOfType<MiniTestTubeScene3Sample6>();

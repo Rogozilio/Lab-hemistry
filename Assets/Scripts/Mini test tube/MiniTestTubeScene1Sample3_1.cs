@@ -49,7 +49,7 @@ namespace Mini_test_tube
                     ChangeOtherTestTube(StateMiniTestTubeS1E3_1.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_1.CrCl3, TypeLiquid.CrCl3, Operator.Equally, 10,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             byte stepNaOH = 2;
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E3_1.CrCl3, TypeLiquid.NaOH, Operator.More, 10,
                 StateMiniTestTubeS1E3_1.CrCl3_NaOH,
@@ -67,7 +67,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment,  new Color(0.115f, 0.115f, 0.115f, 1f), stepNaOH--);
                     if (stepNaOH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOH = 2;
                     }
                 });
@@ -88,7 +88,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0f), stepNaOHhalf--);
                     if (stepNaOHhalf == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOHhalf = 2;
                     }
                 });
@@ -110,7 +110,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, new Color(0, 0, 0, 0), stepHCI--);
                     if (stepHCI == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         ChangeOtherTestTube(StateMiniTestTubeS1E3_1.CrCl3_NaOH_half_NaOH);
                         stepHCI = 2;
                     }

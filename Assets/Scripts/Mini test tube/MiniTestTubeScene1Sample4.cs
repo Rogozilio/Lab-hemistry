@@ -48,25 +48,25 @@ namespace Mini_test_tube
                     ChangeOtherTestTube(StateMiniTestTubeS1E4.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.Equally, 8,
-                () => _stepStageSystem.NextStep());
+                () => _UIStagesControl.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NH4CI, Operator.More, 0,
                 (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI, TypeLiquid.NaOH, Operator.More, 0,
                 StateMiniTestTubeS1E4.NH4CI_NaOH, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.NH4CI_NaOH, TypeLiquid.NaOH, Operator.Equally, 16,
-                () => _stepStageSystem.NextStep());
+                () => _UIStagesControl.NextStep());
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Empty, TypeLiquid.Na2CO3, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3,
                 (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.Equally, 10,
-                () => _stepStageSystem.NextStep());
+                () => _UIStagesControl.NextStep());
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.Na2CO3, Operator.More, 0,
                 (colorWater) => ChangeColorLiquid(colorWater));
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3, TypeLiquid.HCI, Operator.More, 0,
                 StateMiniTestTubeS1E4.Na2CO3_HCI, () => {});
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E4.Na2CO3_HCI, TypeLiquid.HCI, Operator.Equally, 14,
-                () => _stepStageSystem.NextStep());
+                () => _UIStagesControl.NextStep());
         }
 
         public override void SetStateMiniTestTube(int index)
@@ -139,7 +139,7 @@ namespace Mini_test_tube
             }
             bubblesMain.startLifetimeMultiplier = originStartLifetimeMultiplier;
             Bubbles.Stop();
-            _stepStageSystem.NextStep();
+            _UIStagesControl.NextStep();
         }
         
         private void ChangeOtherTestTube(StateMiniTestTubeS1E4 newState)

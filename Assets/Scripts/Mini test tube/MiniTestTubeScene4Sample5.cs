@@ -48,9 +48,9 @@ namespace Mini_test_tube
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS4E5>();
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E5.Empty, TypeLiquid.KMnO4, Operator.More, 0,
-                StateMiniTestTubeS4E5.KMnO4, () => { ChangeColorLiquid(new Color32(3, 1, 5, 240)); });
+                StateMiniTestTubeS4E5.KMnO4, () => { ChangeColorLiquid(new Color32(104, 2, 76, 107)); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E5.KMnO4, TypeLiquid.KMnO4, Operator.Equally, 5,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             byte step_H2SO4 = 5;
             _actionAddLiquid.AddAction(StateMiniTestTubeS4E5.KMnO4, TypeLiquid.H2SO4, Operator.More, 0,
                 StateMiniTestTubeS4E5.KMnO4_H2SO4,
@@ -60,7 +60,7 @@ namespace Mini_test_tube
                 ChangeColorLiquid(new Color32(14, 1, 27, 175), step_H2SO4--);
                 if (step_H2SO4 == 0)
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     step_H2SO4 = 5;
                 }
             });
@@ -75,7 +75,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(49, 64, 8, 64), step_K4_Fe_CN_6_--);
                     if (step_K4_Fe_CN_6_ == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS4E5.NotActive;
                         step_K4_Fe_CN_6_ = 6;
                     }

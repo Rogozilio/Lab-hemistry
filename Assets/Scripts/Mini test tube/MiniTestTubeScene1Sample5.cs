@@ -41,7 +41,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 6,
                 () =>
                 {
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     _state = GetKIOrK2CrO4();
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.More, 0,
@@ -59,7 +59,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(203, 124, 0, 157), stepKI--);
                     if (stepKI == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         ChangeOtherTestTube(StateMiniTestTubeS1E5.Empty);
                         stepKI = 2;
                     }
@@ -77,7 +77,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(145, 145, 0, 157), stepK2Cro4--);
                     if (stepK2Cro4 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         ChangeOtherTestTube(StateMiniTestTubeS1E5.K2CrO4);
                         stepK2Cro4 = 2;
                     }
@@ -90,7 +90,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(94, 71, 0, 69));
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.K2CrO4, TypeLiquid.K2CrO4, Operator.Equally, 6,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS1E5.K2CrO4, TypeLiquid.K2CrO4, Operator.More, 0,
                 () => { ChangeColorLiquid(new Color32(94, 71, 0, 69)); });
             byte stepAgNO3 = 3;
@@ -103,7 +103,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(new Color32(102, 10, 6, 142), stepAgNO3--);
                     if (stepAgNO3 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepAgNO3 = 3;
                     }
                 });

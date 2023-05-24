@@ -133,6 +133,23 @@ public class PlayerMotion : MonoBehaviour
 	{
 		inputReciever.viewRotation.AddInput(input); 
 	}
+	
+	public void RotateUp() 
+	{
+		inputReciever.viewRotation.AddInput(new Orientation(0, 1)); 
+	}
+	public void RotateDown() 
+	{
+		inputReciever.viewRotation.AddInput(new Orientation(0, -1)); 
+	}
+	public void RotateLeft() 
+	{
+		inputReciever.viewRotation.AddInput(new Orientation(-1, 0)); 
+	}
+	public void RotateRight() 
+	{
+		inputReciever.viewRotation.AddInput(new Orientation(1, 0)); 
+	}
 
 
 
@@ -167,15 +184,7 @@ public class PlayerMotion : MonoBehaviour
 	public bool CanRotateLeft  => viewRotation.CanRotateLeft; 
     public bool CanRotateRight => viewRotation.CanRotateRight; 
     public bool CanRotateUp    => viewRotation.CanRotateUp; 
-    public bool CanRotateDown  => viewRotation.CanRotateDown; 
-
-
-
-	//  Reset  ------------------------------------------------------ 
-	public void Reset () 
-	{
-
-	}
+    public bool CanRotateDown  => viewRotation.CanRotateDown;
 
 }
 

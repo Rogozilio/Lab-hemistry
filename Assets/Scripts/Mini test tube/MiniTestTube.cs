@@ -12,7 +12,8 @@ namespace Mini_test_tube
         public Transform StartLiquidFlow;
 
         protected LevelLiquid _levelLiquid;
-        protected StepStageSystem _stepStageSystem;
+        protected UIStagesControl _UIStagesControl;
+        private ClickMouseItem _clickMouseItem;
         protected int _countLiquid;
         protected int _countPowder;
         protected float _step;
@@ -41,7 +42,8 @@ namespace Mini_test_tube
             _stateItem = GetComponent<StateItem>();
             _rendererLiquid = Liquid.GetComponent<Renderer>();
             _levelLiquid = Liquid.GetComponent<LevelLiquid>();
-            _stepStageSystem = FindObjectOfType<StepStageSystem>();
+            _UIStagesControl = FindObjectOfType<UIStagesControl>();
+            _clickMouseItem = GetComponent<ClickMouseItem>();
             _liquidFlowScript = LiquidFlow.GetComponent<LiquidFlow>();
             _liquidFlowScript.actionInEnd += () =>
             {
@@ -177,6 +179,11 @@ namespace Mini_test_tube
             }
         }
         
+        protected void UpTestTube()
+        {
+            _clickMouseItem.ExecuteMouseClickOnIndex(0);
+        }
+        
         protected bool _isStir;
         private Vector3 _prevPosition;
 
@@ -188,7 +195,6 @@ namespace Mini_test_tube
 
         protected void RestartBase()
         {
-            _stepStageSystem.RestartStage();
             _levelLiquid.level = 0;
             _countLiquid = 0;
             _countPowder = 0;

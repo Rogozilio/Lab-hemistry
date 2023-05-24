@@ -41,7 +41,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.Empty, TypeLiquid.MgCI2, Operator.More, 0,
                 StateMiniTestTubeS2E4.MgCl2, (waterColor) => { ChangeColorLiquid(waterColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2, TypeLiquid.MgCI2, Operator.Equally, 10,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
 
             byte stepNH4OH = 4;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E4.MgCl2, TypeLiquid.NH4OH, Operator.More, 0,
@@ -53,7 +53,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, sedimentColor, stepNH4OH--);
                     if (stepNH4OH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNH4OH = 4;
                     }
                 });
@@ -68,7 +68,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(_rendererSediment, waterColor, stepNH4Cl--);
                     if (stepNH4Cl == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNH4Cl = 4;
                     }
                 });

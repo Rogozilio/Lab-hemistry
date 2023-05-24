@@ -1,5 +1,4 @@
-﻿using Cursor;
-using Granule;
+﻿using Granule;
 using Liquid;
 using UnityEngine;
 using VirtualLab.PlayerMotion;
@@ -65,7 +64,7 @@ namespace Mini_test_tube
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E4.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.H2SO4, TypeLiquid.H2SO4, Operator.Equally, 10,
-                StateMiniTestTubeS3E4.H2SO4_steel, () => { _stepStageSystem.NextStep(); });
+                StateMiniTestTubeS3E4.H2SO4_steel, () => { _UIStagesControl.NextStep(); });
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.HNO3, TypeLiquid.HNO3, Operator.Equally, 1,
                 (bottleColor) =>
@@ -75,7 +74,7 @@ namespace Mini_test_tube
                         StateMiniTestTubeS3E4.H2SO4_steel_corrosion);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.HNO3, TypeLiquid.HNO3, Operator.Equally, 10,
-                StateMiniTestTubeS3E4.HNO3_steel, () => { _stepStageSystem.NextStep(); });
+                StateMiniTestTubeS3E4.HNO3_steel, () => { _UIStagesControl.NextStep(); });
 
             _actionAddWire = new ActionAddWire<StateMiniTestTubeS3E4>();
 
@@ -83,7 +82,7 @@ namespace Mini_test_tube
                 StateMiniTestTubeS3E4.H2SO4_steel_corrosion, (wire) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     wire.FixedWireIn(transform);
                     if(wire.typePassivate == TypePassivate.No)
                         wire.PlayExistEffects();
@@ -92,7 +91,7 @@ namespace Mini_test_tube
                     StartSmoothlyAction(4f, (delta) => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         if(wire.typePassivate == TypePassivate.No)
                             SetStateOtherMiniTestTube(StateMiniTestTubeS3E4.HNO3);
                     });
@@ -102,14 +101,14 @@ namespace Mini_test_tube
                 StateMiniTestTubeS3E4.HNO3_steel_passivation, (wire) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
-                    _stepStageSystem.NextStep();
+                    _UIStagesControl.NextStep();
                     wire.FixedWireIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(4f, delta => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         wire.typePassivate = TypePassivate.Passivated;
                         wire.SetMoveMouseItemEnable = true;
                         wire.SwitchOnLinearState();
@@ -135,11 +134,6 @@ namespace Mini_test_tube
             _state = StateMiniTestTubeS3E4.Empty;
             sediment.gameObject.SetActive(true);
             _rendererSediment.material.SetColor("_LiquidColor", _originColorSediment);
-        }
-
-        private void UpTestTube()
-        {
-            _clickMouseItem.ExecuteMouseClickOnIndex(0);
         }
 
         private void SetStateOtherMiniTestTube(StateMiniTestTubeS3E4 state, params StateMiniTestTubeS3E4[] excepts)

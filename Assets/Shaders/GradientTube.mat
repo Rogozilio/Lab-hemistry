@@ -108,7 +108,7 @@ Material:
     - _EdgeLeft_Center: 0
     - _EnvironmentReflections: 1
     - _Fill: 0
-    - _FillLeft: 1
+    - _FillLeft: 0
     - _FillRight: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -137,8 +137,8 @@ Material:
     - _Color2: {r: 0.10298407, g: 1, b: 0, a: 1}
     - _Color3: {r: 0.1093361, g: 0.118267, b: 0.8584906, a: 1}
     - _ColorCenter: {r: 0.5849056, g: 0.3978392, b: 0.124154516, a: 0.15686275}
-    - _ColorLeft: {r: 1, g: 0.042650476, b: 0, a: 1}
-    - _ColorRight: {r: 0, g: 0.03236246, b: 1, a: 1}
+    - _ColorLeft: {r: 0.39607844, g: 0.33333334, b: 0.08627451, a: 0.039215688}
+    - _ColorRight: {r: 0.40392157, g: 0.20392157, b: 0.078431375, a: 0.32156864}
     - _Color_1: {r: 1, g: 0, b: 0, a: 0.49803922}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LiquidColor: {r: 0.04894981, g: 0.1986143, b: 0.9433962, a: 1}

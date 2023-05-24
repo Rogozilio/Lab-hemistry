@@ -33,7 +33,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.Empty, TypeLiquid.K2CrO4, Operator.More, 0,
                 StateMiniTestTubeS2E3.K2CrO4, () => { ChangeColorLiquid(yellowColor); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4, TypeLiquid.K2CrO4, Operator.Equally, 3,
-                () => { _stepStageSystem.NextStep(); });
+                () => { _UIStagesControl.NextStep(); });
 
             byte stepH2SO4 = 3;
             _actionAddLiquid.AddAction(StateMiniTestTubeS2E3.K2CrO4, TypeLiquid.H2SO4, Operator.More, 0,
@@ -44,7 +44,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(orangeColor, stepH2SO4--);
                     if (stepH2SO4 == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepH2SO4 = 3;
                     }
                 });
@@ -58,7 +58,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(yellowColor, stepNaOH--);
                     if (stepNaOH == 0)
                     {
-                        _stepStageSystem.NextStep();
+                        _UIStagesControl.NextStep();
                         stepNaOH = 3;
                     }
                 });

@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Cursor;
 using UnityEngine;
 
 public class P_tube : MonoBehaviour, IRestart
@@ -17,7 +15,7 @@ public class P_tube : MonoBehaviour, IRestart
     private Renderer _gradientTube;
     private StatePTube _state;
 
-    private StepStageSystem _stepStageSystem;
+    private UIStagesControl _uiStagesControl;
 
     private MoveMouseItem _moveMouseItem;
 
@@ -66,7 +64,7 @@ public class P_tube : MonoBehaviour, IRestart
     void Awake()
     {
         _gradientTube = GetComponent<Renderer>();
-        _stepStageSystem = FindObjectOfType<StepStageSystem>();
+        _uiStagesControl = FindObjectOfType<UIStagesControl>();
         _moveMouseItem = transform.parent.GetComponent<MoveMouseItem>();
 
         _originEdgeLeftCenter = _edgeLeftCenter;
@@ -92,7 +90,7 @@ public class P_tube : MonoBehaviour, IRestart
 
     private IEnumerator ReactionInIceWater()
     {
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
 
         _state = StatePTube.frozen;
 
@@ -123,12 +121,12 @@ public class P_tube : MonoBehaviour, IRestart
 
         CursorSkin.Instance.isUseClock = false;
         _moveMouseItem.enabled = true;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
 
     private IEnumerator ReactionInHotWater()
     {
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
 
         _state = StatePTube.warmed;
 
@@ -150,12 +148,11 @@ public class P_tube : MonoBehaviour, IRestart
         }
 
         CursorSkin.Instance.isUseClock = false;
-        _stepStageSystem.NextStep();
+        _uiStagesControl.NextStep();
     }
 
     public void Restart()
     {
-        _stepStageSystem.RestartStage();
         _state = StatePTube.balance;
         _edgeLeftCenter = _originEdgeLeftCenter;
         _edgeCenterRight = _originEdgeCenterRight;
