@@ -1,0 +1,22 @@
+{
+    "tooltips": [
+        {
+            "name": "Имя выноски",
+            "data": [
+                {
+                    "type": "title",
+                    "stringData": "Заголовок выноски"
+                },
+                {
+                    "type": "text",
+                    "stringData": "Тект выноски"
+                },
+                {
+                    "type": "progress",
+                    "stringData": "Описание полосы прогресса",
+                    "numberData": 0.5
+                }
+            ]
+        }
+    ]
+}

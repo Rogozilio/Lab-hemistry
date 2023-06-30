@@ -62,7 +62,7 @@ public class Timer : MonoBehaviour
             yield return null;
             t += Time.deltaTime;
             var x = Mathf.Lerp(a, b, t / time);
-            _rectTransform.anchoredPosition = new Vector2(x, 47);
+            _rectTransform.anchoredPosition = new Vector2(x, _rectTransform.anchoredPosition.y);
         }
     }
 }

@@ -21,7 +21,7 @@ public class InfoPanelAnimation : MonoBehaviour
     void Start () 
     {
         InitUI(); 
-        SetState(State.Visible); 
+        SetState(State.Invisible); 
     }
 
     void Update () 
@@ -130,12 +130,11 @@ public class InfoPanelAnimation : MonoBehaviour
 
 
     //  Animation  -------------------------------------------------- 
-    delegate void Callback (); 
+    delegate void Callback ();
 
-    float t = 1; 
-
-    IEnumerator Animation (float targetValue, Callback onCompleted) 
+    IEnumerator Animation (float targetValue, Callback onCompleted)
     {
+        var t = targetValue > 0.5f ? 0f : 1f;
         while (Mathf.Abs(targetValue - t) > PROXIMITY_MARGIN) 
         {
             float speed = 1 / animationTime; 

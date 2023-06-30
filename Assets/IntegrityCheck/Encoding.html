@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>URL encoding</title>
+<style>
+    .mainArea {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: row;
+        gap: 50px;
+        width: max-content;
+    }
+    .inputArea {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: hsl(120, 50%, 40%);
+        padding: 15px;
+        border-radius: 6px;
+    }
+    .label {
+        margin: 0 0 10px 10px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: medium;
+        font-weight: 500;
+        color: white;
+    }
+    .inputField {
+        padding: 5px;
+        max-width: 100%;
+        border-radius: 5px;
+        outline-color: rgb(0, 255, 0);
+        box-shadow: none;
+        border: none;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: medium;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="mainArea">
+    <div class="inputArea">
+        <label class="label">Исходный текст:</label>
+        <textarea cols="75" rows="5" id="plainText" class="inputField" type="text" oninput="plainToEncrypted()"></textarea>
+    </div>
+    <div class="inputArea">
+        <label class="label">Зашифрованный текст:</label>
+        <textarea cols="75" rows="5" id="encryptedText" class="inputField" type="text" oninput="encryptedToPlain()"></textarea>
+    </div>
+</div>
+
+<script>
+    var plainTextField     = document.getElementById("plainText");
+    var encryptedTextField = document.getElementById("encryptedText");
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    const KEY = "H022Zt3Di@VI0y!1U1U4yPCdgQKMQ0007%ed";
+
+
+
+    //  Main  -------------------------------------------------------
+    function plainToEncrypted () 
+    {
+        let plain = plainTextField.value.trim();
+        encryptedTextField.value = encode(plain, KEY);
+    }
+
+    function encryptedToPlain () 
+    {
+        let encrypted = encryptedTextField.value.trim();
+        plainTextField.value = decode(encrypted, KEY);
+    }
+
+
+
+    //  Url  --------------------------------------------------------
+    function encode (data, key) 
+    {
+        if (data.length == 0) return data;
+        if (key .length == 0) return data;
+
+        let dataBytes = toBytes(data);
+        let keyBytes  = toBytes(key);
+
+        let encodedBytes = XOR(dataBytes, keyBytes);
+
+        let data64 = toBase64(encodedBytes);
+
+        return data64;
+    }
+
+    function decode (data64, key) 
+    {
+        if (data64.length == 0) return data64;
+        if (key   .length == 0) return data64;
+
+        let encodedBytes = fromBase64(data64);
+        let keyBytes     = toBytes(key);
+
+        let dataBytes = XOR(encodedBytes, keyBytes);
+        
+        let data = fromBytes(dataBytes);
+
+        return data;
+    }
+
+
+
+    //  XOR  --------------------------------------------------------
+    function XOR (data, key) 
+    {
+        let iterationCount = Math.ceil(data.length / key.length);
+        let output = new Uint8Array(data.length);
+
+        for (let i = 0; i < output.length; i++)
+        {
+            let d = i < data.length ? data[i] : 0;
+            let k = key[i % key.length];
+            output[i] = d ^ k;
+        }
+
+        return output;
+    }
+
+
+
+    //  Base64  -----------------------------------------------------
+    let base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    
+    function toBase64 (bytes) 
+    {
+        let result = ""; 
+        let padding = createPadding(bytes);
+
+        for (let i = 0; i < bytes.length; i += 3) 
+        {
+            let byteA = bytes[i];
+            let byteB = bytes[i + 1];
+            let byteC = bytes[i + 2];
+            let number24 = combine_8x3_Into_24x1(byteA, byteB, byteC);
+
+            let words = split_24x1_Into_6x4(number24);
+
+            let charA = base64chars[words[0]];
+            let charB = base64chars[words[1]];
+            let charC = base64chars[words[2]];
+            let charD = base64chars[words[3]];
+            result += charA + charB + charC + charD;
+        }
+        
+        result = applyPadding(result, padding);
+        return result;
+    }
+
+    function fromBase64 (string) 
+    {
+        let padding = (string.charAt(string.length-1) == '=' ? 
+        (string.charAt(string.length-2) == '=' ? 'AA' : 'A') : ""); 
+        string = string.substr(0, string.length - padding.length) + padding;
+
+        let bytes = new Uint8Array(string.length / 4 * 3);
+        let byteIndex = 0;
+
+        for (let i = 0; i < string.length; i += 4) 
+        {
+            let charA = string.charAt(i);
+            let charB = string.charAt(i + 1);
+            let charC = string.charAt(i + 2);
+            let charD = string.charAt(i + 3);
+            
+            let wordA = base64chars.indexOf(charA);
+            let wordB = base64chars.indexOf(charB);
+            let wordC = base64chars.indexOf(charC);
+            let wordD = base64chars.indexOf(charD);
+
+            let number24 = combine_6x4_Into_24x1(wordA, wordB, wordC, wordD);
+
+            let threeBytes = split_24x1_Into_8x3(number24);
+            
+            bytes[byteIndex++] = threeBytes[0];
+            bytes[byteIndex++] = threeBytes[1];
+            bytes[byteIndex++] = threeBytes[2];
+        }
+
+        return bytes.subarray(0, bytes.length - padding.length);
+    }
+
+    function createPadding (bytes) 
+    {
+        let padding = ""; 
+        let padCount = bytes.length % 3;
+
+        if (padCount > 0) 
+        { 
+            for (; padCount < 3; padCount++) 
+            { 
+                padding += '='; 
+                bytes += "\0"; 
+            } 
+        }
+
+        return padding;
+    }
+
+    function applyPadding (string, padding) 
+    {
+        return string.substring(0, string.length - padding.length) + padding;
+    }
+
+    function combine_8x3_Into_24x1 (a, b, c) 
+    {
+        return (a << 16) | (b << 8) | c;
+    }
+
+    function combine_6x4_Into_24x1 (a, b, c, d) 
+    {
+        return (a << 18) | (b << 12) | (c << 6) | d;
+    }
+
+    function split_24x1_Into_6x4 (n) 
+    {
+        let result = new Uint8Array(4);
+        let mask = 0b00111111;
+
+        result[0] = (n >>> 18) & mask;
+        result[1] = (n >>> 12) & mask;
+        result[2] = (n >>> 6)  & mask;
+        result[3] =  n         & mask;
+
+        return result;
+    }
+
+    function split_24x1_Into_8x3 (n) 
+    {
+        let result = new Uint8Array(3);
+        let mask = 0b11111111;
+
+        result[0] = (n >>> 16) & mask;
+        result[1] = (n >>> 8)  & mask;
+        result[2] =  n         & mask;
+
+        return result;
+    }
+
+
+
+    //  Bytes  ------------------------------------------------------
+    function toBytes (string)
+    {
+        return encoder.encode(string);
+    }
+
+    function fromBytes (bytes)
+    {
+        return decoder.decode(bytes);
+    }
+
+</script>
+
+</body>
+
+</html>

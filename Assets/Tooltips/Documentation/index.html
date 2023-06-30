@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tooltips</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main">
+    <h1>Модуль вывода информационных сообщений</h1>
+
+
+    <h2 style="margin-top: 50px;">Обзор</h2>
+    <p class="description">
+        Модуль для вывода информационных сообщений (выносок). Содержит префаб выноски и компоненты для отображения выноски при наведении курсора.
+    </p>
+    <img class="main-image" src="tooltips-overview.png">
+    <p style="align-self: center;"">Схема компонентов модуля</p>
+
+
+    <h2 style="margin-top: 50px;">Как использовать модуль</h2>
+
+    <div style="align-self: center; display: flex; align-items: center;  gap: 25px">
+        <img class="main-image" src="tooltips-prefabs.png">
+        <img class="main-image" src="tooltips-tooltipsystem.png">
+    </div>
+    <p class="description">
+        1) Разместите префаб <a href="tooltipsystem.html">TooltipSystem</a> на UI канвасе. 
+    </p>
+    <p class="description item">
+        - <a href="tooltipsystem.html">TooltipSystem</a> должен занимать весь экран для правильного соотношения положения объекта в мире и выноски на экране 
+    </p>
+    <p class="description item">
+        - присвойте главную камеру в поле Camera. Это камера, которая использутеся для расчета положения выносок 
+    </p>
+
+    <img class="main-image" src="tooltips-hierarchy.png">
+    <p class="description">
+        2) Разместите по одному префабу <a href="tooltip.html">Tooltip</a> для каждой выноски, которая используется в программе.
+    </p>
+    <p class="description item">
+        - выноски должны быть потомками объекта <a href="tooltipsystem.html">TooltipSystem</a>, но не обязательно прямыми потомками
+    </p>
+    <p class="description item">
+        - если в иерархии между <a href="tooltip.html">Tooltip</a> и <a href="tooltipsystem.html">TooltipSystem</a> есть другие объекты, 
+        то они тоже должны занимать весь экран, как и <a href="tooltipsystem.html">TooltipSystem</a> 
+    </p>
+
+    <div style="align-self: center; display: flex; align-items: center;  gap: 25px">
+        <img class="main-image" src="tooltips-gizmo.png">
+        <img class="main-image" src="tooltips-settings.png">
+    </div>
+    <p class="description">
+        3) Присвойте каждой выноске в поле <a href="tooltip/tooltip-worldpoint.html">World Point</a> объект, к которому будет привязана эта выноска. 
+        Выноска будет появляться возле этого объекта и следовать за ним.
+    </p>
+    <p class="description item">
+        - настройте параметры геометрии в выносках, которые определяют положение выноски относительно объекта. 
+        Во время настройки появляется гизмо на объекте, к которому привязана выноска. 
+        Это гизмо отображает как будет выглядеть выноска, для удобной настройки геометрии без необходимости запуска программы
+    </p>
+
+    <img class="main-image" src="tooltips-data.png">
+    <p class="description">
+        4) Настройте данные для выноски в инспекторе <a href="tooltip.html">Tooltip</a>. 
+    </p>
+    <p class="description item">
+        - эти данные будут использоваться по умолчанию, если файл с данными <a href="tooltips.json.html">tooltips.json</a> не будет найден или в нем не окажется данных для этой выноски 
+    </p>
+    <p class="description item">
+        - если tooltips.json содержит данные для этой выноски, то данные из файла перезапишут данные в выноске 
+    </p>
+
+    <img class="main-image" src="tooltips-mousetrigger.png">
+    <p class="description">
+        5) (опционально) Настройте контроллеры для управления выносками. Контроллеры определяют когда появляются и исчезают выноски. 
+        Вместо контроллеров можно управлять выносками напрямую через компонент <a href="tooltip.html">Tooltip</a> 
+    </p>
+    <p class="description item">
+        - контроллер <a href="tooltipmousetrigger.html">TooltipMouseTrigger</a> отображает выноску при наведении курсора на объект. Компонент должен находиться на объекте с коллайдером
+    </p>
+    <p class="description item">
+        - контроллер <a href="tooltipcustomtrigger.html">TooltipCustomTrigger</a> позволяет создать собственную логику для отображения выноски, 
+        для этого нужно унаследовать этот класс и переопределить метод IsVisible() 
+    </p>
+</div>
+
+</body>
+
+<script src="reusables.js" type="text/javascript"></script>
+</html>

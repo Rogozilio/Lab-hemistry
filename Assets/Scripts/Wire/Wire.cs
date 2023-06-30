@@ -168,6 +168,7 @@ namespace Wire
             transform.position = _originPosition;
             transform.rotation = _originRotation;
             _moveMouseItem.StartRotation = _originMoveMouseRotation;
+            _moveMouseItem.SetState(StateItems.Drag);
             UnfixedWire();
             foreach (var effect in effects)
             {

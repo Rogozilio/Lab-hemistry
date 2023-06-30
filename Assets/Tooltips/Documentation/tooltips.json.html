@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tooltip</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main">
+    <h1>Файл tooltips.json</h1>
+    <p class="description">
+        Файл с данными для выносок, содержится в папке StreamingAssets.
+    </p>
+    <p class="description">
+        Данные представляют собой один json-объект для каждой выноски. 
+        json-объекты соотносятся с выносками через имя: поле <c>name</c> в компоненте Tooltip должно совпадать с полем <c>name</c> в json-объекте.
+    </p>
+    <p class="description">
+        В начале работы программы данные считываются из этого файла и передаются выноскам, заменяя данные, которые уже есть в выноске. 
+        Выноски, данных к которым нет в файле, сохраняют свои исходные данные.
+    </p>
+
+    <h2>Структура файла</h2>
+    <pre class="description" style="text-indent: 0; font-family: 'Courier New', Courier, monospace;">
+        {
+            "tooltips": [
+                {
+                    "name": "Имя выноски",
+                    "data": [
+                        {
+                            "type": "title",
+                            "stringData": "Заголовок выноски"
+                        },
+                        {
+                            "type": "text",
+                            "stringData": "Тект выноски"
+                        },
+                        {
+                            "type": "progress",
+                            "stringData": "Описание полосы прогресса",
+                            "numberData": 0.5
+                        }
+                    ]
+                }
+            ]
+        }
+    </pre>
+</div>
+
+</body>
+
+<script src="reusables.js" type="text/javascript"></script>
+</html>

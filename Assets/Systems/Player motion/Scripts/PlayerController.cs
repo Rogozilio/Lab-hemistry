@@ -24,20 +24,20 @@ public class PlayerController : MonoBehaviour
 	//  Key input  -------------------------------------------------- 
 	void CreatePointInput () 
 	{
-		if (Input.GetKeyDown(KeyCode.Q)) 
-		{
-			//playerMotion.MoveToPreviousPoint(); 
-		}
-
-		if (Input.GetKeyDown(KeyCode.E)) 
-		{
-			//playerMotion.MoveToNextPoint(); 
-		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha1)) 
-		{
-			playerMotion.MoveToPoint(1); 
-		}
+		// if (Input.GetKeyDown(KeyCode.Q)) 
+		// {
+		// 	playerMotion.MoveToPreviousPoint(); 
+		// }
+		//
+		// if (Input.GetKeyDown(KeyCode.E)) 
+		// {
+		// 	playerMotion.MoveToNextPoint(); 
+		// }
+		//
+		// if (Input.GetKeyDown(KeyCode.Alpha1)) 
+		// {
+		// 	playerMotion.MoveToPoint(1); 
+		// }
 
 		// if (Input.GetKeyDown(KeyCode.Alpha2)) 
 		// {
@@ -47,16 +47,16 @@ public class PlayerController : MonoBehaviour
 
 	void CreateRotationInput () 
     {
-        float x = 0; 
-        x += Input.GetKey(KeyCode.A) ? -1 : 0; 
-        x += Input.GetKey(KeyCode.D) ?  1 : 0; 
-
-        float y = 0; 
-        y += Input.GetKey(KeyCode.S) ? -1 : 0; 
-        y += Input.GetKey(KeyCode.W) ?  1 : 0; 
-
-        Orientation input = new Orientation(x, y, 0); 
-		playerMotion.Rotate(input); 
+  //       float x = 0; 
+  //       x += Input.GetKey(KeyCode.A) ? -1 : 0; 
+  //       x += Input.GetKey(KeyCode.D) ?  1 : 0; 
+  //
+  //       float y = 0; 
+  //       y += Input.GetKey(KeyCode.S) ? -1 : 0; 
+  //       y += Input.GetKey(KeyCode.W) ?  1 : 0; 
+  //
+  //       Orientation input = new Orientation(x, y, 0); 
+		// playerMotion.Rotate(input); 
     }
 
 

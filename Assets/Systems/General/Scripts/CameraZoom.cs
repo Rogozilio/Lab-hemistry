@@ -25,8 +25,8 @@ public class CameraZoom : MonoBehaviour
 
 	void Update () 
 	{
-		if (Input.GetKey(KeyCode.R)) ZoomIn(); 
-		if (Input.GetKey(KeyCode.F)) ZoomOut(); 
+		// if (Input.GetKey(KeyCode.R)) ZoomIn(); 
+		// if (Input.GetKey(KeyCode.F)) ZoomOut(); 
 	}
 
 

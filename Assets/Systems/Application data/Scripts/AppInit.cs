@@ -23,7 +23,7 @@ public class AppInit : MonoBehaviour
 
     void OnDataLoaded (AppData appData) 
     {
-        onAppDataLoaded.Invoke(appData); 
+        onAppDataLoaded.Invoke(appData);
     }
 
 	void OnLoadError (string message) 

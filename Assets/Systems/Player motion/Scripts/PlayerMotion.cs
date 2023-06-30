@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine; 
 using UnityEngine.Events; 
@@ -23,6 +23,9 @@ public class PlayerMotion : MonoBehaviour
 	[SerializeField] int startPoint = 1;
 
 	private CameraZoom _cameraZoom;
+
+	public bool isEdgeUp => Vector3.Dot(targetTransform.forward, Vector3.up) > 0.8f;
+	public bool isEdgeDown => Vector3.Dot(targetTransform.forward, Vector3.up) < -0.8f;
 	void Awake ()
 	{
 		_cameraZoom = FindObjectOfType<CameraZoom>();

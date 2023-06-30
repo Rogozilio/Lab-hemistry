@@ -1,4 +1,5 @@
 using System.Collections;
+using ERA;
 using UnityEngine;
 
 public class IndicatorPaper : MonoBehaviour, IRestart

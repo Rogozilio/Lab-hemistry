@@ -1,10 +1,9 @@
-﻿using UISceneTool.Scripts;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace UISceneTool.Scripts
+namespace ERA
 {
     public class DragUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
@@ -116,8 +115,12 @@ namespace UISceneTool.Scripts
             nextYPosition = CheckYInsideScreen(nextYPosition);
 
             moveRectTransform.position = new Vector3(
-                float.IsNaN(nextXPosition) ? CheckXInsideScreen(moveRectTransform.position.x - _directionMove.x) : nextXPosition,
-                float.IsNaN(nextYPosition) ? CheckYInsideScreen(moveRectTransform.position.y - _directionMove.y) : nextYPosition,
+                float.IsNaN(nextXPosition)
+                    ? CheckXInsideScreen(moveRectTransform.position.x - _directionMove.x)
+                    : nextXPosition,
+                float.IsNaN(nextYPosition)
+                    ? CheckYInsideScreen(moveRectTransform.position.y - _directionMove.y)
+                    : nextYPosition,
                 moveRectTransform.position.z);
             onDrag?.Invoke();
         }
@@ -137,7 +140,7 @@ namespace UISceneTool.Scripts
         {
             return new Vector2(rectTransform.rect.width / 2f, rectTransform.rect.height / 2f);
         }
-        
+
         private float CheckXInsideScreen(float posX)
         {
             var minX = _getHalfSize.x - offsetLeft;
@@ -145,12 +148,12 @@ namespace UISceneTool.Scripts
 
             return Mathf.Clamp(posX, minX, maxX);
         }
-        
+
         private float CheckYInsideScreen(float posY)
         {
             var minY = _getHalfSize.y - offsetBottom;
             var maxY = Screen.height - _getHalfSize.y - offsetTop;
-            
+
             return Mathf.Clamp(posY, minY, maxY);
         }
 
@@ -263,101 +266,101 @@ namespace UISceneTool.Scripts
             return doIntersect;
         }
     }
-}
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(DragUI))]
-public class DragPanelEditor : Editor
-{
-    private SerializedProperty _moveRect;
-    private SerializedProperty _moveRectTransform;
-    private SerializedProperty _obstacles;
-    private SerializedProperty _onBeginDrag;
-    private SerializedProperty _onDrag;
-    private SerializedProperty _onEndDrag;
-    private SerializedProperty _offsetRectTransform;
-    private SerializedProperty _offsetTop;
-    private SerializedProperty _offsetBottom;
-    private SerializedProperty _offsetLeft;
-    private SerializedProperty _offsetRight;
-    private SerializedProperty _isStaticOffsetTop;
-    private SerializedProperty _isStaticOffsetBottom;
-    private SerializedProperty _isStaticOffsetLeft;
-    private SerializedProperty _isStaticOffsetRight;
-
-    private bool _isFoldoutOffset;
-
-    private void OnEnable()
+    [CustomEditor(typeof(DragUI))]
+    public class DragPanelEditor : Editor
     {
-        _moveRect = serializedObject.FindProperty("moveRect");
-        _moveRectTransform = serializedObject.FindProperty("moveRectTransform");
-        _obstacles = serializedObject.FindProperty("obstacles");
-        _onBeginDrag = serializedObject.FindProperty("onBeginDrag");
-        _onDrag = serializedObject.FindProperty("onDrag");
-        _onEndDrag = serializedObject.FindProperty("onEndDrag");
-        _offsetRectTransform = serializedObject.FindProperty("offsetRectTransform");
-        _offsetTop = serializedObject.FindProperty("offsetTop");
-        _offsetBottom = serializedObject.FindProperty("offsetBottom");
-        _offsetLeft = serializedObject.FindProperty("offsetLeft");
-        _offsetRight = serializedObject.FindProperty("offsetRight");
-        _isStaticOffsetTop = serializedObject.FindProperty("isStaticOffsetTop");
-        _isStaticOffsetBottom = serializedObject.FindProperty("isStaticOffsetBottom");
-        _isStaticOffsetLeft = serializedObject.FindProperty("isStaticOffsetLeft");
-        _isStaticOffsetRight = serializedObject.FindProperty("isStaticOffsetRight");
-    }
+        private SerializedProperty _moveRect;
+        private SerializedProperty _moveRectTransform;
+        private SerializedProperty _obstacles;
+        private SerializedProperty _onBeginDrag;
+        private SerializedProperty _onDrag;
+        private SerializedProperty _onEndDrag;
+        private SerializedProperty _offsetRectTransform;
+        private SerializedProperty _offsetTop;
+        private SerializedProperty _offsetBottom;
+        private SerializedProperty _offsetLeft;
+        private SerializedProperty _offsetRight;
+        private SerializedProperty _isStaticOffsetTop;
+        private SerializedProperty _isStaticOffsetBottom;
+        private SerializedProperty _isStaticOffsetLeft;
+        private SerializedProperty _isStaticOffsetRight;
 
-    public override void OnInspectorGUI()
-    {
-        EditorGUILayout.PropertyField(_moveRect);
-        if (_moveRect.enumValueIndex == 2)
+        private bool _isFoldoutOffset;
+
+        private void OnEnable()
         {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(_moveRectTransform);
-            EditorGUI.indentLevel--;
+            _moveRect = serializedObject.FindProperty("moveRect");
+            _moveRectTransform = serializedObject.FindProperty("moveRectTransform");
+            _obstacles = serializedObject.FindProperty("obstacles");
+            _onBeginDrag = serializedObject.FindProperty("onBeginDrag");
+            _onDrag = serializedObject.FindProperty("onDrag");
+            _onEndDrag = serializedObject.FindProperty("onEndDrag");
+            _offsetRectTransform = serializedObject.FindProperty("offsetRectTransform");
+            _offsetTop = serializedObject.FindProperty("offsetTop");
+            _offsetBottom = serializedObject.FindProperty("offsetBottom");
+            _offsetLeft = serializedObject.FindProperty("offsetLeft");
+            _offsetRight = serializedObject.FindProperty("offsetRight");
+            _isStaticOffsetTop = serializedObject.FindProperty("isStaticOffsetTop");
+            _isStaticOffsetBottom = serializedObject.FindProperty("isStaticOffsetBottom");
+            _isStaticOffsetLeft = serializedObject.FindProperty("isStaticOffsetLeft");
+            _isStaticOffsetRight = serializedObject.FindProperty("isStaticOffsetRight");
         }
 
-        EditorGUILayout.PropertyField(_obstacles);
-        EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(_onBeginDrag);
-        EditorGUILayout.PropertyField(_onDrag);
-        EditorGUILayout.PropertyField(_onEndDrag);
-
-        _isFoldoutOffset = EditorGUILayout.Foldout(_isFoldoutOffset, "Set offset (Top/Bottom/Left/Right)", true);
-        if (_isFoldoutOffset)
+        public override void OnInspectorGUI()
         {
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.PropertyField(_offsetRectTransform);
-            if (_offsetRectTransform.objectReferenceValue != null)
+            EditorGUILayout.PropertyField(_moveRect);
+            if (_moveRect.enumValueIndex == 2)
             {
-                var offsetRectTransform = ((RectTransform)_offsetRectTransform.objectReferenceValue);
                 EditorGUI.indentLevel++;
-                SetOffsetValue(_offsetTop, _isStaticOffsetTop, offsetRectTransform.offsetMax.y);
-                SetOffsetValue(_offsetBottom, _isStaticOffsetBottom, offsetRectTransform.offsetMin.y);
-                SetOffsetValue(_offsetLeft, _isStaticOffsetLeft, offsetRectTransform.offsetMin.x);
-                SetOffsetValue(_offsetRight, _isStaticOffsetRight, offsetRectTransform.offsetMax.x);
+                EditorGUILayout.PropertyField(_moveRectTransform);
                 EditorGUI.indentLevel--;
             }
 
-            EditorGUILayout.EndVertical();
+            EditorGUILayout.PropertyField(_obstacles);
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(_onBeginDrag);
+            EditorGUILayout.PropertyField(_onDrag);
+            EditorGUILayout.PropertyField(_onEndDrag);
+
+            _isFoldoutOffset = EditorGUILayout.Foldout(_isFoldoutOffset, "Set offset (Top/Bottom/Left/Right)", true);
+            if (_isFoldoutOffset)
+            {
+                EditorGUILayout.BeginVertical();
+                EditorGUILayout.PropertyField(_offsetRectTransform);
+                if (_offsetRectTransform.objectReferenceValue != null)
+                {
+                    var offsetRectTransform = ((RectTransform)_offsetRectTransform.objectReferenceValue);
+                    EditorGUI.indentLevel++;
+                    SetOffsetValue(_offsetTop, _isStaticOffsetTop, offsetRectTransform.offsetMax.y);
+                    SetOffsetValue(_offsetBottom, _isStaticOffsetBottom, offsetRectTransform.offsetMin.y);
+                    SetOffsetValue(_offsetLeft, _isStaticOffsetLeft, offsetRectTransform.offsetMin.x);
+                    SetOffsetValue(_offsetRight, _isStaticOffsetRight, offsetRectTransform.offsetMax.x);
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUILayout.EndVertical();
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
 
-        serializedObject.ApplyModifiedProperties();
-    }
-
-    private void SetOffsetValue(SerializedProperty offsetValue, SerializedProperty isStaticValue, float value)
-    {
-        EditorGUILayout.BeginHorizontal();
-
-        GUI.enabled = isStaticValue.boolValue;
-        if (!isStaticValue.boolValue)
+        private void SetOffsetValue(SerializedProperty offsetValue, SerializedProperty isStaticValue, float value)
         {
-            offsetValue.floatValue = value;
-        }
+            EditorGUILayout.BeginHorizontal();
 
-        EditorGUILayout.PropertyField(offsetValue);
-        GUI.enabled = true;
-        isStaticValue.boolValue = EditorGUILayout.Toggle("IsStaticValue", isStaticValue.boolValue);
-        EditorGUILayout.EndHorizontal();
+            GUI.enabled = isStaticValue.boolValue;
+            if (!isStaticValue.boolValue)
+            {
+                offsetValue.floatValue = value;
+            }
+
+            EditorGUILayout.PropertyField(offsetValue);
+            GUI.enabled = true;
+            isStaticValue.boolValue = EditorGUILayout.Toggle("IsStaticValue", isStaticValue.boolValue);
+            EditorGUILayout.EndHorizontal();
+        }
     }
-}
 #endif
+}

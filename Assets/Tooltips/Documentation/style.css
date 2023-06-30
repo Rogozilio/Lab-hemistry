@@ -1,0 +1,146 @@
+
+/*  TECH  -----------------------------------------------------------  */
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: hsl(220, 100%, 65%);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+c {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+
+/*  HEADER  ---------------------------------------------------------  */
+.header {
+    display: flex;
+    flex-direction: row;
+    height: 67px;
+    padding-left: 100px;
+    background-color: hsl(220, 100%, 70%);
+}
+
+.header-button 
+{
+    margin: 0;
+    padding: 20px 40px;
+    border-right:  1px solid white;
+    border-left:   none;
+    border-top:    none;
+    border-bottom: none;
+    background-color: hsl(220, 100%, 70%);
+    color: white;
+    font-size: 1.25em;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header-button:first-child {
+    border-left:  1px solid white;
+}
+
+.header-button:hover {
+    background-image: 
+        linear-gradient(
+            to top, 
+            hsl(220, 100%, 85%), 
+            hsl(220, 100%, 70%) 50%
+        );
+}
+
+.header-button.selected {
+    background-image: 
+        linear-gradient(
+            to top, 
+            hsl(220, 100%, 85%), 
+            hsl(220, 100%, 70%) 50%
+        );
+}
+
+
+
+/*  MAIN  -----------------------------------------------------------  */
+.main {
+    padding: 20px 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex: 1;
+}
+
+.main h1 {
+    font-size: 2.5em;
+    color: hsl(220, 100%, 65%);
+}
+
+.main h2 {
+    font-size: 1.75em;
+    color: hsl(220, 100%, 65%);
+}
+
+.main-image {
+    align-self: center;
+}
+
+.description {
+    color: black;
+    text-indent: 2em;
+}
+
+.description.item {
+    text-indent: 0;
+    margin-left: 4em;
+}
+
+.description a {
+    font-weight: 500;
+}
+
+.property-line {
+    display: flex;
+    align-items: center;
+    padding: 1px 0;
+}
+
+.property-line:hover {
+    padding: 0;
+    width: 100%;
+    border-top:    1px solid hsl(220, 100%, 75%);
+    border-bottom: 1px solid hsl(220, 100%, 75%);
+}
+
+.property-name {
+    margin: 0 0 0 20px;
+    padding: 10px 30px;
+    width: 200px;
+    font-weight: 500;
+}
+
+.property-info {
+    margin: 0;
+    margin-left: 50px;
+}
+
+
+
+/*  FOOTER  ---------------------------------------------------------  */
+.footer {
+    margin-top: 200px;
+    height: 67px;
+    background-color: hsl(220, 100%, 70%);
+}
