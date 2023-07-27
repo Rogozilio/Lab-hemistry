@@ -18,9 +18,8 @@ namespace Mini_test_tube
             CH3COOH_KI,
             CH3COOH_KI_Pb,
             CH3COOH_KI_Pb_corrosion,
-            CH3COOH_KI_K3_Fe_CN_6_,
-            CH3COOH_KI_K3_Fe_CN_6_PbZn,
-            CH3COOH_KI_K3_Fe_CN_6_PbZn_corrosion,
+            CH3COOH_KI_PbZn,
+            CH3COOH_KI_PbZn_corrosion,
             NotActive
         }
 
@@ -29,8 +28,6 @@ namespace Mini_test_tube
         private ActionAddLiquid<StateMiniTestTubeS3E3> _actionAddLiquid;
         private ActionAddGranule<StateMiniTestTubeS3E3> _actionAddGranule;
         private ActionAddWire<StateMiniTestTubeS3E3> _actionAddWire;
-
-        private ClickMouseItem _clickMouseItem;
 
         private PlayerMotion _playerMotion;
 
@@ -53,8 +50,6 @@ namespace Mini_test_tube
 
             _playerMotion = FindObjectOfType<PlayerMotion>();
 
-            _clickMouseItem = GetComponent<ClickMouseItem>();
-
             _rendererSediment = sediment.GetComponent<Renderer>();
             _rendererSediment.material.SetFloat("_SedimentMultiply", 4);
             _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
@@ -67,11 +62,12 @@ namespace Mini_test_tube
                     ChangeColorLiquid(bottleColor);
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E3.NotActive);
                 });
-            _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 3,
+            _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.Pb_NO3_2, TypeLiquid.Pb_NO3_2, Operator.Equally, 6,
                 () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.Pb_NO3_2, TypeLiquid.KI, Operator.More, 0,
                 StateMiniTestTubeS3E3.Pb_NO3_2_KI, () =>
                 {
+                    CursorSkin.Instance.isUseClock = true;
                     UpTestTube();
                     _UIStagesControl.NextStep();
                     sediment.level = levelLiquid.level / 1.2f;
@@ -82,6 +78,7 @@ namespace Mini_test_tube
                         _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E3.Pb_NO3_2_KI_smooth;
                         SetStateOtherMiniTestTube(StateMiniTestTubeS3E3.CH3COOH);
+                        CursorSkin.Instance.isUseClock = false;
                     });
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH, TypeLiquid.CH3COOH, Operator.Equally, 1,
@@ -96,26 +93,26 @@ namespace Mini_test_tube
                 () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH, TypeLiquid.KI, Operator.More, 0,
                 StateMiniTestTubeS3E3.CH3COOH_KI, () => { });
-            _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI, TypeLiquid.KI, Operator.Equally, 12,
+            _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI, TypeLiquid.KI, Operator.Equally, 15,
                 () =>
                 {
                     _state = CheckPbInOtherTestTube()
-                        ? StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_
+                        ? StateMiniTestTubeS3E3.CH3COOH_KI_PbZn
                         : StateMiniTestTubeS3E3.CH3COOH_KI_Pb;
                     _UIStagesControl.NextStep();
                 });
-            byte step_K3_Fe_CN_6_ = 3;
-            _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_, TypeLiquid.K3_Fe_CN_6_, Operator.More, 0,
-                () =>
-                {
-                    ChangeColorLiquid(new Color32(229, 253, 42, 10), step_K3_Fe_CN_6_--);
-                    if (step_K3_Fe_CN_6_ == 0)
-                    {
-                        _UIStagesControl.NextStep();
-                        _state = StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_PbZn;
-                        step_K3_Fe_CN_6_ = 3;
-                    }
-                });
+            // byte step_K3_Fe_CN_6_ = 3;
+            // _actionAddLiquid.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_, TypeLiquid.K3_Fe_CN_6_, Operator.More, 0,
+            //     () =>
+            //     {
+            //         ChangeColorLiquid(new Color32(229, 253, 42, 10), step_K3_Fe_CN_6_--);
+            //         if (step_K3_Fe_CN_6_ == 0)
+            //         {
+            //             _UIStagesControl.NextStep();
+            //             _state = StateMiniTestTubeS3E3.CH3COOH_KI_PbZn;
+            //             step_K3_Fe_CN_6_ = 3;
+            //         }
+            //     });
 
             _actionAddWire = new ActionAddWire<StateMiniTestTubeS3E3>();
 
@@ -138,8 +135,8 @@ namespace Mini_test_tube
                     });
                 });
 
-            _actionAddWire.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_PbZn, TypeWire.Pb,
-                StateMiniTestTubeS3E3.CH3COOH_KI_K3_Fe_CN_6_PbZn_corrosion, (wire) =>
+            _actionAddWire.AddAction(StateMiniTestTubeS3E3.CH3COOH_KI_PbZn, TypeWire.Pb,
+                StateMiniTestTubeS3E3.CH3COOH_KI_PbZn_corrosion, (wire) =>
                 {
                     CursorSkin.Instance.isUseClock = true;
                     _UIStagesControl.NextStep();

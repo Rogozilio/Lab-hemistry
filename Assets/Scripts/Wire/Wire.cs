@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Wire
 {
@@ -28,10 +28,12 @@ namespace Wire
 
     public class Wire : MonoBehaviour, IRestart
     {
+        public bool isReadyToTakeForceps;
         public TypeWire typeWire;
         public TypePassivate typePassivate;
         public TypeHeatTreatment typeHeatTreatment;
         public bool isFormedAmalgam;
+        public bool isFormedCopper;
         public List<ParticleSystem> effects;
 
         private StateItem _stateItem;
@@ -60,10 +62,20 @@ namespace Wire
             set => typeHeatTreatment = (TypeHeatTreatment)value;
         }
 
+        public bool IsReadyToTakeForceps
+        {
+            set => isReadyToTakeForceps = value;
+            get => isReadyToTakeForceps;
+        }
         public bool IsFormedAmalgam
         {
             set => isFormedAmalgam = value;
             get => isFormedAmalgam;
+        }
+        public bool IsFormedCopper
+        {
+            set => isFormedCopper = value;
+            get => isFormedCopper;
         }
 
         public MoveMouseItem MoveMouseItem => _moveMouseItem;
@@ -162,9 +174,11 @@ namespace Wire
 
         public void Restart()
         {
+            isReadyToTakeForceps = false;
             typePassivate = TypePassivate.No;
             typeHeatTreatment = TypeHeatTreatment.No;
             isFormedAmalgam = false;
+            isFormedCopper = false;
             transform.position = _originPosition;
             transform.rotation = _originRotation;
             _moveMouseItem.StartRotation = _originMoveMouseRotation;

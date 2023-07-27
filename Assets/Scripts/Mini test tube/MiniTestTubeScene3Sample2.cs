@@ -77,6 +77,7 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E2.К3_Fe_CN_6_, TypeLiquid.FeCl3, Operator.More, 0,
                 StateMiniTestTubeS3E2.К3_Fe_CN_6_FeCl3, () =>
                 {
+                    CursorSkin.Instance.isUseClock = true;
                     UpTestTube();
                     _UIStagesControl.NextStep();
                     sediment.level = levelLiquid.level;
@@ -89,6 +90,7 @@ namespace Mini_test_tube
                         _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E2.К3_Fe_CN_6_FeCl3_smooth;
                         SetStateOtherMiniTestTube(StateMiniTestTubeS3E2.H2O);
+                        CursorSkin.Instance.isUseClock = false;
                     });
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E2.H2O, TypeLiquid.H2O, Operator.Equally, 1,
@@ -134,7 +136,6 @@ namespace Mini_test_tube
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     wire.GetGranule.PlayBubble();
-
                     StartSmoothlyAction(5f, (delta) =>
                     {
                         wire.GetGranule.ChangeBubbleRadius(Mathf.Lerp(0.1f, 0.5f, delta));
@@ -161,12 +162,16 @@ namespace Mini_test_tube
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     wire.PlayExistEffects();
-                    crystal.level = levelLiquid.level;
-                    StartSmoothlyChangeColor(_rendererCrystal, new Color32(5, 26, 197, 100), 10f);
-                    StartSmoothlyChangeColor(new Color32(40, 149, 53, 43), 10f, () =>
+                    wire.StartWirePartEffect("0");
+                    StartSmoothlyAction(5f, (delta) => { }, () =>
                     {
-                        CursorSkin.Instance.isUseClock = false;
-                        _UIStagesControl.NextStep();
+                        crystal.level = levelLiquid.level;
+                        StartSmoothlyChangeColor(_rendererCrystal, new Color32(5, 26, 197, 100), 10f);
+                        StartSmoothlyChangeColor(new Color32(40, 149, 53, 43), 10f, () =>
+                        {
+                            CursorSkin.Instance.isUseClock = false;
+                            _UIStagesControl.NextStep();
+                        });
                     });
                 });
         }

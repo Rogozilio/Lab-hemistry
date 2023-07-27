@@ -52,7 +52,6 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E1.H2SO4, TypeLiquid.H2SO4, Operator.Equally, 10,
                 () =>
                 {
-                    FindObjectOfType<CupForGranule>().ActiveCupGranule(transform);
                     _UIStagesControl.NextStep();
                 });
 
@@ -63,7 +62,6 @@ namespace Mini_test_tube
                 {
                     CursorSkin.Instance.isUseClock = true;
                     _UIStagesControl.NextStep();
-                    granule.FixedGranuleIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     granule.PlayBubble();
@@ -87,8 +85,8 @@ namespace Mini_test_tube
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(10f, (delta) =>
                     {
-                        granule.ChangeBubbleSpeed(Mathf.Lerp(0.1f, 0.6f, delta));
-                        granule.ChangeBubbleCountEmission(Mathf.Lerp(100f, 600f, delta));
+                        //granule.ChangeBubbleSpeed(Mathf.Lerp(0.1f, 0.6f, delta));
+                        //granule.ChangeBubbleCountEmission(Mathf.Lerp(100f, 600f, delta));
                     }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
@@ -101,7 +99,7 @@ namespace Mini_test_tube
 
             _actionAddWire.AddAction(StateMiniTestTubeS3E1.H2SO4_Zn_corrosion, TypeWire.Cu,
                 StateMiniTestTubeS3E1.H2SO4_Zn_corrosion_Cu,
-                (wire) => { wire.FixedWireIn(transform); });
+                (wire) => { wire.FixedWireIn(transform); wire.PlayExistEffects(); });
         }
 
         public override void AddLiquid(LiquidDrop liquid)

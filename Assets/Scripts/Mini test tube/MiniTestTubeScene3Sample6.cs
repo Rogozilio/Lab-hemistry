@@ -15,16 +15,14 @@ namespace Mini_test_tube
             Hg_NO3_2_Al,
             H2O,
             H20_Al,
+            H20_Al_amalgam,
             NotActive
         }
 
         private ActionAddLiquid<StateMiniTestTubeS3E6> _actionAddLiquid;
         private ActionAddWire<StateMiniTestTubeS3E6> _actionAddWire;
 
-        private ClickMouseItem _clickMouseItem;
-
         private PlayerMotion _playerMotion;
-        private Timer _timer;
 
         private StateMiniTestTubeS3E6 _state;
 
@@ -43,9 +41,6 @@ namespace Mini_test_tube
             var countWireInTestTube = 0;
 
             _playerMotion = FindObjectOfType<PlayerMotion>();
-            _timer = FindObjectOfType<Timer>();
-
-            _clickMouseItem = GetComponent<ClickMouseItem>();
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS3E6>();
 
@@ -62,9 +57,9 @@ namespace Mini_test_tube
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E6.NotActive);
                 });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.H2O, TypeLiquid.H2O, Operator.Equally, 10
-                , StateMiniTestTubeS3E6.H20_Al, () => {_UIStagesControl.NextStep();});
+                , () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E6.H2O, TypeLiquid.H2O, Operator.Equally, 1
-                , (bottleColor) => {ChangeColorLiquid(bottleColor);});
+                , (bottleColor) => { ChangeColorLiquid(bottleColor); });
 
             _actionAddWire = new ActionAddWire<StateMiniTestTubeS3E6>();
 
@@ -85,28 +80,45 @@ namespace Mini_test_tube
                         }, () => { });
                         return;
                     }
+
                     wire.FixedWireIn(transform);
-                    _timer.StartLaunchTimer(30);
                     CursorSkin.Instance.isUseClock = true;
+                    UpTestTube();
+                    _UIStagesControl.NextStep();
+                    _playerMotion.MoveToPoint(transform, 10);
+                    _state = StateMiniTestTubeS3E6.NotActive;
+                    wire.GetComponent<TimerTooltip>()
+                        .StartTimerTooltip(wire.transform, "Полоска алюминия", "Образование амальгамы");
+                    wire.StartWirePartEffect("0");
+            
                     StartSmoothlyAction(30f, (delta) => { }, () =>
                     {
-                        UpTestTube();
+                        CursorSkin.Instance.isUseClock = false;
                         _UIStagesControl.NextStep();
-                        _playerMotion.MoveToPoint(transform, 10);
-                        wire.StartWirePartEffect("0");
-                        StartSmoothlyAction(5f, (delta) => {}, () =>
-                        {
-                            CursorSkin.Instance.isUseClock = false;
-                            _UIStagesControl.NextStep();
-                            wire.isFormedAmalgam = true;
-                            wire.SetMoveMouseItemEnable = true;
-                            wire.SwitchOnLinearState();
-                            _state = StateMiniTestTubeS3E6.NotActive;
-                        });
+                        wire.isFormedAmalgam = true;
+                        wire.SetMoveMouseItemEnable = true;
+                        wire.SwitchOnLinearState();
+                        SetStateOtherMiniTestTube(StateMiniTestTubeS3E6.H20_Al_amalgam);
                     });
                 });
-            
+
             _actionAddWire.AddAction(StateMiniTestTubeS3E6.H20_Al, TypeWire.Al,
+                (wire) =>
+                {
+                    wire.FixedWireIn(transform);
+                    CursorSkin.Instance.isUseClock = true;
+                    _UIStagesControl.NextStep();
+                    UpTestTube();
+                    _playerMotion.MoveToPoint(transform, 10);
+                    StartSmoothlyAction(8f, (delta) => { }, () =>
+                    {
+                        CursorSkin.Instance.isUseClock = false;
+                        _UIStagesControl.NextStep();
+                        _state = StateMiniTestTubeS3E6.NotActive;
+                    });
+                });
+
+            _actionAddWire.AddAction(StateMiniTestTubeS3E6.H20_Al_amalgam, TypeWire.Al,
                 (wire) =>
                 {
                     wire.FixedWireIn(transform);
@@ -120,6 +132,7 @@ namespace Mini_test_tube
                         CursorSkin.Instance.isUseClock = false;
                         _UIStagesControl.NextStep();
                         _state = StateMiniTestTubeS3E6.NotActive;
+                        SetStateOtherMiniTestTube(StateMiniTestTubeS3E6.H20_Al, StateMiniTestTubeS3E6.NotActive);
                     });
                 });
         }

@@ -14,8 +14,10 @@ namespace Granule
         public TypeGranule typeGranule;
         public ParticleSystem bubble;
         public ParticleSystem bubbleMesh;
-
+        
         private Vector3 _originPosition;
+        private Quaternion _originRotation;
+        private Transform _originParent;
         private ConnectTransform _connectTransform;
 
         private float _bubbleSimulationSpeedOrigin;
@@ -25,13 +27,20 @@ namespace Granule
 
         private void Awake()
         {
-            _originPosition = transform.position;
+            _originPosition = transform.localPosition;
+            _originRotation = transform.localRotation;
+            _originParent = transform.parent;
             _connectTransform = GetComponent<ConnectTransform>();
 
             _bubbleSimulationSpeedOrigin = bubble.main.simulationSpeed;
             _bubbleEmissionCountOrigin = bubble.emission.rateOverTime.constant;
             _bubbleShapeRadiusOrigin = bubble.shape.radius;
             _bubbleMeshEmissionCountOrigin = bubbleMesh.emission.rateOverTime.constant;
+        }
+
+        public void SetParent(Transform parent)
+        {
+            transform.parent = parent;
         }
 
         public void FixedGranuleIn(Transform target)
@@ -76,9 +85,14 @@ namespace Granule
             ChangeBubbleRadius(_bubbleShapeRadiusOrigin);
             ChangeBubbleCountEmission(_bubbleEmissionCountOrigin);
             ChangeBubbleMeshCountEmission(_bubbleMeshEmissionCountOrigin);
-            transform.position = _originPosition;
-            _connectTransform.target = null;
-            _connectTransform.enabled = false;
+            SetParent(_originParent);
+            transform.localPosition = _originPosition;
+            transform.localRotation = _originRotation;
+            if (_connectTransform)
+            {
+                _connectTransform.target = null;
+                _connectTransform.enabled = false;
+            }
             bubble.Stop();
             bubbleMesh.Stop();
             GetComponent<BoxCollider>().enabled = false;

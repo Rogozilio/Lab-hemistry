@@ -116,7 +116,11 @@ public class ConnectTransform : MonoBehaviour
 
     public Transform SetTarget
     {
-        set => target = value;
+        set
+        {
+            target = value; 
+            OnEnable();
+        }
     }
 
     private void OnEnable()

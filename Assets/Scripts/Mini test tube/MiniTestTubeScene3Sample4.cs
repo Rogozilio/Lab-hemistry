@@ -34,6 +34,7 @@ namespace Mini_test_tube
 
         private Renderer _rendererSediment;
         private Color _originColorSediment;
+        private TimerTooltip _timerTooltip;
 
         public StateMiniTestTubeS3E4 GetState => _state;
         public int getCountLiquid => _countLiquid;
@@ -54,6 +55,7 @@ namespace Mini_test_tube
             _rendererSediment = sediment.GetComponent<Renderer>();
             _rendererSediment.material.SetFloat("_SedimentMultiply", 4);
             _originColorSediment = _rendererSediment.material.GetColor("_LiquidColor");
+            _timerTooltip = GetComponent<TimerTooltip>();
 
             _actionAddLiquid = new ActionAddLiquid<StateMiniTestTubeS3E4>();
 
@@ -63,7 +65,7 @@ namespace Mini_test_tube
                     ChangeColorLiquid(bottleColor);
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E4.NotActive);
                 });
-            _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.H2SO4, TypeLiquid.H2SO4, Operator.Equally, 10,
+            _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.H2SO4, TypeLiquid.H2SO4, Operator.Equally, 15,
                 StateMiniTestTubeS3E4.H2SO4_steel, () => { _UIStagesControl.NextStep(); });
 
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.HNO3, TypeLiquid.HNO3, Operator.Equally, 1,
@@ -73,7 +75,7 @@ namespace Mini_test_tube
                     SetStateOtherMiniTestTube(StateMiniTestTubeS3E4.NotActive,
                         StateMiniTestTubeS3E4.H2SO4_steel_corrosion);
                 });
-            _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.HNO3, TypeLiquid.HNO3, Operator.Equally, 10,
+            _actionAddLiquid.AddAction(StateMiniTestTubeS3E4.HNO3, TypeLiquid.HNO3, Operator.Equally, 15,
                 StateMiniTestTubeS3E4.HNO3_steel, () => { _UIStagesControl.NextStep(); });
 
             _actionAddWire = new ActionAddWire<StateMiniTestTubeS3E4>();
@@ -88,7 +90,7 @@ namespace Mini_test_tube
                         wire.PlayExistEffects();
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
-                    StartSmoothlyAction(4f, (delta) => { }, () =>
+                    StartSmoothlyAction(5f, (delta) => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
                         _UIStagesControl.NextStep();
@@ -105,7 +107,8 @@ namespace Mini_test_tube
                     wire.FixedWireIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
-                    StartSmoothlyAction(4f, delta => { }, () =>
+                    _timerTooltip.StartTimerTooltip(wire.transform, "Стальная проволока", "Процесс пассивация");
+                    StartSmoothlyAction(15f, delta => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;
                         _UIStagesControl.NextStep();

@@ -24,6 +24,7 @@ namespace Mini_test_tube
         private PlayerMotion _playerMotion;
 
         private StateMiniTestTubeS3E5 _state;
+        private int _countWireOnPaper;
 
         public StateMiniTestTubeS3E5 GetState => _state;
         public int getCountLiquid => _countLiquid;
@@ -48,7 +49,10 @@ namespace Mini_test_tube
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E5.CuSO4, TypeLiquid.CuSO4, Operator.Equally, 20,
                 StateMiniTestTubeS3E5.CuSO4_steel, () => { _UIStagesControl.NextStep(); });
             _actionAddLiquid.AddAction(StateMiniTestTubeS3E5.Empty, TypeLiquid.CuSO4, Operator.More, 0,
-                StateMiniTestTubeS3E5.CuSO4, () => { ChangeColorLiquid(new Color32(12, 58, 50, 80)); });
+                StateMiniTestTubeS3E5.CuSO4, () =>
+                {
+                    ChangeColorLiquid(new Color32(12, 58, 50, 80));
+                });
 
             _actionAddWire = new ActionAddWire<StateMiniTestTubeS3E5>();
 
@@ -61,13 +65,13 @@ namespace Mini_test_tube
                         wire.UnfixedWire();
                     wire.FixedWireIn(transform);
                     wire.StartWirePartEffect(1, "0");
-                    
+                    UpTestTube();
                     if(countWireInTestTube != 2) return;
                     countWireInTestTube = 0;
                     
                     CursorSkin.Instance.isUseClock = true;
+                    _state = StateMiniTestTubeS3E5.NotActive;
                     _UIStagesControl.NextStep();
-                    UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
                     StartSmoothlyAction(10f, (delta) => { }, () =>
                     {
@@ -89,9 +93,17 @@ namespace Mini_test_tube
             _actionAddWire.Launch(ref _state, wire);
         }
 
+        public void AddWireOnPaper()
+        {
+            _countWireOnPaper++;
+            if(_countWireOnPaper == 2)
+                _UIStagesControl.NextStep();
+        }
+
         public void Restart()
         {
             RestartBase();
+            _countWireOnPaper = 0;
             _state = StateMiniTestTubeS3E5.Empty;
         }
     }

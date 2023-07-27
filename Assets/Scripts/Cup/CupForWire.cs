@@ -16,6 +16,7 @@ public class CupForWire : MonoBehaviour, IRestart
     private UIStagesControl _uiStagesControl;
     private StateCupForWire _state;
     private Vector3 _originScale;
+    private int _countWaterDrop;
 
     public StateCupForWire GetState => _state;
 
@@ -32,11 +33,15 @@ public class CupForWire : MonoBehaviour, IRestart
 
     public void AddWaterDrop()
     {
+        _countWaterDrop++;
+        
         if (!Water.activeSelf)
             Water.SetActive(true);
 
-        Water.transform.localScale = _originScale * 0.2f;
+        Water.transform.localScale *= 1.2f;
 
+        if(_countWaterDrop < 3) return;
+        
         _state = StateCupForWire.Full;
         _uiStagesControl.NextStep();
 
@@ -56,6 +61,7 @@ public class CupForWire : MonoBehaviour, IRestart
     public void Restart()
     {
         _state = StateCupForWire.Empty;
+        _countWaterDrop = 0;
         Water.transform.localScale = _originScale;
         Water.SetActive(false);
     }

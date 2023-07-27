@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/IntegrityCheck/IntegrityCheck.unity
     guid: c5050d3c4a9b576448ef546cb4c3ffa1
   - enabled: 1
-    path: Assets/Scenes/Main1.unity
-    guid: 25783627ce7846349a6632e13869a1d5
+    path: Assets/Scenes/Main3.unity
+    guid: 16b4759c50cfffe498b767653a483384
   m_configObjects: {}
