@@ -15,6 +15,7 @@ namespace ERA
         Down,
         Left,
         Right,
+        StartReturn,
         Minus,
         Plus,
         Sound,

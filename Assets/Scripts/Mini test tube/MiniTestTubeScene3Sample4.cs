@@ -107,7 +107,7 @@ namespace Mini_test_tube
                     wire.FixedWireIn(transform);
                     UpTestTube();
                     _playerMotion.MoveToPoint(transform, 10);
-                    _timerTooltip.StartTimerTooltip(wire.transform, "Стальная проволока", "Процесс пассивация");
+                    _timerTooltip.StartTimerTooltip(wire.transform, "Стальная проволока", "Процесс пассивации");
                     StartSmoothlyAction(15f, delta => { }, () =>
                     {
                         CursorSkin.Instance.isUseClock = false;

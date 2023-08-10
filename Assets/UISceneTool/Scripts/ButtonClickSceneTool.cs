@@ -9,7 +9,8 @@ namespace ERA
     public enum ClickType
     {
         Button,
-        ToggleGroup,
+        Switch,
+        ToggleGroup
     }
 
     public class ButtonClickSceneTool : ButtonSceneTool, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler,
@@ -102,6 +103,22 @@ namespace ERA
 
             if (isDisabled) return;
 
+            if (clickType == ClickType.Button)
+            {
+                if (Input.GetKeyDown(keyboardButton))
+                {
+                    _image.sprite = push;
+                    onClick?.Invoke();
+                }
+
+                if (Input.GetKeyUp(keyboardButton))
+                {
+                    _image.sprite = normal;
+                }
+
+                return;
+            }
+
             if (Input.GetKeyDown(keyboardButton))
             {
                 SwitchStateButton();
@@ -127,6 +144,10 @@ namespace ERA
             base.OnPointerDown(eventData);
             if (clickType == ClickType.Button)
             {
+                _image.sprite = push;
+            }
+            else if (clickType == ClickType.Switch)
+            {
                 _image.sprite = clickButtonState == ClickButtonState.Activate ? push : pushOff;
             }
             else if (clickType == ClickType.ToggleGroup)
@@ -142,6 +163,8 @@ namespace ERA
             if (clickButtonState == ClickButtonState.Disabled) return;
 
             if (clickType == ClickType.Button)
+                _image.sprite = _image.sprite != normal ? hover : normal;
+            else if (clickType == ClickType.Switch)
                 IsSelect = false;
         }
 
@@ -150,7 +173,9 @@ namespace ERA
             if (clickButtonState == ClickButtonState.Disabled) return;
 
             base.OnPointerExit(eventData);
-            if (clickType == ClickType.Button || clickType == ClickType.ToggleGroup && !_isSelect)
+            if (clickType == ClickType.Button)
+                _image.sprite = normal;
+            else if (clickType == ClickType.Switch || clickType == ClickType.ToggleGroup && !_isSelect)
                 _image.sprite = clickButtonState == ClickButtonState.Activate ? normal : normalOff;
         }
 
@@ -160,11 +185,11 @@ namespace ERA
 
             if (eventData.dragging) return;
 
-            if (clickType == ClickType.Button)
-            {
+            if (clickType == ClickType.Switch)
                 SwitchStateButton();
+
+            if (clickType != ClickType.ToggleGroup)
                 onClick?.Invoke();
-            }
         }
     }
 
