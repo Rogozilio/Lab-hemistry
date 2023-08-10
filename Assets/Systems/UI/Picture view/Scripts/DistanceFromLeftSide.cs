@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class DistanceFromLeftSide : MonoBehaviour
@@ -21,7 +21,7 @@ public class DistanceFromLeftSide : MonoBehaviour
         InitOffset(); 
     }
 
-    void LateUpdate () 
+    void Update () 
     {
         float distance = GetDistanceFromEdge(); 
         float change = Mathf.Max(minDistance - distance, 0); 
@@ -48,7 +48,7 @@ public class DistanceFromLeftSide : MonoBehaviour
     float offset 
     {
         get => rectTransform.offsetMin.x; 
-        set => rectTransform.offsetMin = new Vector2(value, rectTransform.offsetMin.y); 
+        set => rectTransform.offsetMin = new Vector2(value, 0); 
     }
 
     void InitOffset () 

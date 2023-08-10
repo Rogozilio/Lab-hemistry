@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class TabKeyInput : MonoBehaviour
@@ -16,35 +16,30 @@ public class TabKeyInput : MonoBehaviour
 
     void Update () 
 	{
-		switch (infoPanel.stateLastFrame) 
-		{
-			case InfoPanelAnimation.State.Visible: 
-			case InfoPanelAnimation.State.Appearing: 
-				SwitchToNextTab_OnTab(); 
-				SwitchToPreviousTab_OnShiftTab(); 
-				break; 
-		}
+        if (infoPanel.isAppearingOrVisible) 
+        {
+            SwitchToNextTab_OnCtrlRight(); 
+            SwitchToPreviousTab_OnCtrlLeft(); 
+        }
 	}
 
-	void SwitchToNextTab_OnTab () 
+	void SwitchToNextTab_OnCtrlRight () 
 	{
 		if (
-			Input.GetKeyDown(KeyCode.RightArrow) 
+			Input.GetKeyDown(KeyCode.RightArrow)
 			&& 
-			( Input.GetKey(KeyCode.LeftControl) || 
-			   Input.GetKey(KeyCode.RightControl) )
+			(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
 		) {
 			tabSystem.SwitchToNextTab(); 
 		}
 	}
 
-	void SwitchToPreviousTab_OnShiftTab () 
+	void SwitchToPreviousTab_OnCtrlLeft () 
 	{
 		if (
-			Input.GetKeyDown(KeyCode.LeftArrow) 
+			Input.GetKeyDown(KeyCode.LeftArrow)
 			&& 
-			( Input.GetKey(KeyCode.LeftControl) || 
-			   Input.GetKey(KeyCode.RightControl) )
+			(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
 		) {
 			tabSystem.SwitchToPreviousTab(); 
 		}

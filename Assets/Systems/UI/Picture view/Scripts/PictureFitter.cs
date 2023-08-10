@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 
 
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class PictureFitter : MonoBehaviour 
@@ -59,7 +59,7 @@ public class PictureFitter : MonoBehaviour
 
     public void UpdateFit () 
     {
-        if (image == null || image.sprite == null) return; 
+        if (image != null && image.sprite == null) return; 
 
         switch (mode) 
         {

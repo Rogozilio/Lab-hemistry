@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events; 
-using VirtualLab.ApplicationData; 
+using UnityEngine.Events;
+using ERA.SidePanelAsset;
 
 
-
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class PageSystem : MonoBehaviour
@@ -20,16 +19,16 @@ public class PageSystem : MonoBehaviour
 
 
     //  Events  ----------------------------------------------------- 
-    public delegate void EventHandler(int number); 
-    public event EventHandler onPageChanged = delegate {}; 
-    public event EventHandler onPageCountChanged = delegate {}; 
+	[Space]
+    public UnityEvent<int> onPageChanged;
+    public UnityEvent<int> onPageCountChanged;
 
 
 
     //  Loading data  ----------------------------------------------- 
-    public void OnPagesLoaded (AppData appData) 
+    public void OnPagesLoaded (SidePanelData data) 
     {
-        CreatePages(appData.infoPanel.GetTabData(tab)); 
+        CreatePages(data.GetTabData(tab)); 
         InitPages(); 
     }
 
@@ -43,17 +42,12 @@ public class PageSystem : MonoBehaviour
 
     void CreatePage (Sprite sprite) 
     {
-        GameObject pageObj = Instantiate(
-            pagePrefab, 
-            new Vector3(0, 0, 0), 
-            Quaternion.identity 
-        ); 
+        GameObject pageObj = Instantiate(pagePrefab); 
         pageObj.transform.SetParent(pageContainer); 
 
         RectTransform pageTransform = pageObj.GetComponent<RectTransform>(); 
-        pageTransform.anchorMin = new Vector2(); 
-        pageTransform.anchorMax = new Vector2(); 
-        pageTransform.anchoredPosition = new Vector2(); 
+        pageTransform.offsetMin = new Vector2(); 
+        pageTransform.offsetMax = new Vector2(); 
 
         Page page = pageObj.GetComponent<Page>(); 
         page.Init(sprite); 
@@ -69,7 +63,7 @@ public class PageSystem : MonoBehaviour
         TurnOffAllPages(); 
         TurnOnFirstPage(); 
 
-        onPageCountChanged(pageCount); 
+        onPageCountChanged.Invoke(pageCount); 
     }
 
     void TurnOffAllPages () 
@@ -104,7 +98,7 @@ public class PageSystem : MonoBehaviour
             _currentPage = value; 
             pages[_currentPage].gameObject.SetActive(true); 
             
-            onPageChanged(_currentPage); 
+            onPageChanged.Invoke(_currentPage); 
         }
     }
 

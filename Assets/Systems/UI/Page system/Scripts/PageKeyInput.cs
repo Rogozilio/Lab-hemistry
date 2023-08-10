@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 
 
-namespace VirtualLab {
+namespace ERA.SidePanelAsset {
 
 public class PageKeyInput : MonoBehaviour
 {
@@ -44,7 +44,7 @@ public class PageKeyInput : MonoBehaviour
     {
         float input = 0; 
         input += Input.GetKey(KeyCode.DownArrow) ? -1 : 0; 
-        input += Input.GetKey(KeyCode.UpArrow) ? 1 : 0; 
+        input += Input.GetKey(KeyCode.UpArrow)   ?  1 : 0; 
         return input; 
     }
 
@@ -65,6 +65,7 @@ public class PageKeyInput : MonoBehaviour
     {
         if (
             Input.GetKeyDown(KeyCode.LeftArrow) && 
+            !(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
             previousPageButton.interactable 
         ) {
             previousPageButton.onClick.Invoke(); 
@@ -72,6 +73,7 @@ public class PageKeyInput : MonoBehaviour
 
         if (
             Input.GetKeyDown(KeyCode.RightArrow) && 
+            !(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
             nextPageButton.interactable 
         ) {
             nextPageButton.onClick.Invoke(); 

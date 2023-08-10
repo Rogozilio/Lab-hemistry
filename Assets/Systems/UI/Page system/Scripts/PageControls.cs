@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 
 
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class PageControls : MonoBehaviour
@@ -45,16 +45,16 @@ public class PageControls : MonoBehaviour
         set {
             if (_pageSystem != null) 
             {
-                _pageSystem.onPageChanged -= OnPageChanged; 
-                _pageSystem.onPageCountChanged -= OnPageCountChanged; 
+                _pageSystem.onPageChanged     .RemoveListener(OnPageChanged); 
+                _pageSystem.onPageCountChanged.RemoveListener(OnPageCountChanged); 
             }
 
             _pageSystem = value; 
 
             if (_pageSystem != null) 
             {
-                _pageSystem.onPageChanged += OnPageChanged; 
-                _pageSystem.onPageCountChanged += OnPageCountChanged; 
+                _pageSystem.onPageChanged     .AddListener(OnPageChanged); 
+                _pageSystem.onPageCountChanged.AddListener(OnPageCountChanged); 
             }
             
             UpdateUI(); 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ERA.SidePanelAsset;
 using UnityEngine;
 
 
@@ -7,7 +8,7 @@ using UnityEngine;
 namespace VirtualLab.ApplicationData 
 {
 
-public enum Tab { About, Theory, Instructions } 
+//public enum Tab { About, Theory, Instructions } 
 
 
 

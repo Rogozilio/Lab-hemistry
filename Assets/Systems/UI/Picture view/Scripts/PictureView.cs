@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events; 
-using VirtualLab.ApplicationData; 
 
 
 
-namespace VirtualLab 
+namespace ERA.SidePanelAsset 
 {
 
 public class PictureView : MonoBehaviour
 {
-    // parameters 
     [Header("UI connections")] 
     [SerializeField] GameObject contentPanel; 
     [SerializeField] ScrollRect scrollView; 
@@ -24,7 +22,6 @@ public class PictureView : MonoBehaviour
     [SerializeField] PageSystem theoryTab; 
     [SerializeField] PageSystem instructionsTab; 
     [SerializeField] GameObject maximizeButtonPrefab; 
-
 
 
 
@@ -44,12 +41,12 @@ public class PictureView : MonoBehaviour
 
 
     //  Loading data  ----------------------------------------------- 
-    public void OnPicturesLoaded (AppData data) 
+    public void OnPicturesLoaded (SidePanelData data) 
     {
-        // foreach (PictureData pictureData in data.infoPanel.pictureView.pictures) 
-        // {
-        //     CreateButton(pictureData); 
-        // }
+        foreach (PictureData pictureData in data.pictureView.pictures) 
+        {
+            CreateButton(pictureData); 
+        }
     }
 
     void CreateButton (PictureData pictureData) 
@@ -82,12 +79,12 @@ public class PictureView : MonoBehaviour
         }; 
 
         try {
-            return pageSystem.GetPage(pageNumber); 
+            return pageSystem.GetPage(pageNumber - 1); 
         }
         catch 
         {
             throw new UnityException(
-                "Не удалось найти страницу с номером " + (pageNumber + 1) + " для картинки" 
+                "Не удалось найти страницу с номером " + pageNumber + " для картинки" 
             ); 
         }
     }
@@ -131,28 +128,33 @@ public class PictureView : MonoBehaviour
 
     void SetActive (bool newActive) 
     {
-        if (active == newActive) 
+        if (active) 
 		{
-			pictureFitter.UpdateFit(); 
-            scrollView.horizontalNormalizedPosition = 0.5f; 
-            scrollView.verticalNormalizedPosition = 0.5f; 
+			if (newActive) 
+			{
+				pictureFitter.UpdateFit(); 
+				scrollView.horizontalNormalizedPosition = 0.5f; 
+				scrollView.verticalNormalizedPosition = 0.5f; 
+			}
+			else 
+			{
+				contentPanel.SetActive(false); 
+				onDeactivated.Invoke(); 
+			}   
 		}
-        else if (newActive) 
-        {
-            contentPanel.SetActive(true); 
+		else 
+		{
+			if (newActive) 
+			{
+				contentPanel.SetActive(true); 
 
-            pictureFitter.UpdateFit(); 
-            scrollView.horizontalNormalizedPosition = 0.5f; 
-            scrollView.verticalNormalizedPosition = 0.5f; 
+				pictureFitter.UpdateFit(); 
+				scrollView.horizontalNormalizedPosition = 0.5f; 
+				scrollView.verticalNormalizedPosition = 0.5f; 
 
-            onActivated.Invoke(); 
-        }
-        else 
-        {
-            contentPanel.SetActive(false); 
-
-            onDeactivated.Invoke(); 
-        }   
+				onActivated.Invoke(); 
+			}
+		}
     }
 
 }

@@ -5,18 +5,16 @@ using UnityEngine.UI;
 
 
 
-namespace VirtualLab {
+namespace ERA.SidePanelAsset {
 
 public class Page : MonoBehaviour
 {
+	[SerializeField] Image imagePart;
+
 
     public void Init (Sprite pagePic) 
     {
-        Image imageComponent = GetComponent<Image>(); 
-        imageComponent.sprite = pagePic; 
-
-        ImageAspectRatio aspectRatio = GetComponent<ImageAspectRatio>(); 
-        aspectRatio.UpdateAspectRatio(); 
+        imagePart.sprite = pagePic; 
     }
 
     public void AddButton (RectTransform button, int x, int y) 

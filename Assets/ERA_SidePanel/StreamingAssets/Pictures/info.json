@@ -1,0 +1,22 @@
+{
+    "about": [], 
+
+    "theory": [
+        {
+            "pictureName": "pic1.png", 
+            "pictureDescription": "Рис 1. Диаграмма состояния железо-цементит", 
+            "pageNumber": 1, 
+            "x": 70, 
+            "y": 320
+        }, 
+        {
+            "pictureName": "pic2.png", 
+            "pictureDescription": "Приложение 2. Диаграмма состояния системы железо-углерод", 
+            "pageNumber": 1, 
+            "x": 60, 
+            "y": 110
+        } 
+    ],
+
+    "instructions": [] 
+}

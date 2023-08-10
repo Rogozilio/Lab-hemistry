@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 
 
-namespace VirtualLab {
+namespace ERA.SidePanelAsset {
 
 public class TabSystem : MonoBehaviour
 {
@@ -45,9 +45,18 @@ public class TabSystem : MonoBehaviour
 
 
 
-	//  Events  ----------------------------------------------------- 
+	//  Events  -----------------------------------------------------
     public delegate void TabChangedHandler (GameObject newTab); 
     public event TabChangedHandler onTabChanged = delegate {}; 
+
+    public void OnDataLoaded (SidePanelData data) 
+    {
+        for (int i = 0; i < tabButtons.Count; i++)
+        {
+            string name = data.GetTabData((Tab) i).name;
+            tabButtons[i].SetName(name);
+        }
+    }
 
 
 

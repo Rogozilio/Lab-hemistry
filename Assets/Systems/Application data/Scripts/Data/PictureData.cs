@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
-namespace VirtualLab.ApplicationData 
+namespace ERA.SidePanelAsset
 {
 
 public class PictureData 

@@ -4,19 +4,20 @@ using UnityEngine;
 
 
 
-namespace VirtualLab.ApplicationData 
+namespace ERA.SidePanelAsset
 {
 
 public class PictureViewData 
 {
     List<PictureData> _pictures = new List<PictureData>(); 
+	public IReadOnlyList<PictureData> pictures => _pictures; 
+
 
 	public PictureViewData (List<PictureData> pictures) 
 	{
 		this._pictures = pictures; 
 	}
-
-	public IReadOnlyList<PictureData> pictures => _pictures; 
+    
 }
 
 }

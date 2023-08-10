@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events; 
 using UnityEngine.EventSystems; 
+using TMPro;
 
 
 
-namespace VirtualLab {
+namespace ERA.SidePanelAsset 
+{
 
 public class TabButton : MonoBehaviour, IPointerClickHandler 
 {
@@ -14,6 +16,14 @@ public class TabButton : MonoBehaviour, IPointerClickHandler
     [SerializeField] GameObject tabArea; 
     [SerializeField] GameObject imageNormal; 
     [SerializeField] GameObject imageSelected; 
+    [SerializeField] TMP_Text   tabName;
+
+
+
+    public void SetName (string name) 
+    {
+        if (name != "") tabName.text = name;
+    }
 
 
 

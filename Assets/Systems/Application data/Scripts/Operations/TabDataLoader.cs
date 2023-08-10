@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ERA.SidePanelAsset;
 using UnityEngine;
 
 
@@ -35,7 +36,7 @@ public class TabDataLoader : Operation<TabData>
 
     void OnDataLoaded (List<Sprite> pages) 
     {
-		TabData tabData = new TabData(tab, pages); 
+		TabData tabData = new TabData(tab, "", pages); 
         GoBack(tabData); 
     }
 
