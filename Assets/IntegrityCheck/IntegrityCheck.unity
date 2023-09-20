@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screens: {fileID: 729065322}
-  nextSceneName: Main4
+  nextSceneName: Main1
   doCheckInEditor: 1
   editorURL: https://tpu.ru
   startNextSceneInEditor: 1

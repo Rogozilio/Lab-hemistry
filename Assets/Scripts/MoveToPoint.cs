@@ -35,7 +35,7 @@ public class MoveToPoint
             : Vector3.Distance(_transform.position, _toPoint.Position);
 
     private float _angle => Quaternion.Angle(_isLocalRotate ? _transform.localRotation : _transform.rotation, _toPoint.Rotation);
-    private bool _isMoveNext => _distance > 0.001f || _angle > 0.001f;
+    private bool _isMoveNext => _distance > 0.01f || _angle > 0.01f;
 
     private Vector3 _speedTRS;
     private bool _isMoveRigidbody;

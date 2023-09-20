@@ -1,7 +1,6 @@
 using System.Collections;
 using ERA;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GlassCup : MonoBehaviour, IRestart
 {

@@ -81,8 +81,8 @@ public class MoveMouseItem : MouseItem
         _state = StateItems.Drag;
         startRot = _originStartRotation;
     }
-    
-    
+
+
     public void ResetPointRespawnByTransform(Transform toTransform)
     {
         if (IsMoveRigidbody)
@@ -98,7 +98,7 @@ public class MoveMouseItem : MouseItem
 
         _moveToRespawn.SetSpeedTRS = new Vector3(15f, 15f, 15f);
     }
-    
+
     public void ResetPointRespawn()
     {
         if (IsMoveRigidbody)
@@ -138,7 +138,10 @@ public class MoveMouseItem : MouseItem
 
         StateItem.ChangeState(StateItems.BackToRespawn);
 
-        StartCoroutine(_moveToRespawn.StartAsync(() => { StateItem.ChangeState(StateItems.Idle); }));
+        StartCoroutine(_moveToRespawn.StartAsync(() =>
+        {
+            StateItem.ChangeState(StateItems.Idle);
+        }));
     }
 
 

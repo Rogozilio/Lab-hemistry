@@ -38,8 +38,8 @@ public class Forceps : MonoBehaviour, IRestart
         _originRotateRightHalfForceps = _rightHalfForceps.rotation;
         _stateForceps = StateForceps.Empty;
         _stateItem = GetComponent<StateItem>();
-        _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps);
-        _rotateToRightForceps = new MoveToPoint(_rightHalfForceps);
+        _rotateToLeftForceps = new MoveToPoint(_leftHalfForceps, _leftHalfForceps.position);
+        _rotateToRightForceps = new MoveToPoint(_rightHalfForceps, _rightHalfForceps.position);
         _rotateToLeftForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
         _rotateToRightForceps.SetSpeedTRS = new Vector3(0f, 7f, 0f);
     }
